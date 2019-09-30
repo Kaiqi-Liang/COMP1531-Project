@@ -2,4 +2,5 @@ import pytest
 from channel import *
 
 def test_invalid:
-    with pytest.raise(Exception):
+    with pytest.raise(ValueError):
+        channel_invite
