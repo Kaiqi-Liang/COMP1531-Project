@@ -9,3 +9,6 @@ def test_invite():
 def test_create():
     with pytest.raises(ValueError):
         channels_create('token','012345678901234567890',True)
+
+    auth_register()
+    auth_login()
