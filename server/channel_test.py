@@ -1,6 +1,9 @@
 import pytest
 from channel import *
 
+@fixture
+auth_register("a@b", "a", "")
+
 def test_invite():
     with pytest.raises(ValueError):
         # invalid token
