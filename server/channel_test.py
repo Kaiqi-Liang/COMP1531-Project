@@ -2,6 +2,9 @@ import pytest
 from channel import *
 from access_error import AccessError
 
+@fixture
+auth_register("a@b", "a", "")
+
 def test_invite():
     with pytest.raises(ValueError):
         # invalid token
