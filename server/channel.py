@@ -1,8 +1,11 @@
+from access_error import AccessError
+
 def channel_invite(token, channel_id, u_id):
     raise ValueError
 
 def channel_details(token, channel_id):
     raise ValueError
+    raise AccessError
 
 def channel_messages(token, channel_id, start):
     raise ValueError
