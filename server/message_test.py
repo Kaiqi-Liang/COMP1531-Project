@@ -64,7 +64,7 @@ def test_message_sendlater(register_owner, create_channel, message_valid, messag
     with pytest.raises(ValueError):
         # channel doesn't exist -> don't know yet if can test
         # message > 1000 characters
-        message_sendlater(register_owner['token'], create_channel, message_invalid, time_invalid)
+        message_sendlater(register_owner['token'], create_channel, message_invalid, time_valid)
         # time sent is in the past
         message_sendlater(register_owner['token'], create_channel, message_valid, time_invalid)
         
