@@ -1,19 +1,15 @@
-Parameters: `
+***Parameters:***
 
-WRITE PARAMETERS HERE
+`REPLACE THIS TEXT WITH PARAMETERS`
 
-`
+***Return type:***
 
-Return type: `
+`REPLACE THIS TEXT WITH RETURN TYPE`
 
-WRITE RETURN TYPE HERE
+***Exception:***
 
-`
+REPLACE TEXT WITH EXCEPTIONS
 
-Exception:
+***Desc:***
 
-EXCEPTION HERE
-
-Desc: 
-
-DESC HERE
+REPLACE TEXT WITH DESC
