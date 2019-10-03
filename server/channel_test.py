@@ -36,6 +36,7 @@ def test_details(register_owner, channel_create, register_user):
     with pytest.raises(ValueError):
         # channel does not exist
         channel_detail(register_owner['token'], 'channel_id')
+
     with pytest.raises(AccessError):
         # user is not a member of channel
         channel_detail(register_user['token'], channel_create)
@@ -45,12 +46,25 @@ def test_details(register_owner, channel_create, register_user):
     assert channel_detail(register_user['token'], channel_create) == { 'name', [{'u_id': register_own['u_id'], 'name_first': 'Kaiqi', 'name_last': 'Liang'}], [{'u_id': register_own['u_id'], 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': register_user['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}] }
 
 
-def test_message(register_owner, channel_create):
-    channel_message(register_owner['token'], channel_create, 0)
+def test_message(register_owner, channel_create, register_user):
+    # no messages in the channel at the moment 
+    assert channel_message(register_owner['token'], channel_create, 0) == { 'messages': [], 'start': 0, 'end': 0 }
+    with pytest.raises(ValueError):
+        # channel does not exist
+        channel_message(register_owner['token'], 'channel_id', 0)
+        # start is greater than the total number of messages
+        channel_message(register_owner['token'], channel_create, 1)
 
+    with pytest.raises(AccessError):
+        # user is not a member of channel
+        channel_message(register_user['token'], channel_create, 0)
+
+    #
 
 def test_create(register):
     channels_create(register, 'name', True)
     with pytest.raises(ValueError):
         # name is more than 20 characters long
         channels_create('token','012345678901234567890',True)
+
+
