@@ -125,10 +125,15 @@ def test_removeowner(register_owner, channel_create, register_user):
 def test_list(register_owner, channel_create, register_user):
     # user is not part of any channels
     assert channels_list(register_user['token']) == []
-    # owner can see the channel created 
+    # owner can see the channel created
     assert channels_list(register_owner['token']) == [{'id': channel_create, 'name': 'name'}]
 
-def test_listall(register_owner):
+def test_listall(register_owner, register_user):
+    register_owener
+    # user is not part of any channels
+    assert channels_list(register_user['token']) == []
+    # owner can see the channel created 
+    assert channels_list(register_owner['token']) == [{'id': channel_create, 'name': 'name'}]
 
 
 def test_create(register_owner):
