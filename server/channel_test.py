@@ -15,7 +15,7 @@ def register_user():
 @pytest.fixture
 def channel_create(register_owner):
     # return channel_id
-    return channels_create(register, 'name', True)['channel_id']
+    return channels_create(register_owner['token'], 'name', True)['channel_id']
 
 
 def test_invite(register_owner, channel_create, register_user):
@@ -128,18 +128,41 @@ def test_list(register_owner, channel_create, register_user):
     # owner can see the channel created
     assert channels_list(register_owner['token']) == [{'id': channel_create, 'name': 'name'}]
 
+    # user creates a private channel
+    channel_id = channels_create(register_user['token'], 'private', False)['channel_id']
+    # user can see this private channel
+    assert channels_list(register_user['token']) == [{'id': channel_id, 'name': 'private'}]
+
+    # owner leaves the channel
+    channel_leave(register_owner['token'], channel_create)
+    # owner can not see any channels
+    assert channels_listall(register_owner['token']) == []
+
+
 def test_listall(register_owner, register_user):
-    register_owener
-    # user is not part of any channels
-    assert channels_list(register_user['token']) == []
-    # owner can see the channel created 
-    assert channels_list(register_owner['token']) == [{'id': channel_create, 'name': 'name'}]
+    # there is no channels at this point
+    assert channels_listall(register_user['token']) == []
+    assert channels_listall(register_onwer['token']) == []
+
+    # owner creates a public channel
+    channel_id = channels_create(register_owner['token'], 'public', True)['channel_id']
+    # user can see this public channel
+    assert channels_listall(register_user['token']) == [{'id': channel_id, 'name': 'public'}]
+
+    # owner creates a private channel
+    channel_id = channels_create(register_owner['token'], 'private', False)['channel_id']
+    # owner can see this private channel
+    assert channels_listall(register_owner['token']) == [{'id': channel_id, 'name': 'private'}]
+    # user can not see the private channel
+    assert channels_listall(register_user['token']) == []
 
 
 def test_create(register_owner):
-    channels_create(register_owner['token'], 'name', True)
+    # owner creates a channel
+    channel_id = channels_create(register_owner['token'], 'name', True)
+    # a chanel has been created
+    assert channels_list(register_owner['token']) == [{'id': channel_create, 'name': 'name'}]
+
     with pytest.raises(ValueError):
         # name is more than 20 characters long
         channels_create('token','012345678901234567890',True)
-
-
