@@ -97,9 +97,10 @@ def test_addowner(register_owner, channel_create, register_user):
         # user is already an owner
         channel_addowner(register_owner['token'], channel_create, register_user['u_id'])
 
+    # remove user as an owner
     channel_removeowner(register_owner['token'], -1, register_user['u_id'])
     with pytest.raises(AccessError):
-        # not an owner
+        # user has no permission to add owner
         channel_addowner(register_user['token'], channel_create, register_owner['u_id'])
 
 
