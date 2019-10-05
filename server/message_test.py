@@ -20,9 +20,8 @@ def register_user():
 @pytest.fixture
 def create_channel(register_owner):
     token = register_owner['token']
-    channel = channels_create(token, "Test channel", False)
     # return channel_id
-    return channel
+    return channels_create(token, "Test channel", False)['channel_id']
  
 @pytest.fixture
 def join_user(register_user):
@@ -41,7 +40,7 @@ def message_invalid():
  
 @pytest.fixture
 def time_valid():
-    return datetime(2019, 12, 3, 05, 30, 30, 0)
+    return datetime(2019, 12, 3, 5, 30, 30, 0)
 
 @pytest.fixture
 def time_invalid():
@@ -49,17 +48,17 @@ def time_invalid():
 
 @pytest.fixture
 def messages_list(register_owner, register_user):
-    messages = [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message': "Hello",   'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), is_unread: False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "How are you?", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), is_unread: False},
-     {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), is_unread: False}]
+    messages = [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message': "Hello",   'time_created' : datetime(2019, 5, 3, 7, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "How are you?", 'time_created' : datetime(2019, 5, 3, 7, 30, 0, 0), 'is_unread': False},
+     {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     return messages
 
 @pytest.fixture
 def messages_list2(register_owner, register_user):
-    messages2 = [{'message_id' : 4, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 07, 0, 0, 0), is_unread: False},
-    {'message_id' : 5, 'u_id' : register_owner['u_id'], {'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 07, 30, 0, 0), is_unread: False}, 
-    {'message_id' : 6, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 8, 0, 0, 0), is_unread: False}, 
-    {'message_id' : 7, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 9, 0, 0, 0, is_unread: False)}]
+    messages2 = [{'message_id' : 4, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 7, 0, 0, 0), 'is_unread': False},
+    {'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 7, 30, 0, 0), 'is_unread': False}, 
+    {'message_id' : 6, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 8, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 7, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 9, 0, 0, 0), 'is_unread': False}]
     return messages2
     
 @pytest.fixture
@@ -78,7 +77,7 @@ def test_message_sendlater(register_owner, register_user, create_channel, messag
     
     # success
     message_sendlater(register_owner['token'], create_channel, message_valid, time_valid) 
-    assert channel_messages(register_owner['token'], create_channel, 0) == {'messages' = [{'message_id' : 50, 'u_id' : register_owner['u_id'], 'message' : "Hello World", 'time_created' : datetime(2019, 12, 3, 05, 30, 30, 0), is_unread: True}], 'start' = 0, 'end' = -1}
+    assert channel_messages(register_owner['token'], create_channel, 0) == {'messages' : [{'message_id' : 50, 'u_id' : register_owner['u_id'], 'message' : "Hello World", 'time_created' : datetime(2019, 12, 3, 5, 30, 30, 0), 'is_unread': True}], 'start' : 0, 'end' : -1}
                
     with pytest.raises(ValueError):
         # channel based on Id doesn't exist
@@ -93,11 +92,11 @@ def test_message_sendlater(register_owner, register_user, create_channel, messag
       
      
 # testing for message_send      
-def test_message_send(register_owner, register_user create_channel, message_valid, message_invalid):
+def test_message_send(register_owner, register_user, create_channel, message_valid, message_invalid):
    
     # success
     message_sendlater(register_owner['token'], create_channel, message_valid) 
-    assert channel_messages(register_owner['token'], create_channel, 0) == {'messages' = [{'message_id' : 50, 'u_id' : register_owner['u_id'], 'message' : "Hello World", 'time_created' : datetime.now(), is_unread: False}, 'start' = 0, 'end' = -1}
+    assert channel_messages(register_owner['token'], create_channel, 0) == {'messages' : [{'message_id' : 50, 'u_id' : register_owner['u_id'], 'message' : "Hello World", 'time_created' : datetime.now(), 'is_unread': False}], 'start' : 0, 'end' : -1}
     
     with pytest.raises(ValueError):
         # message > 1000 characters
@@ -111,27 +110,27 @@ def test_message_remove(register_owner, register_user, messages_list, messages_l
     # message sent by the user (logged in person), not the owner of channel
     delete_message = messages_list2[0]
     message_remove(register_user['token'], delete_message['message_id'])
-    assert messages_list2 == [ {'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 07, 30, 0, 0), is_unread: False}, 
-    {'message_id' : 6, 'u_id' : register_user['u_id'], 'message' : "Valid Message",  'time_created' : datetime(2019, 7, 4, 8, 0, 0, 0), is_unread: False}, 
-    {'message_id' = 7, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 9, 0, 0, 0), is_unread: False}]
+    assert messages_list2 == [ {'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 7, 30, 0, 0), 'is_unread': False}, 
+    {'message_id' : 6, 'u_id' : register_user['u_id'], 'message' : "Valid Message",  'time_created' : datetime(2019, 7, 4, 8, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 7, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 9, 0, 0, 0), 'is_unread': False}]
     
     # message sent by the user, who is not an admin
     delete_message = messages_list2[1]
     message_remove(register_user['token'], delete_message['message_id'])
-    assert messages_list2 == [{'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 07, 30, 0, 0), is_unread: False}, 
-    {'message_id' : 7, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 9, 0, 0, 0), is_unread: False} ]
+    assert messages_list2 == [{'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 7, 30, 0, 0), 'is_unread': False}, 
+    {'message_id' : 7, 'u_id' : register_user['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 9, 0, 0, 0), 'is_unread': False} ]
     
     # message not sent by the user, who is an owner ofthe channel
     delete_message = messages_list2[1]
     message_remove(register_owner['token'], delete_message['message_id'])
-    assert messages_list2 == [{'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 07, 30, 0, 0), is_unread: False}]
+    assert messages_list2 == [{'message_id' : 5, 'u_id' : register_owner['u_id'], 'message' : "Valid Message", 'time_created' : datetime(2019, 7, 4, 7, 30, 0, 0), 'is_unread': False}]
     
     # message not sent by the user, who is an admin
     admin_userpermission_change(register_owner['token'], register_owner['u_id'], 2)
     delete_message = messages_list[1]
     message_remove(register_owner['token'], delete_message['message_id']
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), is_unread: False}, 
-    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), is_unread: False}]
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 7, 0, 0, 0), 'is_unread': False},
+     {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}] 
  
     delete_message = messages_list[0]
 
@@ -142,7 +141,7 @@ def test_message_remove(register_owner, register_user, messages_list, messages_l
            
     with pytest.raises(AccessError):
         # message was sent by logged in user, message was sent by owner / admin
-        message_remove(register_owner['token'], delete_message['message_id')
+        message_remove(register_owner['token'], delete_message['message_id'])
  
 # testing for message_edit      
 def test_message_edit(messages_list, register_owner, register_user):
@@ -152,27 +151,27 @@ def test_message_edit(messages_list, register_owner, register_user):
     message = messages_list[1]
     message_edit(register_user['token'], message['message_id'], "Edit own")
     
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), is_unread: False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit own", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), is_unread: False}, 
-    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), is_unread: False}]
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit own", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), 'is_unread': False}, 
+    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     
     
     # message not sent by user, is an owner
     message = messages_list[1]
     message_edit(register_owner['token'], message['message_id'], "Edit others")
     
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), is_unread: False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit others", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), is_unread: False}, 
-    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), is_unread: False}]
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit others", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), 'is_unread': False}, 
+    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     
     # message not sent by the user, is an admin
     message = messages_list[1]
     admin_userpermission_change(register_owner['token'], register_owner['u_id'], 2)
     message_edit(register_owner['token'], message['message_id'], "Edit by admin")
     
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), is_unread: False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit by admin", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), is_unread: False}, 
-    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), is_unread: False}]
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit by admin", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), 'is_unread': False}, 
+    {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     
     with pytest.raises(ValueError):
         # message sent by user and user is an owner/admin
@@ -227,7 +226,7 @@ def test_message_unreact(register_user, messages_list, valid_reactId, invalid_re
         message_unreact(register_owner['token'], message1['message_id'], valid_reactId
 
 # testing for message_pin
-def test_message_pin(register_user, register_owner, messages_list):
+def test_message_pin(register_user, register_owner, messages_list, create_channel):
 
     # success
     message = messages_list[0]
@@ -243,9 +242,20 @@ def test_message_pin(register_user, register_owner, messages_list):
         message_pin(register_user['token'], message['message_id'])
         # message is already pinned
         message_pin(register_owner['token'], message1['message_id'])
+    
+    # send a message to channel and store its message_id
+    message_send(register_owner['token'], create_channel, "Test message")
+    message_sent = channel_message['messages']
+    messageId = message_sent['message_id']
+    # remove the user from the channel 
+    channel_leave(register_user['token'], create_channel)
+    
+    with pytest.raises(AccessError):
+        # user is not a member of the channel the message is within
+        message_pin(register_user['token'], messageId)
         
 # testing for message_unpin      
-def test_message_unpin(register_user, register_owner, messages_list):       
+def test_message_unpin(register_user, register_owner, messages_list, create_channel):       
         
     # success
     message = messages_list[0]
@@ -263,6 +273,15 @@ def test_message_unpin(register_user, register_owner, messages_list):
         # message is already unpinned
         message_unpin(register_owner['token'], message1['message_id'])
         
-    # should also be raising an access error, have addressed this in assumptions 
-   
+    # send a message to channel and store its message_id
+    message_send(register_owner['token'], create_channel, "Test message")
+    message_sent = channel_message['messages']
+    messageId = message_sent['message_id']
+    # remove the user from the channel 
+    channel_leave(register_user['token'], create_channel)
+    
+    with pytest.raises(AccessError):
+        # user is not a member of the channel the message is within
+        message_unpin(register_user['token'], messageId)
+    
 
