@@ -14,3 +14,11 @@ assumptions:
 - assume the messages sent in message_send and message_sendlater are unread for testing 
 - assume everytime a pytest function is run the "state" of the program is reset, e.g. message_list is restored to original 
 - assume that in later iterations more tests will be added in relation to ensuring the user is in the channel of the message being handled, e.g. in message_react
+
+* assume user names are case sensitive, meaning that 'A' and 'a' are different users
+* assume if there is only one member in a channel who is the owner, the channel will not exist if the owner leaves the channel
+* assume user created in the fixture is not an admin
+* assume user should be able to see the private channels they created
+* assume user has to be invited first to be added as an owner
+* assume everytime a pytest function is run the "state" of the program is reset i.e. all users are wiped
+

@@ -37,6 +37,15 @@ Nothing here yet
 ## Background
 * 27/09/2019: user_profile description and parameters clarified and fixed
 * 27/09/2019: message_edit and message_remove interface descriptions fixed
+* 27/09/2019: user_profile_sethandle, user_profiles_uploadphoto; updated
+* 29/09/2019: user_profile_sethandle had error "name_last is more than 50 characters" removed
+* 29/09/2019: user_login now has ValueError to be raised if "Password is not correct"
+* 29/09/2019: auth_login and auth_register now return a u_id too. This isnt strictly necessary (as we'll see later), but will make testing easier.
+* 29/09/2019: message_id added to the message structure (so that lists of messages contain the id of the message)
+* 30/09/2019: Pagination explanation added
+* 01/10/2019: AccessError clarified
+* 01/10/2019: message_remove exceptions clarified
+* 01/10/2019: message_edit exceptions clarified
 
 An overview of this background and this project can be found in a short video found [HERE](https://youtu.be/Mzg3UGv3TSw).
 
@@ -145,7 +154,7 @@ The scaffold for user stories will be provided in the lecture on Monday 23rd Sep
 
 This iteration is due to be submitted at 8pm Sunday 6th October (**week 3**). You will then be demonstrating this in your week 4 lab (week 5 for monday tutes). All team members **must** attend this lab session.
 
-To submit, run this command in the CSE environment:
+To submit, one team member must run this command in the CSE environment:
 
 ```sh
 1531 submit iteration1
@@ -204,7 +213,7 @@ Details will be released in week 7
 |has suffix **_str**|string|
 |has suffix **end**|integer|
 |has suffix **start**|integer|
-|(outputs only) named exactly **messages**|List of dictionaries, where each dictionary contains types { u_id, message, time_created, is_unread }|
+|(outputs only) named exactly **messages**|List of dictionaries, where each dictionary contains types { message_id, u_id, message, time_created, is_unread }|
 |(outputs only) named exactly **channels**|List of dictionaries, where each dictionary contains types { id, name }|
 |(outputs only) named exactly **members**|List of dictionaries, where each dictionary contains types { u_id, name_first, name_last }|
 
@@ -218,6 +227,11 @@ We could solve this trivially by storing the user ID of the logged in user on th
 To solve this when a user logs in or registers the backend should return a "token" (basically a hash) that the front end will store and pass into most of your functions in future. When these "authorised" functions are called, you can check if a token is valid, and determine the user ID.
 
 There are a few different ways to do this. However, you don't need to decide on a way until Iteration 2. For now you can just ensure the tokens returned from login/register and the same as ones passed into other functions.
+
+### Access Error
+The AccessError is not one of Python's built in types. For iteration one, you can either:
+ * Just use another error as a placeholder for now
+ * Make your own AccessError as per [instructions that we have provided](https://webcms3.cse.unsw.edu.au/COMP1531/19T3/resources/35860)
 
 ### Functions
 
@@ -235,14 +249,14 @@ There are a few different ways to do this. However, you don't need to decide on 
 
 |Function name|Parameters|Return type|Exception|Description|
 |-------------|----------|-----------|-----------|-----------|
-|auth_login|(email, password)|{ token }|**ValueError** when:<ul><li>Email entered is not a valid email</li><li>Email entered does not belong to a user</li></ul> | Given a registered users' email and password and generates a valid token for the user to remain authenticated |
+|auth_login|(email, password)|{ u_id, token }|**ValueError** when:<ul><li>Email entered is not a valid email</li><li>Email entered does not belong to a user</li><li>Password is not correct</li></ul> | Given a registered users' email and password and generates a valid token for the user to remain authenticated |
 |auth_logout|(token)|{}|N/A|Given an active token, invalidates the taken to log the user out. Given a non-valid token, does nothing|
-|auth_register|(email, password, name_first, name_last)|{ token }|**ValueError** when:<ul><li>Email entered is not a valid email.</li><li>Email address is already being used by another user</li><li>Password entered is not a valid password</li><li>name_first is more than 50 characters</li><li>name_last is more than 50 characters</ul>|Given a user's first and last name, email address, and password, create a new account for them and return a new token for authentication in their session|
+|auth_register|(email, password, name_first, name_last)|{ u_id, token }|**ValueError** when:<ul><li>Email entered is not a valid email.</li><li>Email address is already being used by another user</li><li>Password entered is not a valid password</li><li>name_first is more than 50 characters</li><li>name_last is more than 50 characters</ul>|Given a user's first and last name, email address, and password, create a new account for them and return a new token for authentication in their session|
 |auth_passwordreset_request|(email)|{}|N/A|Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email.|
 |auth_passwordreset_reset|(reset_code, new_password)|{}|**ValueError** when:<ul><li>reset_code is not a valid reset code</li><li>Password entered is not a valid password</li>|Given a reset code for a user, set that user's new password to the password provided|
 |channel_invite|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>channel_id does not refer to a valid channel that the authorised user is part of.</li><li>u_id does not refer to a valid user</li></ul>|Invites a user (with user id u_id) to join a channel with ID channel_id. Once invited the user is added to the channel immediately|
 |channel_details|(token, channel_id)|{ name, owner_members, all_members }|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel|
-|channel_messages|(token, channel_id, start)|{ messages, start, end }|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li><li>start is greater than the total number of messages in the channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 to indicate there are no more messages to load after this return.|
+|channel_messages|(token, channel_id, start)|{ messages, start, end }|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li><li>start is greater than the total number of messages in the channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 in "end" to indicate there are no more messages to load after this return.|
 |channel_leave|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li></ul>|Given a channel ID, the user removed as a member of this channel|
 |channel_join|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li></ul>**AccessError** when<ul><li>channel_id refers to a channel that is private (when the authorised user is not an admin)</li></ul>|Given a channel_id of a channel that the authorised user can join, adds them to that channel|
 |channel_addowner|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li><li>When user with user id u_id is already an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Make user with user id u_id an owner of this channel|
@@ -252,8 +266,8 @@ There are a few different ways to do this. However, you don't need to decide on 
 |channels_create|(token, name, is_public)|{ channel_id }|**ValueError** when:<ul><li>Name is more than 20 characters long</li></ul>|Creates a new channel with that name that is either a public or private channel|
 |message_sendlater|(token, channel_id, message, time_sent)|{}|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li><li>Message is more than 1000 characters</li><li>Time sent is a time in the past</li></ul>|Send a message from authorised_user to the channel specified by channel_id automatically at a specified time in the future|
 |message_send|(token, channel_id, message)|{}|**ValueError** when:<ul><li>Message is more than 1000 characters</li></ul>|Send a message from authorised_user to the channel specified by channel_id|
-|message_remove|(token, message_id)|{}|**ValueError** when:<ul><li>Message (based on ID) no longer exists</li></ul>**AccessError** when<ul><li>User does not have permission to remove that row</li.</ul>|Given a message_id for a message, this message is removed from the channel|
-|message_edit|(token, message_id, message)|{}|**ValueError** when:<ul><li>Message with message_id edited by authorised user is not the poster of the message</li><li>Message with message_ is not a valid message that either 1) is a message sent by the authorised user, or; 2) If the authorised user is an admin, is a any message within a channel that the authorised user has joined</li></ul>|Given a message, update it's text with new text|
+|message_remove|(token, message_id)|{}|**ValueError** when:<ul><li>Message (based on ID) no longer exists</li></ul>**AccessError** when all of the following are not true<ul><li>Message with message_id was not sent by the authorised user making this request</li><li>Message with message_id was not sent by an owner of this channel</li><li>Message with message_id was not sent by an admin or owner of the slack</li></ul>|Given a message_id for a message, this message is removed from the channel|
+|message_edit|(token, message_id, message)|{}|**ValueError** when all of the following are not true:<ul><li>Message with message_id was not sent by the authorised user making this request</li><li>Message with message_id was not sent by an owner of this channel</li><li>Message with message_id was not sent by an admin or owner of the slack</li></ul>|Given a message, update it's text with new text|
 |message_react|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID</li><li>Message with ID message_id already contains an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, add a "react" to that particular message|
 |message_unreact|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID</li><li>Message with ID message_id does not contain an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, remove a "react" to that particular message|
 |message_pin|(token, message_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already pinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend|
@@ -261,12 +275,20 @@ There are a few different ways to do this. However, you don't need to decide on 
 |user_profile|(token, u_id)|{ email, name_first, name_last, handle_str }|**ValueError** when:<ul><li>User with u_id is not a valid user</li></ul>|For a valid user, returns information about their email, first name, last name, and handle|
 |user_profile_setname|(token, name_first, name_last)|{}|**ValueError** when:<ul><li>name_first is more than 50 characters</li><li>name_last is more than 50 characters</ul></ul>|Update the authorised user's first and last name|
 |user_profile_setemail|(token, email)|{}|**ValueError** when:<ul><li>Email entered is not a valid email.</li><li>Email address is already being used by another user</li>|Update the authorised user's email address|
-|user_profile_sethandle|(token, handle_str)|{}|**ValueError** when:<ul><li>handle_str is no more than 20 characters</li><li>name_last is more than 50 characters</li><li>Image at img_url is not a jpg</ul>|Update the authorised user's handle (i.e. display name)|
-|user_profiles_uploadphoto|(token, img_url, x_start, y_start, x_end, y_end)|{}|**ValueError** when:<ul><li>img_url is returns an HTTP status other than 200.</li><li>x_start, y_start, x_end, y_end are all within the dimensions of the image at the URL.</li>handle_str is no more than 20 characters</li></ul>|Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.|
+|user_profile_sethandle|(token, handle_str)|{}|**ValueError** when:<ul><li>handle_str is no more than 20 characters</li></ul>|Update the authorised user's handle (i.e. display name)|
+|user_profiles_uploadphoto|(token, img_url, x_start, y_start, x_end, y_end)|{}|**ValueError** when:<ul><li>img_url is returns an HTTP status other than 200.</li><li>x_start, y_start, x_end, y_end are all within the dimensions of the image at the URL.</li></ul>|Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.|
 |standup_start|(token, channel_id)|{ time_finish }|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|For a given channel, start the standup period whereby for the next 15 minutes if someone calls "standup_send" with a message, it is buffered during the 15 minute window then at the end of the 15 minute window a message will be added to the message queue in the channel from the user who started the standup. |
 |standup_send|(token, channel_id, message)|{}|**ValueError** when:<ul><li>Channel (based on ID) does not exist</li><li>Message is more than 1000 characters</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li><li>If the standup time has stopped</li></ul>|Sending a message to get buffered in the standup queue, assuming a standup is currently active|
 |search|(token, query_str)|{ messages }|N/A|Given a query string, return a collection of messages that match the query|
 |admin_userpermission_change|(token, u_id, permission_id)|{}|**ValueError** when:<ul><li>u_id does not refer to a valid user<li>permission_id does not refer to a value permission</li></ul>**AccessError** when<ul><li>The authorised user is not an admin or owner</li></ul>|Given a User by their user ID, set their permissions to new permissions described by permission_id|
+
+### Pagination
+The behaviour in which channel_messages returns data is called **pagination**. It's a commonly used method when it comes to getting theoretially unbounded amounts of data from a server to display on a page in chunks. Most of the timelines you know and love - Facebook, Instagram, LinkedIn - do this.
+
+For example, if we imagine a user with token "12345" is trying to read messages from channel with ID 6, and this channel has 124 messages in it, 3 calls from the client to the server would be made. These calls, and their corresponding return values would be:
+ * channel_messages("12345", 6, 0) => { [messages], 0, 49 }
+ * channel_messages("12345", 6, 50) => { [messages], 50, 99 }
+ * channel_messages("12345", 6, 100) => { [messages], 100, -1 }
 
 ## Due Dates and Weightings
 
