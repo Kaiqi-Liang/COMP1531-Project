@@ -128,7 +128,7 @@ def test_message_remove(register_owner, register_user, messages_list, messages_l
     # message not sent by the user, who is an admin
     admin_userpermission_change(register_owner['token'], register_owner['u_id'], 2)
     delete_message = messages_list[1]
-    message_remove(register_owner['token'], delete_message['message_id']
+    message_remove(register_owner['token'], delete_message['message_id'])
     assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 7, 0, 0, 0), 'is_unread': False},
      {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}] 
  
@@ -151,8 +151,8 @@ def test_message_edit(messages_list, register_owner, register_user):
     message = messages_list[1]
     message_edit(register_user['token'], message['message_id'], "Edit own")
     
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), 'is_unread': False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit own", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), 'is_unread': False}, 
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 7, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit own", 'time_created' : datetime(2019, 5, 3, 7, 30, 0, 0), 'is_unread': False}, 
     {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     
     
@@ -160,8 +160,8 @@ def test_message_edit(messages_list, register_owner, register_user):
     message = messages_list[1]
     message_edit(register_owner['token'], message['message_id'], "Edit others")
     
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), 'is_unread': False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit others", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), 'is_unread': False}, 
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 7, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit others", 'time_created' : datetime(2019, 5, 3, 7, 30, 0, 0), 'is_unread': False}, 
     {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     
     # message not sent by the user, is an admin
@@ -169,8 +169,8 @@ def test_message_edit(messages_list, register_owner, register_user):
     admin_userpermission_change(register_owner['token'], register_owner['u_id'], 2)
     message_edit(register_owner['token'], message['message_id'], "Edit by admin")
     
-    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 07, 0, 0, 0), 'is_unread': False}, 
-    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit by admin", 'time_created' : datetime(2019, 5, 3, 07, 30, 0, 0), 'is_unread': False}, 
+    assert messages_list == [{'message_id' : 1, 'u_id' : register_owner['u_id'], 'message' : "Hello", 'time_created' : datetime(2019, 5, 3, 7, 0, 0, 0), 'is_unread': False}, 
+    {'message_id' : 2, 'u_id' : register_user['u_id'], 'message' : "Edit by admin", 'time_created' : datetime(2019, 5, 3, 7, 30, 0, 0), 'is_unread': False}, 
     {'message_id' : 3, 'u_id' : register_owner['u_id'], 'message' : "I'm good thanks", 'time_created' : datetime(2019, 5, 3, 8, 0, 0, 0), 'is_unread': False}]
     
     with pytest.raises(ValueError):
@@ -223,7 +223,7 @@ def test_message_unreact(register_user, messages_list, valid_reactId, invalid_re
         # message doesn't have a react
         # the above tests have removed a react from messages so use these messages 
         message_unreact(register_user['token'], message1['message_id'], valid_reactId)
-        message_unreact(register_owner['token'], message1['message_id'], valid_reactId
+        message_unreact(register_owner['token'], message1['message_id'], valid_reactId)
 
 # testing for message_pin
 def test_message_pin(register_user, register_owner, messages_list, create_channel):
