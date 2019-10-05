@@ -17,15 +17,15 @@ def auth_logout (token):
         return
 
 def auth_register (email,password,name_first,name_last):
-        if email == "Invalid email"
+        if email == "Invalid email":
                 raise ValueError("Invalid email address")
-        if email == "Existing email"
+        if email == "Existing email":
                 raise ValueError("Email already exists")
-        if len(password) < 5
+        if len(password) < 5:
                 raise ValueError("Invalid password")
-        if len(name_first) > 50
+        if len(name_first) > 50:
                 raise ValueError("First Name is too long")
-        if len(name_last) > 50
+        if len(name_last) > 50:
                 raise ValueError("Last Name is too long")
         loginDict = {}
         loginDict['u_id'] = 123
@@ -40,13 +40,8 @@ def auth_passwordreset_request (email):
 def auth_passwordreset_reset (reset_code, new_password):
         if reset_code == "Invalid reset code":
                 raise ValueError("Invalid reset code")
-        if len(password) < 5
+        if len(password) < 5:
                 raise ValueError("Invalid password")
-        '''
-        loginDict = {}
-        loginDict['reset_code'] = 
-        loginDict['new_password'] = 
-        '''
         return
 
 #pytests
@@ -132,12 +127,12 @@ def test_passwordreset_reset1 ():
 
 def test_passwordreset_reset2 ():
         #test for invalid reset code
-        with pytest.raises(ValueError, match=r"*":)
+        with pytest.raises(ValueError, match=r"*"):
                 loginDict = {}
                 loginDict = auth_passwordreset_reset ("Invalid email", "123456")
 
 def test_passwordreset_reset3 ():
         #test for invalid password
-        with pytest.raises(ValueError, match=r"*":)
+        with pytest.raises(ValueError, match=r"*"):
                 loginDict = {}
                 loginDict = auth_passwordreset_reset ("emmarosemayall@gmail.com", "1234")
