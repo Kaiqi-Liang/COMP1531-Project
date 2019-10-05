@@ -1,6 +1,5 @@
 assumptions:
 
-
 - assume when message_remove is called the message with message_id is deleted from the messages list 
 - assume when a message is edited, the time_created stays to when the message was posted, not edited 
 - assume when a message is edited, the user_id remains as the original poster of the message
@@ -22,7 +21,6 @@ assumptions:
 * assume user has to be invited first to be added as an owner
 * assume everytime a pytest function is run the "state" of the program is reset i.e. all users are wiped
 
-Assumptions:
 - assume that in later iterations more test will change so permission_id checks if the user is an admin or owner
 - assume that the password does not have any other conditions for validity other than being greater than 5
 - assume the token and u_id are random numbers
