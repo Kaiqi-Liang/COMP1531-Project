@@ -12,5 +12,5 @@ assumptions:
 - assume a not valid message based on message_id means that no message with the id exists (in tests use -1 as an example) 
 - assume value of is_unread stays the same if a message is edited 
 - assume the messages sent in message_send and message_sendlater are unread for testing 
-- assume that I am unable to test access errors in pin and unpin as I cannot access the channel of the message with message_id, this later should become possible throughout implementation (with a beter understanding of structures being used and functions) 
 - assume everytime a pytest function is run the "state" of the program is reset, e.g. message_list is restored to original 
+- assume that in later iterations more tests will be added in relation to ensuring the user is in the channel of the message being handled, e.g. in message_react
