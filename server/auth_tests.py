@@ -40,7 +40,7 @@ def auth_passwordreset_request (email):
 def auth_passwordreset_reset (reset_code, new_password):
         if reset_code == "Invalid reset code":
                 raise ValueError("Invalid reset code")
-        if len(new_password) < 5:
+        if len(password) < 5:
                 raise ValueError("Invalid password")
         return
 
@@ -123,13 +123,16 @@ def test_passwordreset_request2 ():
 def test_passwordreset_reset1 ():
         # test for valid reset
         auth_passwordreset_reset ("xyz", "123456")
+        pass
 
 def test_passwordreset_reset2 ():
         #test for invalid reset code
         with pytest.raises(ValueError, match=r"*"):
-                auth_passwordreset_reset ("Invalid reset code", "123456")
+                loginDict = {}
+                loginDict = auth_passwordreset_reset ("Invalid reset code", "123456")
 
 def test_passwordreset_reset3 ():
         #test for invalid password
         with pytest.raises(ValueError, match=r"*"):
-                auth_passwordreset_reset ("xyz", "1234")
+                loginDict = {}
+                loginDict = auth_passwordreset_reset ("xyz", "1234")
