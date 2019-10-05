@@ -9,63 +9,135 @@ def auth_login (email,password):
         loginDict = {}
         loginDict['u_id'] = 123
         loginDict['token'] = 555
+        return loginDict
 
 def auth_logout (token):
-    raise ValueError
+        if token == "":
+                raise ValueError("No token")
+        return
 
 def auth_register (email,password,name_first,name_last):
-    raise ValueError
+        if email == "Invalid email"
+                raise ValueError("Invalid email address")
+        if email == "Existing email"
+                raise ValueError("Email already exists")
+        if len(password) < 5
+                raise ValueError("Invalid password")
+        if len(name_first) > 50
+                raise ValueError("First Name is too long")
+        if len(name_last) > 50
+                raise ValueError("Last Name is too long")
+        loginDict = {}
+        loginDict['u_id'] = 123
+        loginDict['token'] = 555
+        return loginDict
 
 def auth_passwordreset_request (email):
-    raise ValueError
+        if email == "":
+                raise ValueError("No email")
+        return
 
 def auth_passwordreset_reset (reset_code, new_password):
-    raise ValueError
+        if reset_code == "Invalid reset code":
+                raise ValueError("Invalid reset code")
+        if len(password) < 5
+                raise ValueError("Invalid password")
+        '''
+        loginDict = {}
+        loginDict['reset_code'] = 
+        loginDict['new_password'] = 
+        '''
+        return
 
 #pytests
 def test_login1 ():
         loginDict = {}
         loginDict = auth_login("emmarosemayall@gmail.com", "123456")
-        pass
+        uid = loginDict['u_id']
+        token = loginDict['token']
+        assert uid != "" and token != ""
 
 def test_login2 ():
+        # test for invalid email
         with pytest.raises(ValueError, match=r"*"):
                 loginDict = {}
                 loginDict = auth_login("wrong email", "123456")
-        pass
 
 def test_login3 ():
+        # test for invalid password
         with pytest.raises(ValueError, match=r"*"):
                 loginDict = {}
                 loginDict = auth_login("emmarosemayall@gmail.com", "wrong password")
 
-'''   
-def test_logout ():
+def test_logout1 ():
+        auth_logout ("111")
         pass
-        #assumption the token taken is the same as returned
-        #returns an empty dictionary
+
+def test_logout2 ():
+        # test for no token
+        with pytest.raises(ValueError, match=r"*"):
+                auth_logout ("")
 
 def test_register1 ():
-        #Setup begin
-        authRegisterDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayall")
-        token = authRegisterDict['token']
-        #Setup end
+        # test for when everything is valid
+        loginDict = {}
+        loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayall")
+        uid = loginDict['u_id']
+        token = loginDict['token']
+        assert uid != "" and token != ""
 
-        auth_register("emmarosemayall@gmail.com", )
-
+def test_register2 ():
+        # test for invalid email
         with pytest.raises(ValueError, match=r"*"):
-                auth_register("bademail")
-                #Email entered is not a valid email. 
-                #Email address is already being used by another user
-                #Password entered is not a valid password
-                #name_first is more than 50 characters
-                #name_last is more than 50 characters
+                loginDict = {}
+                loginDict = auth_register("Invalid email", "123456", "Emma", "Mayall")
+
+def test_register3 ():
+        # test for email existing
+        with pytest.raises(ValueError, match=r"*"):
+                loginDict = {}
+                loginDict = auth_register("Existing email", "123456", "Emma", "Mayall")
+
+def test_register4 ():
+        # test for invalid password
+        with pytest.raises(ValueError, match=r"*"):
+                loginDict = {}
+                loginDict = auth_register("emmarosemayall@gmail.com", "1234", "Emma", "Mayall")
+
+def test_register5 ():
+        # test for first name length greater than 50
+        with pytest.raises(ValueError, match=r"*"):
+                loginDict = {}
+                loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "Mayall")
+
+def test_register6 ():
+        # test for last name length greater than 50
+        with pytest.raises(ValueError, match=r"*"):
+                loginDict = {}
+                loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayallllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
+
+def test_passwordreset_request1 ():
+        auth_passwordreset_request ("emmarosemayall@gmail.com")
         pass
 
-def test_passwordreset_request ():
-        pass
-        #Check if the user is registered and then test if the function was successful. Make your own assumptions
+def test_passwordreset_request2 ():
+        # test for no email
+        with pytest.raises(ValueError, match=r"*"):
+                auth_passwordreset_request ("")
 
-def test_passwordreset_reset ():
-        pass
-'''
+def test_passwordreset_reset1 ():
+        # test for no email
+        with pytest.raises(ValueError, match=r"*"):
+                auth_passwordreset_reset ("")
+
+def test_passwordreset_reset2 ():
+        #test for invalid reset code
+        with pytest.raises(ValueError, match=r"*":)
+                loginDict = {}
+                loginDict = auth_passwordreset_reset ("Invalid email", "123456")
+
+def test_passwordreset_reset3 ():
+        #test for invalid password
+        with pytest.raises(ValueError, match=r"*":)
+                loginDict = {}
+                loginDict = auth_passwordreset_reset ("emmarosemayall@gmail.com", "1234")
