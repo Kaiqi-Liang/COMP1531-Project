@@ -22,3 +22,10 @@ assumptions:
 * assume user has to be invited first to be added as an owner
 * assume everytime a pytest function is run the "state" of the program is reset i.e. all users are wiped
 
+Assumptions:
+- assume that in later iterations more test will change so permission_id checks if the user is an admin or owner
+- assume that the password does not have any other conditions for validity other than being greater than 5
+- assume the token and u_id are random numbers
+- assumes a new token will be returned in auth_register for authentication
+- assumes random code will be geneated and sent to user in auth_passwordreset_request
+- assumes search query can match the user
