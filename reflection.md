@@ -13,20 +13,20 @@ completing asynchronous standups in group messages. An example of what is discus
 in these standups includes:
 
 Date: 4th October:
-Member:                 Done:               To-Do:
-
-Emma             Wrote user stories,       Finish pytests,
+|Member|Done|To-Do|
+|------|----|-----|
+|Emma             |Wrote user stories,       |Finish pytests,|
                  began reflection          begin to write assumptions, 
                                            plan and reflection
 
-Sarah            Completed four pytests,   Finish pytests, work on assumptions
+|Sarah            |Completed four pytests,   |Finish pytests, work on assumptions|
                  began writing up the      and plan
                  reflection
 
-Andy             Completed four pytests    Finish pytest, work on assumptions, plan
+|Andy             |Completed four pytests    |Finish pytest, work on assumptions, plan|
                  for user functions
 
-Kaiqi            Completed pytest for      Finish up the tests and user stories
+|Kaiqi            |Completed pytest for      |Finish up the tests and user stories|
                  most functions
 
 
