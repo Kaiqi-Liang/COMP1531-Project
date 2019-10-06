@@ -1,4 +1,4 @@
-Group Reflection:
+# Group Reflection:
 
 The first iteration has seen our group, SAKE, work through the initial phases of 
 the slackr assignment and plan ahead for the implementation phase. 
