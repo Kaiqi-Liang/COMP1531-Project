@@ -13,6 +13,7 @@ completing asynchronous standups in group messages. An example of what is discus
 in these standups includes:
 
 Date: 4th October:
+
 |Member|Done|To-Do|
 |------|----|-----|
 |Emma|Wrote user stories, began reflection|Finish pytests, begin to write assumptions, plan and reflection|
