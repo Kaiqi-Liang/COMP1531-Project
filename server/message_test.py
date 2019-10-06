@@ -1,6 +1,9 @@
 from message import *
 import pytest
 import datetime
+from auth import *
+from channel import *
+from message import *
 from access_error import AccessError
 
 # FUNCTION SETUP 
