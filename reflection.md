@@ -15,19 +15,10 @@ in these standups includes:
 Date: 4th October:
 |Member|Done|To-Do|
 |------|----|-----|
-|Emma             |Wrote user stories,       |Finish pytests,|
-                 began reflection          begin to write assumptions, 
-                                           plan and reflection
-
-|Sarah            |Completed four pytests,   |Finish pytests, work on assumptions|
-                 began writing up the      and plan
-                 reflection
-
-|Andy             |Completed four pytests    |Finish pytest, work on assumptions, plan|
-                 for user functions
-
-|Kaiqi            |Completed pytest for      |Finish up the tests and user stories|
-                 most functions
+|Emma|Wrote user stories, began reflection|Finish pytests, begin to write assumptions, plan and reflection|
+|Sarah|Completed four pytests, began writing up the reflection|Finish pytests, work on assumptions and plan|
+|Andy|Completed four pytests for user functions|Finish pytest, work on assumptions, plan|
+|Kaiqi|Completed pytest for most functions|Finish up the tests and user stories|
 
 
 Our group allocated the completion of the pytests among team members with an 
