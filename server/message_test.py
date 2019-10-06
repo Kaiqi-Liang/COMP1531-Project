@@ -98,7 +98,7 @@ def test_message_sendlater(register_owner, register_user, create_channel, messag
 def test_message_send(register_owner, register_user, create_channel, message_valid, message_invalid):
    
     # success
-    message_sendlater(register_owner['token'], create_channel, message_valid) 
+    message_sendlater(register_owner['token'], -1, create_channel, message_valid) 
     assert channel_messages(register_owner['token'], create_channel, 0) == {'messages' : [{'message_id' : 50, 'u_id' : register_owner['u_id'], 'message' : "Hello World", 'time_created' : datetime.now(), 'is_unread': False}], 'start' : 0, 'end' : -1}
     
     with pytest.raises(ValueError):
