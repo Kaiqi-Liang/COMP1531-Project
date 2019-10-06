@@ -5,7 +5,7 @@ def auth_login (email,password):
                 raise ValueError("Invalid password")
         loginDict = {}
         loginDict['u_id'] = 123
-        loginDict['token'] = 555
+        loginDict['token'] = '555'
         return loginDict
 
 def auth_logout (token):
@@ -26,7 +26,7 @@ def auth_register (email,password,name_first,name_last):
                 raise ValueError("Last Name is too long")
         loginDict = {}
         loginDict['u_id'] = 123
-        loginDict['token'] = 555
+        loginDict['token'] = '555'
         return loginDict
 
 def auth_passwordreset_request (email):

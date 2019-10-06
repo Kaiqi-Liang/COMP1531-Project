@@ -31,3 +31,4 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     if len(name) > 20:
         raise ValueError
+    return {'channel_id': 0}
