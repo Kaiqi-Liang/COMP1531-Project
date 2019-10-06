@@ -1,32 +1,26 @@
 import pytest
-from user import *
 from access_error import AccessError
 
+import requests
+import urllib
+import Image
 
-def user_profile(token, u_id):
-    if u_id == -1:
-        raise ValueError("u_id not found!")
-    else:
-        return {"someemail@gmail.com","securepassword","John","Doe","johndoe"}
+from user import *
+from auth import *
 
 def test_user_profile():
     u_id, token = auth_register("someemail@gmail.com","securepassword","John","Doe")
     user_profile_sethandle(token,"johndoe")
 
     # Set arbitrary id thats invalid ...
-    invalid_u_id = -1
+    invalid_u_id = None
 
-    # correct case ...
+    # Valid case ...
     assert user_profile(token, u_id)=={"someemail@gmail.com","securepassword","John","Doe","johndoe"}
 
-    # incorrect case ...
+    # Invalid case ...
     with pytest.raises(ValueError, match=r"*"):
         user_profile(token, invalid_u_id)
-
-def user_profile_setname(token, name_first, name_last):
-    if (len(name_first) > 50 or len(name_last) > 50):
-        raise ValueError("Name too long!")
-    return
 
 def test_user_profile_setname():
     u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
@@ -44,12 +38,6 @@ def test_user_profile_setname():
         # Both names exceeding 50 chars ...
         user_profile_setname(token4, "hugefirstnamethatiscertainlylongerthanfiftycharacters", "hugesecondtnamethatiscertainlylongerthanfiftycharacters")
 
-def user_profile_setemail(token, email):
-    if (email == "notvalidemail.com")
-        raise ValueError("Invalid email address!")
-    elif (email == "someemail2@gmail.com")
-        raise ValueError("Email in use!")
-    return
 
 def test_user_profile_setemail():
     u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
@@ -64,3 +52,41 @@ def test_user_profile_setemail():
 
         # This should be invalid because the email address is bonkers ...
         user_profile_setemail(token1, "notvalidemail.com")
+
+def test_user_profile_sethandle():
+    u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+
+    # Valid case ...
+    user_profile_sethandle(token1, "johndoe")
+
+    # Invalid case ...
+    # Assume handles can be a max 20 characters and not minimum ...
+    with pytest.raises(ValueError, match=r"*"):
+        # This shouldn't work because the handle is too long ...
+        user_profile_sethandle(token1, "johndoe12345678910111213")
+
+def test_user_profile_uploadphoto():
+    u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+
+    img_url = "https://yt3.ggpht.com/a/AGF-l7_fK0Hy4B4JO8ST-uGqSU69OTLHduk4Kri_fQ=s900-c-k-c0xffffffff-no-rj-mo"
+    invalid_url = "https://google.com/404"
+
+   # Valid case ...
+   # Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
+    user_profiles_uploadphoto(token1, img_url, 0, 0, 800, 800)
+
+    # Invalid cases ...
+    with pytest.raises(ValueError, match=r"*"):
+        # This call is done with an invalid url that will return a status code NOT 200
+        user_profiles_uploadphoto(token1, invalid_url, 0, 0, 800, 800)
+
+
+        # Theses calls are done with crop x,y coords outside the img boundary ...
+        # Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y ...
+        user_profiles_uploadphoto(token1, img_url, -1, 0, 800, 800)
+        user_profiles_uploadphoto(token1, img_url, 0, -1, 800, 800)
+        user_profiles_uploadphoto(token1, img_url, 0, 0, 1000, 800)
+        user_profiles_uploadphoto(token1, img_url, 0, 0, 800, 1000)
+
+        # Valid crop but invalid url ...
+        user_profiles_uploadphoto(token1, invalid_url, 0, 0, 800, 800)
