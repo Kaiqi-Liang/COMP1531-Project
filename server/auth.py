@@ -37,7 +37,7 @@ def auth_passwordreset_request (email):
 def auth_passwordreset_reset (reset_code, new_password):
         if reset_code == "Invalid reset code":
                 raise ValueError("Invalid reset code")
-        if len(password) < 5:
+        if len(new_password) < 5:
                 raise ValueError("Invalid password")
         return
 
