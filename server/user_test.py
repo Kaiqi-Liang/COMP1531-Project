@@ -1,7 +1,7 @@
 import pytest
 from access_error import AccessError
 from user import *
-from auth import *
+from auth import auth_register
 
 def test_user_profile():
     u_id, token = auth_register("someemail@gmail.com","securepassword","John","Doe")
