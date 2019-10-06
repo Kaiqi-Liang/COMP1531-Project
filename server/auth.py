@@ -1,4 +1,4 @@
-from access_error import AccessError
+from helpers import * # helpers/*.py
 
 def auth_login (email,password)
     raise ValueError

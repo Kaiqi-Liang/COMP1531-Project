@@ -1,4 +1,4 @@
-from access_error import AccessError
+from helpers import * # helpers/*.py
 
 def channel_invite(token, channel_id, u_id):
     raise ValueError

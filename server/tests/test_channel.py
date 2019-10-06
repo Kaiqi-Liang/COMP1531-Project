@@ -1,7 +1,10 @@
+# pip3 INSTALLS
 import pytest
+
+# LOCAL IMPORTS
 from auth import *
 from channel import *
-from access_error import AccessError
+from helpers import *
 
 @pytest.fixture
 def register_owner():
@@ -45,7 +48,7 @@ def test_details(register_owner, channel_create, register_user):
 
 
 def test_message(register_owner, channel_create, register_user):
-    # no messages in the channel at the moment 
+    # no messages in the channel at the moment
     assert channel_message(register_owner['token'], channel_create, 0) == { 'messages': [], 'start': 0, 'end': 0 }
     with pytest.raises(ValueError):
         # channel does not exist

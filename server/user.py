@@ -1,8 +1,13 @@
+# pip3 INSTALLS
 import pytest
+from PIL import Image # pip3 name is "Pillow"
+
+# STANDARD LIBRARY IMPORTS
 import requests
 import urllib
-from PIL import Image
-from access_error import AccessError
+
+# LOCAL IMPORTS
+from helpers import * # helpers/*.py
 
 def user_profile(token, u_id):
     if u_id == None:
