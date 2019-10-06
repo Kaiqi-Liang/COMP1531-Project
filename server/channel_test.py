@@ -1,5 +1,5 @@
 import pytest
-from auth import *
+from auth import auth_register
 from channel import *
 from access_error import AccessError
 
