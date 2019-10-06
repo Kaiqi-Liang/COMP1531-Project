@@ -1,10 +1,6 @@
 import pytest
 from access_error import AccessError
 
-import requests
-import urllib
-from PIL import Image
-
 from user import *
 from auth import *
 
