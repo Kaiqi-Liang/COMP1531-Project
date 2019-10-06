@@ -19,7 +19,7 @@ def test_standup_start():
     channel_id = channels_create(token1, "sample", True)
 
     # Add user1 to channel ...
-    channel_addowner(token1, channel_id, uid1)
+    channel_addowner(token1, channel_id, u_id1)
     channel_join(token1, channel_id)
 
     # Valid case ...
@@ -45,7 +45,7 @@ def test_standup_send():
     channel_id = channels_create(token1, "sample", True)
 
     # Add user1 to channel ...
-    channel_addowner(token1, channel_id, uid1)
+    channel_addowner(token1, channel_id, u_id1)
     channel_join(token1, channel_id)
 
     # Start standup
