@@ -2,6 +2,8 @@
 from json import dumps
 from flask import Flask, request
 
+from server.message import *
+
 APP = Flask(__name__)
 
 @APP.route('/echo/get', methods=['GET'])
