@@ -1,5 +1,8 @@
 # Assumptions:
+<<<<<<< HEAD
 
+=======
+>>>>>>> c377cf19e90b526216f77c2141207c55aef0ce3e
 - Assume when message_remove is called the message with message_id is deleted from the messages list
 - Assume when a message is edited, the time_created stays to when the message was posted, not edited
 - Assume when a message is edited, the user_id remains as the original poster of the message
@@ -13,14 +16,12 @@
 - Assume the messages sent in message_send and message_sendlater are unread for testing
 - Assume everytime a pytest function is run the "state" of the program is reset, e.g. message_list is restored to original
 - Assume that in later iterations more tests will be added in relation to ensuring the user is in the channel of the message being handled, e.g. in message_react
-
 - Assume user names are case sensitive, meaning that 'A' and 'a' are different users
 - Assume if there is only one member in a channel who is the owner, the channel will not exist if the owner leaves the channel
 - Assume user created in the fixture is not an admin
 - Assume user should be able to see the private channels they created
 - Assume user has to be invited first to be added as an owner
 - Assume everytime a pytest function is run the "state" of the program is reset i.e. all users are wiped
-
 - Assume that in later iterations more test will change so permission_id checks if the user is an admin or owner
 - Assume that the password does not have any other conditions for validity other than being greater than 5
 - Assume the token and u_id are random numbers

@@ -1,7 +1,7 @@
 
 # LOCAL IMPORTS
-from channel import * # channel.py
-from helpers import * # helpers/*.py
+from server.channel import * # channel.py
+from server.helpers import * # helpers/*.py
 
 # STANDARD LIBRARY IMPORTS
 from datetime import datetime, timedelta

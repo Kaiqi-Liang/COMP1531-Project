@@ -1,19 +1,22 @@
 from message import *
 import pytest
 import datetime
+from auth import auth_register
+from channel import *
+from message import *
 from access_error import AccessError
 
 # FUNCTION SETUP 
 
 @pytest.fixture
 def register_owner():
-    authRegisterDict1 = auth_register("sarah@gmail.com", "123", "Sarah", "Williams")
+    authRegisterDict1 = auth_register("sarah@gmail.com", "123456", "Sarah", "Williams")
     # return { u_id, token }
     return authRegisterDict1
     
 @pytest.fixture
 def register_user():
-    authRegisterDict2 = auth_register("emma@gmail.com", "456", "Emma", "Mayall")
+    authRegisterDict2 = auth_register("emma@gmail.com", "123456", "Emma", "Mayall")
     # return { u_id, token }
     return authRegisterDict2
     
@@ -95,7 +98,7 @@ def test_message_sendlater(register_owner, register_user, create_channel, messag
 def test_message_send(register_owner, register_user, create_channel, message_valid, message_invalid):
    
     # success
-    message_sendlater(register_owner['token'], create_channel, message_valid) 
+    message_sendlater(register_owner['token'], -1, create_channel, message_valid) 
     assert channel_messages(register_owner['token'], create_channel, 0) == {'messages' : [{'message_id' : 50, 'u_id' : register_owner['u_id'], 'message' : "Hello World", 'time_created' : datetime.now(), 'is_unread': False}], 'start' : 0, 'end' : -1}
     
     with pytest.raises(ValueError):

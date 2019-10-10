@@ -7,7 +7,7 @@ import requests
 import urllib
 
 # LOCAL IMPORTS
-from helpers import * # helpers/*.py
+from server.helpers import * # helpers/*.py
 
 def user_profile(token, u_id):
     if u_id == None:
