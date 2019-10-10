@@ -1,4 +1,4 @@
-from helpers import * # helpers/*.py
+from server.helpers import * # helpers/*.py
 
 def message_sendlater(token, channel_id, message, time_sent):
     pass

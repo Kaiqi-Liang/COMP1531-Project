@@ -37,7 +37,7 @@ there were conflicting ideas on how to approach the version control aspect of ou
 assignment and we needed to discuss the desired method in keeping our branches 
 clean and updated. 
 
-The main issue we have faced is getting used to using git lab as each member is 
+The main issue we have faced is getting used to using GitLab as each member is 
 fairly new to working with this software system. To overcome this we have been 
 continually communicating with one another to see if another member can help 
 us solve our problem. 
@@ -47,4 +47,3 @@ to communicate and meet more regularly. We also aim to push more regularly to gi
 and when doing so, write better commit messages. Finally for this next iteration 
 we are aiming to start writing our code earlier to ensure the final stages of 
 merging are easier and completed with less time pressure. 
-
