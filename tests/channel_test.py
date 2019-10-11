@@ -7,15 +7,9 @@ import config
 
 # pip3 INSTALLS
 import pytest
-<<<<<<< HEAD:server/tests/test_channel.py
 
 # LOCAL IMPORTS
-from auth import *
-=======
-from auth import auth_register
->>>>>>> c377cf19e90b526216f77c2141207c55aef0ce3e:server/channel_test.py
-from channel import *
-from helpers import *
+from server import *
 
 @pytest.fixture
 def register_owner():

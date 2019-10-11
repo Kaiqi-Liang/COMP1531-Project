@@ -1,6 +1,12 @@
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+import config
+
 import pytest
-from search import search
-from auth import auth_login
+from server import *
 
 def test_search1():
     # setup begin
@@ -21,4 +27,3 @@ def test_search2():
     # test for no message
     with pytest.raises(ValueError, match=r"*"):
             search (token, "")
-

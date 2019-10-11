@@ -6,14 +6,11 @@ sys.path.insert(0,parentdir)
 import config
 
 import pytest
-from access_error import AccessError
+from server import *
 
 import requests
 import urllib
 from PIL import Image
-
-from user import *
-from auth import *
 
 def test_user_profile():
     u_id, token = auth_register("someemail@gmail.com","securepassword","John","Doe")
