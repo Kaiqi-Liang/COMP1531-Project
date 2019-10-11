@@ -1,16 +1,4 @@
-<<<<<<< HEAD
-# pip3 INSTALLS
-import pytest
-
-# Stub function
-def auth_login (email,password):
-    loginDict = {}
-    loginDict['u_id'] = 123
-    loginDict['token'] = 555
-    return loginDict
-=======
-from access_error import AccessError
->>>>>>> c377cf19e90b526216f77c2141207c55aef0ce3e
+from server.helpers import * # helpers/*.py
 
 def admin_userpermission_change (token, u_id, permission_id):
     if u_id == "Invalid user":
