@@ -1,8 +1,4 @@
 # Assumptions:
-<<<<<<< HEAD
-
-=======
->>>>>>> c377cf19e90b526216f77c2141207c55aef0ce3e
 - Assume when message_remove is called the message with message_id is deleted from the messages list
 - Assume when a message is edited, the time_created stays to when the message was posted, not edited
 - Assume when a message is edited, the user_id remains as the original poster of the message
