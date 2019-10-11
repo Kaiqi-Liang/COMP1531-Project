@@ -1,4 +1,4 @@
-from server.helpers import *
+from server.helpers import * # helpers/*.py
 
 def auth_login (email,password):
         if email == 'wrong email':
