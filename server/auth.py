@@ -13,7 +13,10 @@ def auth_login (email,password):
 def auth_logout (token):
         if token == "":
                 raise ValueError("No token")
-        return
+        if token == True:
+            return {True}
+        else:
+            return {False}
 
 def auth_register (email,password,name_first,name_last):
         if email == "Invalid email":
