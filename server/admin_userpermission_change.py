@@ -1,4 +1,4 @@
-from access_error import AccessError
+from server.helpers import * # helpers/*.py
 
 def admin_userpermission_change (token, u_id, permission_id):
     if u_id == "Invalid user":

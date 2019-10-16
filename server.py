@@ -4,6 +4,12 @@ from flask import Flask, request
 
 from server.auth import *
 
+DATA = {
+    'user': []
+    'channel':[]
+    'message': []
+}
+
 APP = Flask(__name__)
 
 @APP.route('/auth/login', methods=['POST'])
