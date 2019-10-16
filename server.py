@@ -2,7 +2,15 @@
 from json import dumps
 from flask import Flask, request
 
+#from server.access_error import AccessError
 from server.message import *
+#from server.admin_userpermission_change import *
+from server.auth import *
+from server.channel import *
+from server.search import *
+from server.standup import *
+from server.user import *
+
 
 APP = Flask(__name__)
 
