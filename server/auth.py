@@ -4,9 +4,10 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-import server
 
 def auth_login (email,password):
+    user = server.get_data()['user']
+    print(user)
     if email == 'wrong email':
         raise ValueError("Invalid login email")
         if password == 'wrong password':

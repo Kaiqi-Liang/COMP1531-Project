@@ -10,7 +10,7 @@ DATA = {
     'message': []
 }
 
-def getData():
+def get_data():
     global DATA
     return DATA
 
