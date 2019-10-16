@@ -6,25 +6,23 @@ sys.path.insert(0,parentdir)
 
 import server
 
-print(DATA)
-
 def auth_login (email,password):
-        if email == 'wrong email':
-                raise ValueError("Invalid login email")
+    if email == 'wrong email':
+        raise ValueError("Invalid login email")
         if password == 'wrong password':
-                raise ValueError("Invalid password")
-        loginDict = {}
-        loginDict['u_id'] = 123
-        loginDict['token'] = '555'
-        return loginDict
+            raise ValueError("Invalid password")
+    loginDict = {}
+    loginDict['u_id'] = 123
+    loginDict['token'] = '555'
+    return loginDict
 
 def auth_logout (token):
-        if token == "":
-                raise ValueError("No token")
-        if token == True:
-            return {True}
-        else:
-            return {False}
+    if token == "":
+        raise ValueError("No token")
+    if token == True:
+        return {True}
+    else:
+        return {False}
 
 def auth_register (email,password,name_first,name_last):
         if email == "Invalid email":
