@@ -5,8 +5,8 @@ from flask import Flask, request
 from server.auth import *
 
 DATA = {
-    'user': []
-    'channel':[]
+    'user': [],
+    'channel': [],
     'message': []
 }
 
