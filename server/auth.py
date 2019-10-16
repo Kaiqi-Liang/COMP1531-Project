@@ -6,6 +6,7 @@ sys.path.insert(0,parentdir)
 
 import server
 
+print(DATA)
 
 def auth_login (email,password):
         if email == 'wrong email':
