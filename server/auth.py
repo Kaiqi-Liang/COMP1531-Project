@@ -1,3 +1,5 @@
+from server.helpers import * # helpers/*.py
+
 def auth_login (email,password):
         if email == 'wrong email':
                 raise ValueError("Invalid login email")
@@ -43,4 +45,3 @@ def auth_passwordreset_reset (reset_code, new_password):
         if len(new_password) < 5:
                 raise ValueError("Invalid password")
         return
-

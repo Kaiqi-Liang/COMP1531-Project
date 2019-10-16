@@ -1,12 +1,14 @@
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+import config
+
 import pytest
-from access_error import AccessError
 
-import sys
-sys.path.append("../")
+from server import *
 
-from standup import *
-from channel import *
-from auth import *
 
 def test_standup_start():
 
@@ -19,7 +21,7 @@ def test_standup_start():
     channel_id = channels_create(token1, "sample", True)
 
     # Add user1 to channel ...
-    channel_addowner(token1, channel_id, u_id1)
+    channel_addowner(token1, channel_id, uid1)
     channel_join(token1, channel_id)
 
     # Valid case ...
@@ -45,7 +47,7 @@ def test_standup_send():
     channel_id = channels_create(token1, "sample", True)
 
     # Add user1 to channel ...
-    channel_addowner(token1, channel_id, u_id1)
+    channel_addowner(token1, channel_id, uid1)
     channel_join(token1, channel_id)
 
     # Start standup
