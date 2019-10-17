@@ -1,7 +1,15 @@
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+import config
+
+# pip3 INSTALLS
 import pytest
-from auth import auth_register
-from channel import *
-from access_error import AccessError
+
+# LOCAL IMPORTS
+from server import *
 
 @pytest.fixture
 def register_owner():
@@ -45,7 +53,7 @@ def test_details(register_owner, channel_create, register_user):
 
 
 def test_message(register_owner, channel_create, register_user):
-    # no messages in the channel at the moment 
+    # no messages in the channel at the moment
     assert channel_message(register_owner['token'], channel_create, 0) == { 'messages': [], 'start': 0, 'end': 0 }
     with pytest.raises(ValueError):
         # channel does not exist
