@@ -1,0 +1,30 @@
+# Assumptions:
+- Assume when message_remove is called the message with message_id is deleted from the messages list
+- Assume when a message is edited, the time_created stays to when the message was posted, not edited
+- Assume when a message is edited, the user_id remains as the original poster of the message
+- Assume when the pin/ unpin function is called, the message has been pinned/unpinned, and this variable will later appear in a data structure
+- Assume all of the messages passed into test_message_unpin are pinned already
+- Assume all of the messages passed into test_message_pin are not pinned
+- Assume all of the messages passed into test_message_react have not been reacted to
+- Assume al of the messages passed into test_message_unreact have been reacted to
+- Assume a not valid message based on message_id means that no message with the id exists (in tests use -1 as an example)
+- Assume value of is_unread stays the same if a message is edited
+- Assume the messages sent in message_send and message_sendlater are unread for testing
+- Assume everytime a pytest function is run the "state" of the program is reset, e.g. message_list is restored to original
+- Assume that in later iterations more tests will be added in relation to ensuring the user is in the channel of the message being handled, e.g. in message_react
+- Assume user names are case sensitive, meaning that 'A' and 'a' are different users
+- Assume if there is only one member in a channel who is the owner, the channel will not exist if the owner leaves the channel
+- Assume user created in the fixture is not an admin
+- Assume user should be able to see the private channels they created
+- Assume user has to be invited first to be added as an owner
+- Assume everytime a pytest function is run the "state" of the program is reset i.e. all users are wiped
+- Assume that in later iterations more test will change so permission_id checks if the user is an admin or owner
+- Assume that the password does not have any other conditions for validity other than being greater than 5
+- Assume the token and u_id are random numbers
+- Assumes a new token will be returned in auth_register for authentication
+- Assumes random code will be geneated and sent to user in auth_passwordreset_request
+- Assumes search query can match the user
+- Assume channels_create doesn't add the user and make them owner by default
+- Assume handles can be a max 20 characters and not minimum
+- Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
+- Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y
