@@ -1,4 +1,6 @@
-from server.helpers import * # helpers/*.py
+import jwt
+import re
+
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -6,25 +8,48 @@ sys.path.insert(0,parentdir)
 
 from app import get_data
 
-def auth_login (email,password):
-    user = get_data()['user']
-    print(user)
-    if email == 'wrong email':
-        raise ValueError("Invalid login email")
-        if password == 'wrong password':
-            raise ValueError("Invalid password")
-    loginDict = {}
-    loginDict['u_id'] = 123
-    loginDict['token'] = '555'
-    return {token}
-
-def auth_logout (token):
-    if token == "":
-        raise ValueError("No token")
-    if token == True:
-        return {True}
+EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+def check_email(email):
+    if(re.search(EMAIL, email)):
+        return True
     else:
-        return {False}
+        return False
+
+
+''' token functions '''
+SECRET = 'SAKE'
+def generate_token(password):
+    global SECRET
+    token = jwt.encode({'password': password}, SECRET, algorithm='HS256')
+    return token.decode()
+
+def get_user_from_token(token):
+    global SECRET
+    return jwt.decode(token, SECRET, algorithm='HS256')['password']
+
+
+''' auth functions '''
+def auth_login(email, password):
+    if not check_email(email):
+        raise ValueError("Invalid login email")
+
+    for user in get_data()['user']:
+        if user['email'] == email and user['password'] == password:
+            return {'u_id': user['u_id'], 'token', generate_token(password)}
+        elif user['email'] == email and user['password'] != password:
+            raise ValueError("Invalid password")
+
+    raise ValueError('Email entered does not belong to a user')
+    return {}
+
+def auth_logout(token):
+    password = get_user_from_token(token)
+
+    for user in get_data()['user']:
+        if user['email'] == email and user['password'] == password:
+            return {True}
+
+    return {False}
 
 def auth_register (email,password,name_first,name_last):
     if email == "Invalid email":
