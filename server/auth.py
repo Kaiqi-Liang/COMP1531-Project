@@ -40,7 +40,7 @@ def auth_login(email, password):
             raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
-    return {}
+    return {'Error'}
 
 def auth_logout(token):
     password = get_user_from_token(token)
