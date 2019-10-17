@@ -35,7 +35,7 @@ def auth_login(email, password):
 
     for user in get_data()['user']:
         if user['email'] == email and user['password'] == password:
-            return {'u_id': user['u_id'], 'token', generate_token(password)}
+            return {'u_id': user['u_id'], 'token': generate_token(password)}
         elif user['email'] == email and user['password'] != password:
             raise ValueError("Invalid password")
 
