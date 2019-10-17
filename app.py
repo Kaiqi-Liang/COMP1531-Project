@@ -10,6 +10,10 @@ DATA = {
     'message': []
 }
 
+def get_data():
+    global DATA
+    return DATA
+
 APP = Flask(__name__)
 
 @APP.route('/auth/login', methods=['POST'])
