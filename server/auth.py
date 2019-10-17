@@ -24,22 +24,20 @@ def auth_logout (token):
             return {True}
         else:
             return {False}
-
+            
+@APP.route('auth/register', methods = ['POST'])
 def auth_register (email,password,name_first,name_last):
-        if email == "Invalid email":
-                raise ValueError("Invalid email address")
-        if email == "Existing email":
-                raise ValueError("Email already exists")
-        if len(password) < 5:
-                raise ValueError("Invalid password")
-        if len(name_first) > 50:
-                raise ValueError("First Name is too long")
-        if len(name_last) > 50:
-                raise ValueError("Last Name is too long")
-        loginDict = {}
-        loginDict['u_id'] = 123
-        loginDict['token'] = '555'
-        return loginDict
+    if email == "Invalid email":
+        raise ValueError("Invalid email address")
+    if email == "Existing email":
+        raise ValueError("Email already exists")
+    if len(password) < 5:
+        raise ValueError("Invalid password")
+    if len(name_first) > 50:
+        raise ValueError("First Name is too long")
+    if len(name_last) > 50:
+        raise ValueError("Last Name is too long")
+
 
 def auth_passwordreset_request (email):
         if email == "":
