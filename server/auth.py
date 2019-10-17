@@ -16,7 +16,7 @@ def auth_login (email,password):
     loginDict = {}
     loginDict['u_id'] = 123
     loginDict['token'] = '555'
-    return loginDict
+    return {token}
 
 def auth_logout (token):
     if token == "":
