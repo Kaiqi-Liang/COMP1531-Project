@@ -1,4 +1,6 @@
-from server.helpers import * # helpers/*.py
+import jwt
+import re
+
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -6,90 +8,114 @@ sys.path.insert(0,parentdir)
 
 from app import get_data
 
-def auth_login (email,password):
-    user = get_data()['user']
-    print(user)
-    if email == 'wrong email':
-        raise ValueError("Invalid login email")
-        if password == 'wrong password':
-            raise ValueError("Invalid password")
-    loginDict = {}
-    loginDict['u_id'] = 123
-    loginDict['token'] = '555'
-    return {token}
-
-def auth_logout (token):
-
-    if token == "":
-        raise ValueError("No token")
-    if token == True:
-        return {True}
+EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+def check_email(email):
+    if(re.search(EMAIL, email)):
+        return True
     else:
-        return {False}
-        
-# EXTRA FUNCTION
-# use jwt to generate a token and store the secret of the user, inc username and email 
-def generateToken(name_first, name_last, email, pass_word):
-    secrete = {
-                'password' : pass_word
-              }
-    encoded_jwt = jwt.encode({'first_name' : name_first,'last_name' : name_last,'email' : email}, secrete, algorithm = 'HS256')
-    return encoded_jwt
+        return False
 
-# use jwt decode to find a user 
-def getUserFromToken(token):
 
-    user = jwt.decode(token, secrete, algorithm = 'HS256')
-    return user
+''' token functions '''
+SECRET = 'SAKE'
+def generate_token(password):
+    global SECRET
+    token = jwt.encode({'password': password}, SECRET, algorithm='HS256')
+    return token.decode()
 
-@APP.route('auth/register', methods = ['POST'])
+def get_user_from_token(token):
+    global SECRET
+    return jwt.decode(token, SECRET, algorithm='HS256')['password']
+
+
+''' auth functions '''
+def auth_login(email, password):
+    if not check_email(email):
+        raise ValueError("Invalid login email")
+
+    for user in get_data()['user']:
+        if user['email'] == email and user['password'] == password:
+            return {'u_id': user['u_id'], 'token': generate_token(password)}
+        elif user['email'] == email and user['password'] != password:
+            raise ValueError("Invalid password")
+ 
+    raise ValueError('Email entered does not belong to a user')
+    return {}
+
+
+def auth_logout(token):
+    password = get_user_from_token(token)
+
+    for user in get_data()['user']:
+        if user['email'] == email and user['password'] == password:
+            return {True}
+
+    return {False}
+
+def auth_logout(token):
+    password = get_user_from_token(token)
+
+    for user in get_data()['user']:
+        if user['email'] == email and user['password'] == password:
+            return {True}
+
+    return {False}
+
 def auth_register (email,password,name_first,name_last):
  
-    # BEGIN BY TESTING ARG VALUES
+    users = get_data()['user']
+    
     # Value error: password is less than 6 characters long
     if len(password) < 6:
-        raise ValueError(f"Password entered is less than 6 characters long")
+        raise ValueError("Password entered is less than 6 characters long")
     # Value error: name_first 
     if len(name_first) >= 50 or len(name_first) <= 1:
-        raise ValueError(f"First name is not within the correct length range")
+        raise ValueError("First name is not within the correct length range")
     # Value error: name_last
     if len(name_last) >= 50 or len(name_last) <= 1:
-        raise ValueError(f"Last name is not within the correct length range")
+        raise ValueError("Last name is not within the correct length range")
     # Value error: invalid email
-    regExpression = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-    if not (re.search(regex,email)):
-        raise ValueError(f"Email entered is invalid")
+    if not check_email(email):
+        raise ValueError("Email entered is invalid")
     # Value error: email is already being used -> potentially redo this, just check back on how i later store emails. 
-    if email in DATA['members']['email']:
-        raise ValueError(f"Email already used on a registered account")  
+    for user in users:
+        if user['email'] == email:
+            raise ValueError("Email already used on a registered account")  
         
     # CREATE A NEW ACCOUNT
     # generate a u_id, this method is based on the number of users
-    numberUsers = len(DATA['members'])
+    numberUsers = len(users)
     u_id = (numberUsers + 1)
     
     # generate a handle that is a lowercase concatenation of their first and last name 
-    handle = lower(name_first) + lower(name_last)
-    # if this is longer than 20 characters, need to concatenate
-    if len(handle) > 20:
+    handle = name_first.lower() + name_last.lower()
+
+    # check if the handle is already taken -> basing this on last names 
+    occurences = 0
+    for user in users:
+        if user['name_first'] == name_first and user['name_last'] == name_last:
+            occurences += 1
+    # deal with changing handles
+    if len(handle) > 20 and occurences == 0:
         handle = handle[:20]
-    # check if this handle is already taken 
-    occurences = DATA['members']['handles'].count(handle)
-    # if this handle is taken, change the handle to have a number at the end
-    if occurences > 0:
-        handle = handle + occurences 
-    
+    elif len(handle) > 18 and occurences > 0:
+        handle = handle[:18]
+        handle = hande + str(occurences)
+    else:
+        handle = handle + str(occurences)
+     
     # generate a token
-    token = generateToken(name_first, name_last, email, password)
+    token = generate_token(password)
     
     # work out permission_id
-    if len(DATA['members']) is 0:
+    if len(users) is 0:
         p_id = 1
     else:
         p_id = 3
     
     # add this data to the DATA members list
-    DATA['members'].append({
+    # get this checked !!!!!
+    users.append({
         'name_first': name_first,
         'name_last' : name_last,
         'u_id' : u_id,
