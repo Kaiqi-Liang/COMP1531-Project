@@ -125,10 +125,10 @@ def auth_register (email,password,name_first,name_last):
         'handle': handle
     })
     
-    return dumps({
+    return {
         'u_id' : u_id,
         'token' : token
-    })
+    }
 
 def auth_passwordreset_request (email):
     if email == "":
