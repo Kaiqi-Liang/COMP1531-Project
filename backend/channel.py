@@ -1,4 +1,5 @@
-from server.helpers import * # helpers/*.py
+''' Local packages '''
+from backend.database import get_data
 
 def channel_invite(token, channel_id, u_id):
     raise ValueError
@@ -31,4 +32,18 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     if len(name) > 20:
         raise ValueError
-    return {'channel_id': 0}
+    channels = get_data()['channel']
+    channel_id = len(channels + 1)
+    channels.append({
+        'channel_id': channel_id,
+        'is_public': is_public,
+        'owners': []
+        'members': []
+    })
+
+    for channel in channels:
+        if channel_id == channel['channel_id']:
+            channel['owners'].append()
+            channel['members'].append()
+
+    return {'channel_id': channel_id}
