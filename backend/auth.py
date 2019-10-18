@@ -1,11 +1,5 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' Local packages '''
-from server import get_data # server.py
+from backend.database import get_data
 
 ''' pip3 packages '''
 import jwt
@@ -23,15 +17,12 @@ def check_email(email):
 
 
 ''' token functions '''
-SECRET = 'SAKE'
-def generate_token(password):
-    global SECRET
-    token = jwt.encode({'password': password}, SECRET, algorithm='HS256')
+def generate_token(u_id, secret):
+    token = jwt.encode({'u_id': u_id}, secret, algorithm='HS256')
     return token.decode()
 
-def get_user_from_token(token):
-    global SECRET
-    return jwt.decode(token, SECRET, algorithm='HS256')['password']
+def get_user_from_token(token, secret):
+    return jwt.decode(token, secret, algorithm='HS256')['u_id']
 
 
 ''' auth functions '''
@@ -41,7 +32,7 @@ def auth_login(email, password):
 
     for user in get_data()['user']:
         if user['email'] == email and user['password'] == password:
-            return {'u_id': user['u_id'], 'token': generate_token(password)}
+            return {'u_id': user['u_id'], 'token': generate_token(u_id, password)}
         elif user['email'] == email and user['password'] != password:
             raise ValueError("Invalid password")
 
@@ -50,7 +41,7 @@ def auth_login(email, password):
 
 
 def auth_logout(token):
-    password = get_user_from_token(token)
+    u_id = get_user_from_token(token, password)
 
     for user in get_data()['user']:
         if user['email'] == email and user['password'] == password:
@@ -121,16 +112,16 @@ def auth_register (email,password,name_first,name_last):
         'permission_id' : p_id,
         'email' : email,
         'handle': handle
-    })
+        })
 
     return dumps({
         'u_id' : u_id,
         'token' : token
-    })
+        })
 
-def auth_passwordreset_request (email):
-    if email == "":
-        raise ValueError("No email")
+    def auth_passwordreset_request (email):
+        if email == "":
+            raise ValueError("No email")
     return
 
 def auth_passwordreset_reset (reset_code, new_password):
