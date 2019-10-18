@@ -1,5 +1,6 @@
 ''' Local packages '''
 from backend.database import get_data
+from backend.helpers.token import generate_token, get_user_from_token
 
 def channel_invite(token, channel_id, u_id):
     raise ValueError
@@ -41,9 +42,10 @@ def channels_create(token, name, is_public):
         'members': []
     })
 
+    u_id = get_user_from_token(token) 
     for channel in channels:
         if channel_id == channel['channel_id']:
-            channel['owners'].append()
-            channel['members'].append()
+            channel['owners'].append(u_id)
+            channel['members'].append(u_id)
 
     return {'channel_id': channel_id}

@@ -1,35 +1,11 @@
 ''' Local packages '''
 from backend.database import get_data
-
-''' pip3 packages '''
-import hashlib
-import jwt
+from backend.helpers.token import generate_token, get_user_from_token
+from backend.helpers.helpers import check_email
 
 ''' Std lib packages '''
-import re
+import hashlib
 
-
-EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$' # regex for email address
-def check_email(email):
-    if(re.search(EMAIL, email)):
-        return True
-    else:
-        return False
-
-
-''' token functions '''
-SECRET = 'SAKE'
-def generate_token(u_id):
-    global SECRET
-    token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256')
-    return token.decode()
-
-def get_user_from_token(token):
-    global SECRET
-    return jwt.decode(token, SECRET, algorithm='HS256')['u_id']
-
-
-''' auth functions '''
 def auth_login(email, password):
     if not check_email(email):
         raise ValueError("Invalid login email")
@@ -44,7 +20,6 @@ def auth_login(email, password):
     raise ValueError('Email entered does not belong to a user')
     return {'Error'}
 
-
 def auth_logout(token):
     u_id = get_user_from_token(token) 
 
@@ -53,7 +28,6 @@ def auth_logout(token):
             return {'is_success': True}
 
     return {'is_success': False}
-
 
 def auth_register (email,password,name_first,name_last):
 
