@@ -6,8 +6,14 @@ def channel_invite(token, channel_id, u_id):
     raise ValueError
 
 def channel_details(token, channel_id):
-    raise ValueError
-    raise AccessError
+    for channel in get_data()['channel']:
+        if channel['channel_id'] == channel_id and get_user_from_token(token) in channel['members']:
+            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+        elif channel['channel_id'] != channel_id and get_user_from_token(token) in channel['members']:
+            raise ValueError
+        elif channel['channel_id'] == channel_id and get_user_from_token(token) not in channel['members']:
+            raise AccessError
+    return {'Error': 'Error'}
 
 def channel_messages(token, channel_id, start):
     raise ValueError
@@ -36,9 +42,10 @@ def channels_create(token, name, is_public):
     channels = get_data()['channel']
     channel_id = len(channels + 1)
     channels.append({
+        'name': name,
         'channel_id': channel_id,
         'is_public': is_public,
-        'owners': []
+        'owners': [],
         'members': []
     })
 
