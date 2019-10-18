@@ -13,6 +13,7 @@ import jwt
 ''' Std lib packages '''
 import re
 
+
 EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$' # regex for email address
 def check_email(email):
     if(re.search(EMAIL, email)):
@@ -57,14 +58,6 @@ def auth_logout(token):
 
     return {False}
 
-def auth_logout(token):
-    password = get_user_from_token(token)
-
-    for user in get_data()['user']:
-        if user['email'] == email and user['password'] == password:
-            return {True}
-
-    return {False}
 
 def auth_register (email,password,name_first,name_last):
 

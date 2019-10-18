@@ -1,5 +1,0 @@
-pytest
-jwt
-Pillow
-flask
-requests
