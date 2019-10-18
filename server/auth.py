@@ -47,9 +47,10 @@ def auth_passwordreset_request (email):
         raise ValueError("No email")
     return
 
+@app.route("auth/passwordreset/reset")
 def auth_passwordreset_reset (reset_code, new_password):
-    if reset_code == "Invalid reset code":
+    if isinstance(reset_code, str): # Check if reset_code is valid i.e. a string
         raise ValueError("Invalid reset code")
-    if len(new_password) < 5:
+    if len(new_password) < 6:
         raise ValueError("Invalid password")
     return
