@@ -1,14 +1,19 @@
-import jwt
-import re
-
+''' syspath hack for local imports '''
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
-from server import get_data
+''' Local packages '''
+from server import get_data # server.py
 
-EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+''' pip3 packages '''
+import jwt
+
+''' Std lib packages '''
+import re
+
+EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$' # regex for email address
 def check_email(email):
     if(re.search(EMAIL, email)):
         return True

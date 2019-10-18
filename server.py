@@ -1,8 +1,10 @@
-"""Flask server"""
+''' pip3 packages '''
+''' Flask server '''
 from json import dumps
 from flask import Flask, request
 
-from backend.auth import *
+''' import all local packages '''
+from backend import * # backend/*.py
 
 DATA = {
     'user': [],
