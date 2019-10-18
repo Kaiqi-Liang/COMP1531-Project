@@ -10,7 +10,6 @@ import pytest
 ''' Local packages '''
 from backend import *
 
-
 def test_standup_start():
 
     # Create users ...

@@ -6,7 +6,6 @@ sys.path.insert(0,parentdir)
 
 ''' pip3 packages '''
 import pytest
-import pytest
 import datetime
 
 ''' Local packages '''
