@@ -2,6 +2,7 @@
 from backend.database import get_data
 
 ''' pip3 packages '''
+import hashlib
 import jwt
 
 ''' Std lib packages '''
@@ -17,12 +18,15 @@ def check_email(email):
 
 
 ''' token functions '''
-def generate_token(u_id, secret):
-    token = jwt.encode({'u_id': u_id}, secret, algorithm='HS256')
+SECRET = 'SAKE'
+def generate_token(u_id):
+    global SECRET
+    token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256')
     return token.decode()
 
-def get_user_from_token(token, secret):
-    return jwt.decode(token, secret, algorithm='HS256')['u_id']
+def get_user_from_token(token):
+    global SECRET
+    return jwt.decode(token, SECRET, algorithm='HS256')['u_id']
 
 
 ''' auth functions '''
@@ -31,9 +35,10 @@ def auth_login(email, password):
         raise ValueError("Invalid login email")
 
     for user in get_data()['user']:
-        if user['email'] == email and user['password'] == password:
-            return {'u_id': user['u_id'], 'token': generate_token(u_id, password)}
-        elif user['email'] == email and user['password'] != password:
+        if user['email'] == email and user['password'] == hashlib.sha256(password.encode()).hexdigest():
+            print(user['u_id'])
+            return {'u_id': user['u_id'], 'token': generate_token(user['u_id'])}
+        elif user['email'] == email and user['password'] != hashlib.sha256(password.encode()).hexdigest():
             raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
@@ -41,13 +46,13 @@ def auth_login(email, password):
 
 
 def auth_logout(token):
-    u_id = get_user_from_token(token, password)
+    u_id = get_user_from_token(token) 
 
     for user in get_data()['user']:
-        if user['email'] == email and user['password'] == password:
-            return {True}
+        if user['u_id'] == u_id:
+            return {'is_success': True}
 
-    return {False}
+    return {'is_success': False}
 
 
 def auth_register (email,password,name_first,name_last):
@@ -94,7 +99,7 @@ def auth_register (email,password,name_first,name_last):
         handle = handle + str(occurences)
 
     # generate a token
-    token = generate_token(password)
+    token = generate_token(u_id)
 
     # work out permission_id
     if len(users) is 0:
@@ -111,7 +116,8 @@ def auth_register (email,password,name_first,name_last):
         'token' : token,
         'permission_id' : p_id,
         'email' : email,
-        'handle': handle
+        'handle': handle,
+        'password': hashlib.sha256(password.encode()).hexdigest()
     })
     
     return {
