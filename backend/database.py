@@ -1,6 +1,18 @@
 DATA = {
-    'user': [],
-#   [{'u_id': u_id1, 'email': email1, 'password': password1}, {'u_id': u_id2, 'email': email2, 'password': password2}]
+    'user': [
+        '''
+        {
+            'u_id': u_id,
+            'email': email,
+            'password': hash,
+            'name_first': first,
+            'name_last': last,
+            'handle': firstlast,
+            'permission_id': p_id,
+            'tokens': [],
+        }
+        '''
+    ],
     'channel': [],
     'message': []
 }

@@ -2,8 +2,7 @@
 from json import dumps
 from flask import Flask, request
 
-''' import all local packages '''
-from backend import auth 
+from backend import auth
 from backend import channel
 
 

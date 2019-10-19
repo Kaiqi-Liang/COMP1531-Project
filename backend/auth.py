@@ -1,30 +1,31 @@
-''' Local packages '''
+import hashlib
+
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
 from backend.helpers.helpers import check_email
 
-''' Std lib packages '''
-import hashlib
 
 def auth_login(email, password):
     if not check_email(email):
         raise ValueError("Invalid login email")
 
     for user in get_data()['user']:
-        if user['email'] == email and user['password'] == hashlib.sha256(password.encode()).hexdigest():
-            print(user['u_id'])
-            return {'u_id': user['u_id'], 'token': generate_token(user['u_id'])}
-        elif user['email'] == email and user['password'] != hashlib.sha256(password.encode()).hexdigest():
-            raise ValueError("Invalid password")
+        if user['email'] == email:
+            if user['password'] == hashlib.sha256(password.encode()).hexdigest():
+                token = generate_token(user['u_id'])
+                user['tokens'].append(token)
+                return {'u_id': user['u_id'], 'token': token}
+            else:
+                raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
     return {'Error': 'Error'}
 
 def auth_logout(token):
-    u_id = get_user_from_token(token) 
-
+    u_id = get_user_from_token(token)
     for user in get_data()['user']:
         if user['u_id'] == u_id:
+            user['tokens'].remove(token)
             return {'is_success': True}
 
     return {'is_success': False}
@@ -52,25 +53,21 @@ def auth_register(email, password, name_first, name_last):
 
     # CREATE A NEW ACCOUNT
     # generate a u_id, this method is based on the number of users
-    numberUsers = len(users)
-    u_id = (numberUsers + 1)
+    u_id = len(users) + 1
 
     # generate a handle that is a lowercase concatenation of their first and last name
     handle = name_first.lower() + name_last.lower()
 
     if len(handle) > 20:
         handle = handle[:20]
-    
+
     for user in users:
         if handle == user['handle']:
             if len(handle) >= 19:
                 # cut some out
                 handle = handle[:18]
-                # then add number
-                handle = handle + str(random.randit(10, 100)
-             else:
-                # just add number 
-                handle = handle + str(random.randit(10, 100)
+            # then add number
+            handle = handle + str(random.randit(10, 100))
 
     # generate a token
 
