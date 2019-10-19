@@ -38,14 +38,14 @@ function LoginPage({ setAuth, ...props }) {
     event.preventDefault();
 
     // Get user inputs (TODO:)
-    const handle = event.target[0].value;
+    const email = event.target[0].value;
     const password = event.target[2].value;
 
     // Quick validation
-    if (!handle || !password) return;
+    if (!email || !password) return;
 
     // Send to backend
-    Axios.post(`${url}/auth/login`, { handle, password })
+    Axios.post(`${url}/auth/login`, { email, password })
       .then((response) => {
         console.log(response);
         const data = response.data;

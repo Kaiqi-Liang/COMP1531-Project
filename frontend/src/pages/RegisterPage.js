@@ -34,19 +34,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function RegisterPage({ setAuth, ...props }) {
+
+  const [values, setValues] = React.useState({
+    name_first: '',
+    name_last: '',
+    email: '',
+    password: '',
+  });
+
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
   function handleSubmit(event) {
     event.preventDefault();
 
-    // Get user inputs (TODO:)
-    const name = event.target[0].value;
-    const handle = event.target[2].value;
-    const password = event.target[4].value;
-
     // Quick validation
-    if (!handle || !password) return;
+    if (!values.email || !values.password) return;
 
     // Send to backend
-    Axios.post(`${url}/auth/register`, { name, handle, password })
+    Axios.post(`${url}/auth/register`, { ...values })
       .then((response) => {
         console.log(response);
         const data = response.data;
@@ -77,10 +84,12 @@ function RegisterPage({ setAuth, ...props }) {
             required
             fullWidth
             id="name_first"
-            label="Firstname"
+            label="First name"
             name="name_first"
             type="text"
             autoFocus
+            value={values.name_first}
+            onChange={handleChange('name_first')}
           />
           <TextField
             variant="outlined"
@@ -88,10 +97,11 @@ function RegisterPage({ setAuth, ...props }) {
             required
             fullWidth
             id="name_last"
-            label="Lastname"
+            label="Last name"
             name="name_last"
             type="text"
-            autoFocus
+            value={values.name_last}
+            onChange={handleChange('name_last')}
           />
           <TextField
             variant="outlined"
@@ -102,6 +112,8 @@ function RegisterPage({ setAuth, ...props }) {
             label="Email"
             name="email"
             type="email"
+            value={values.email}
+            onChange={handleChange('email')}
           />
           <TextField
             variant="outlined"
@@ -113,6 +125,8 @@ function RegisterPage({ setAuth, ...props }) {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={values.password}
+            onChange={handleChange('password')}
           />
           <Button type="submit" fullWidth variant="contained" color="primary">
             Sign Up
