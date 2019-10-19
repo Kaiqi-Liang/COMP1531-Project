@@ -1,5 +1,5 @@
 DATA = {
-    'user': [
+    'user': [],
         '''
         {
             'u_id': u_id,
@@ -12,7 +12,6 @@ DATA = {
             'tokens': [],
         }
         '''
-    ],
     'channel': [],
     'message': []
 }
