@@ -1,5 +1,6 @@
 import jwt
 import re
+import random 
 
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -62,9 +63,9 @@ def auth_logout(token):
     return {False}
 
 def auth_register (email,password,name_first,name_last):
- 
+
     users = get_data()['user']
-    
+
     # Value error: password is less than 6 characters long
     if len(password) < 6:
         raise ValueError("Password entered is less than 6 characters long")
@@ -89,46 +90,43 @@ def auth_register (email,password,name_first,name_last):
     
     # generate a handle that is a lowercase concatenation of their first and last name 
     handle = name_first.lower() + name_last.lower()
-
-    # check if the handle is already taken -> basing this on last names 
-    occurences = 0
-    for user in users:
-        if user['name_first'] == name_first and user['name_last'] == name_last:
-            occurences += 1
-    # deal with changing handles
-    if len(handle) > 20 and occurences == 0:
+    if len(handle) > 20:
         handle = handle[:20]
-    elif len(handle) > 18 and occurences > 0:
-        handle = handle[:18]
-        handle = hande + str(occurences)
-    else:
-        handle = handle + str(occurences)
-     
+    
+    for user in users:
+        if handle == user['handle']:
+            if len(handle) >= 19:
+                # cut some out
+                handle = handle[:18]
+                # then add number
+                handle = handle + str(random.randit(10, 100)
+             else:
+                # just add number 
+                handle = handle + str(random.randit(10, 100)
+
     # generate a token
     token = generate_token(password)
-    
+
     # work out permission_id
     if len(users) is 0:
         p_id = 1
     else:
         p_id = 3
-    
+
     # add this data to the DATA members list
-    # get this checked !!!!!
     users.append({
         'name_first': name_first,
         'name_last' : name_last,
         'u_id' : u_id,
-        'token' : token,
         'permission_id' : p_id,
         'email' : email,
         'handle': handle
     })
-    
-    return dumps({
+
+    return {
         'u_id' : u_id,
         'token' : token
-    })
+    }
 
 def auth_passwordreset_request (email):
     if email == "":
