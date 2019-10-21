@@ -110,7 +110,7 @@ def auth_passwordreset_request (email):
                 sender="my.gmail@gmail.com",
                 recipients=["person.sending.to@gmail.com"])
             #secret code (generated randomly)
-            msg.body = body + str(random.randint(6, 20))
+            msg.body = body + str(random.randint(10000, 999999))
             mail.send(msg)
             return 'Mail sent!'
         except Exception as e:
