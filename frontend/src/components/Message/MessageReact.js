@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import * as routecall from '../../utils/routecall';
 
 import {
   Badge,
@@ -22,13 +22,13 @@ function MessageReact({
 
   const messageReact = (is_reacted) => {
     if (is_reacted) {
-      axios.post(`${url}/message/unreact`, {
+      routecall.post(`${url}/message/unreact`, {
         token,
         message_id,
         react_id: 1 /* FIXME */,
       });
     } else {
-      axios.post(`${url}/message/react`, {
+      routecall.post(`${url}/message/react`, {
         token,
         message_id,
         react_id: 1 /* FIXME */,

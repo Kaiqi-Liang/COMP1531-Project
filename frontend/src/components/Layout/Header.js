@@ -8,7 +8,7 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MenuIcon from '@material-ui/icons/Menu';
-import Axios from 'axios';
+import * as routecall from '../../utils/routecall';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import AuthContext from '../../AuthContext';
@@ -41,7 +41,7 @@ function Header({ handleMenuToggle = () => {} }) {
   const [loggedOut, setLoggedOut] = React.useState(false);
 
   if (loggedOut) {
-    Axios.post(`${url}/auth/logout`, { token })
+    routecall.post(`${url}/auth/logout`, { token })
       .then((response) => {
         console.log(response);
       })

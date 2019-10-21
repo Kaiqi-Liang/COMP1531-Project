@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import DeveloperOutlinedIcon from '@material-ui/icons/DeveloperModeOutlined';
-import Axios from 'axios';
+import * as routecall from '../utils/routecall';
 import React from 'react';
 import { url } from '../utils/constants';
 import { toast } from 'react-toastify';
@@ -53,11 +53,11 @@ function RegisterPage({ setAuth, ...props }) {
     if (!values.email || !values.password) return;
 
     // Send to backend
-    Axios.post(`${url}/auth/register`, { ...values })
+    routecall.post(`${url}/auth/register`, { ...values })
       .then((response) => {
         console.log(response);
         const data = response.data;
-        setAuth(data);
+        setAuth(data.token);
         props.history.push('/');
       })
       .catch((err) => {

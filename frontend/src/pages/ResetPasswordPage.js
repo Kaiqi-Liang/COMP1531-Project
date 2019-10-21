@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import DeveloperOutlinedIcon from '@material-ui/icons/DeveloperModeOutlined';
-import Axios from 'axios';
+import * as routecall from '../utils/routecall';
 import React from 'react';
 import { toast } from 'react-toastify';
 import { url } from '../utils/constants';
@@ -45,7 +45,7 @@ function ForgotPasswordPage(props) {
     if (!reset_code || !new_password) return;
 
     // Send to backend
-    Axios.post(`${url}/auth/passwordreset/reset`, { reset_code, new_password })
+    routecall.post(`${url}/auth/passwordreset/reset`, { reset_code, new_password })
       .then((response) => {
         console.log(response);
         props.history.push('/login');
