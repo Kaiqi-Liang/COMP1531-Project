@@ -89,7 +89,8 @@ def auth_register(email, password, name_first, name_last):
         'email' : email,
         'handle': handle,
         'tokens': [token],
-        'password': hashlib.sha256(password.encode()).hexdigest()
+        'password': hashlib.sha256(password.encode()).hexdigest(),
+        'reset': None
     })
 
     return {
