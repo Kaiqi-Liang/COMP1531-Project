@@ -10,6 +10,7 @@ DATA = {
             'handle': firstlast,
             'permission_id': p_id,
             'tokens': [],
+            'reset': ''
         }
         '''
     'channel': [],
