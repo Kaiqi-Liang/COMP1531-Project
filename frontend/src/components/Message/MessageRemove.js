@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import * as routecall from '../../utils/routecall';
 
 import { IconButton } from '@material-ui/core';
 
@@ -16,7 +16,7 @@ function MessageRemove({
   const token = React.useContext(AuthContext);
 
   const messageRemove = () => {
-    axios.post(`${url}/message/remove`, {
+    routecall.post(`${url}/message/remove`, {
       token,
       message_id,
     });

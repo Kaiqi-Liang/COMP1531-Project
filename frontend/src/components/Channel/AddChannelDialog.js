@@ -16,7 +16,7 @@ import {
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Add from '@material-ui/icons/Add';
-import Axios from 'axios';
+import * as routecall from '../../utils/routecall';
 import { url } from '../../utils/constants';
 import AuthContext from '../../AuthContext';
 import { toast } from 'react-toastify';
@@ -40,7 +40,7 @@ function AddChannelDialog({ ...props }) {
 
     if (!channel_name) return;
 
-    Axios.post(`${url}/channel/create`, { token, channel_name, is_public })
+    routecall.post(`${url}/channels/create`, { token, channel_name, is_public })
       .then((response) => {
         console.log(response);
       })

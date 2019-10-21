@@ -1,4 +1,5 @@
 import React from 'react';
+import * as routecall from '../utils/routecall';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -24,7 +25,7 @@ function ChannelList({ channel_id: curr_channel_id }) {
   React.useEffect(() => {
     // fetch channels data
     const getMyChannels = () => {
-      return axios.get(`${url}/channels/list`, {
+      return routecall.get(`${url}/channels/list`, {
         params: {
           token,
         },
@@ -32,7 +33,7 @@ function ChannelList({ channel_id: curr_channel_id }) {
     };
 
     const getAllChannels = () => {
-      return axios.get(`${url}/channels/listall`, {
+      return routecall.get(`${url}/channels/listall`, {
         params: {
           token,
         },

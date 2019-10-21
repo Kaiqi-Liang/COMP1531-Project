@@ -8,7 +8,7 @@ import {
   Button,
   TextField,
 } from '@material-ui/core';
-import Axios from 'axios';
+import * as routecall from '../../utils/routecall';
 import { url } from '../../utils/constants';
 import AuthContext from '../../AuthContext';
 import { toast } from 'react-toastify';
@@ -29,7 +29,7 @@ function AddMemberDialog({ channel_id, ...props }) {
 
     if (!user_id) return;
 
-    Axios.post(`${url}/channel/invite`, { token, user_id, channel_id })
+    routecall.post(`${url}/channel/invite`, { token, user_id, channel_id })
       .then((response) => {
         console.log(response);
       })

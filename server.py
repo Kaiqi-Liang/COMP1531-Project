@@ -1,4 +1,6 @@
-''' Flask server '''
+"""Flask server"""
+import sys
+from flask_cors import CORS
 from json import dumps
 from flask import Flask, request
 
@@ -7,6 +9,11 @@ from backend import channel
 
 
 APP = Flask(__name__)
+CORS(APP)
+
+@APP.route('/auth/register', methods=['POST'])
+def echo4():
+    pass
 
 @APP.route('/auth/login', methods=['POST'])
 def login():
