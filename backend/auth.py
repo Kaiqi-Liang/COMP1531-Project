@@ -1,5 +1,4 @@
 import hashlib
-import random
 
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
@@ -98,33 +97,7 @@ def auth_register(email, password, name_first, name_last):
         'token' : token
     }
 
-def auth_passwordreset_request (email):
-    if email == "":
-        raise ValueError("No email")
-    users = get_data()['users']
-    #Given an email address check if the user is a registered user
-    for user in users:
-        if user['email'] == email:
-            reset_code = reset_code + str(random.randint(10000, 999999))
-            user['reset'] = reset_code
-    '''
-        #send them an email
-        mail = Mail(APP)
-        try:
-            msg = Message("Send Mail Test!",
-                sender="my.gmail@gmail.com",
-                recipients=["person.sending.to@gmail.com"])
-            #secret code (generated randomly)
-            msg.body = body + str(random.randint(10000, 999999))
-            mail.send(msg)
-            return 'Mail sent!'
-        except Exception as e:
-            return (str(e))
-    '''
-             
-    return
-
-def auth_passwordreset_reset (reset_code, new_password):
+def auth_passwordreset_reset(reset_code, new_password):
 
     users = get_data()['user']
 
@@ -132,7 +105,6 @@ def auth_passwordreset_reset (reset_code, new_password):
         raise ValueError("Invalid reset code")
     if len(new_password) < 6:
         raise ValueError("Password entered is less than 6 characters long")
-
 
     for user in users:
         if user['reset'] == reset_code:
