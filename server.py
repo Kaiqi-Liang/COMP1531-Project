@@ -28,6 +28,7 @@ def logout():
 @APP.route('/auth/register', methods=['POST'])
 def register():
     """ Given a user's first and last name, email address, and password, create a new account for them and return a new token for authentication in their session. A handle is generated that is the concatentation of a lowercase-only first name and last name. If the handle is already taken, a number is added to the end of the handle to make it unique. """
+    print("register")
     return dumps(auth.auth_register(request.form.get('email'), request.form.get('password'), request.form.get('name_first'), request.form.get('name_last')))
 
 @APP.route('/channel/details', methods=['GET'])

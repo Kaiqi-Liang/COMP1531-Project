@@ -1,4 +1,5 @@
 import hashlib
+import random
 
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
@@ -67,7 +68,7 @@ def auth_register(email, password, name_first, name_last):
                 # cut some out
                 handle = handle[:18]
             # then add number
-            handle = handle + str(random.randit(10, 100))
+            handle = handle + str(random.randint(10, 100))
 
     # generate a token
 
