@@ -101,11 +101,15 @@ def auth_register(email, password, name_first, name_last):
 def auth_passwordreset_request (email):
     if email == "":
         raise ValueError("No email")
-
+    users = get_data()['users']
     #Given an email address check if the user is a registered user
-    if (email == users['email']):
+    for user in users:
+        if user['email'] == email:
+            reset_code = reset_code + str(random.randint(10000, 999999))
+            user['reset'] = reset_code
+    '''
         #send them an email
-            mail = Mail(APP)
+        mail = Mail(APP)
         try:
             msg = Message("Send Mail Test!",
                 sender="my.gmail@gmail.com",
@@ -116,9 +120,8 @@ def auth_passwordreset_request (email):
             return 'Mail sent!'
         except Exception as e:
             return (str(e))
-    # that when entered in auth_passwordreset_reset, 
-    # shows that the user trying to reset the password is 
-    # the one who got sent this email.
+    '''
+             
     return
 
 def auth_passwordreset_reset (reset_code, new_password):
