@@ -99,6 +99,24 @@ def auth_register(email, password, name_first, name_last):
 def auth_passwordreset_request (email):
     if email == "":
         raise ValueError("No email")
+
+    #Given an email address check if the user is a registered user
+    if (email == users['email']):
+        #send them an email
+            mail = Mail(APP)
+        try:
+            msg = Message("Send Mail Test!",
+                sender="my.gmail@gmail.com",
+                recipients=["person.sending.to@gmail.com"])
+            #secret code (generated randomly)
+            msg.body = body + str(random.randint(6, 20))
+            mail.send(msg)
+            return 'Mail sent!'
+        except Exception as e:
+            return (str(e))
+    # that when entered in auth_passwordreset_reset, 
+    # shows that the user trying to reset the password is 
+    # the one who got sent this email.
     return
 
 def auth_passwordreset_reset (reset_code, new_password):
