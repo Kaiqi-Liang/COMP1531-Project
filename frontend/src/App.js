@@ -13,6 +13,7 @@ import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 
 import { AuthProvider } from './AuthContext';
+import './axios';
 
 function App() {
   const [authDetails, setAuthDetails] = React.useState(

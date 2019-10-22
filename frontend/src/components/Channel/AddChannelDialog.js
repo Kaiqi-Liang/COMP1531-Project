@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,16 +11,16 @@ import {
   TextField,
   Grid,
   FormControlLabel,
-  FormLabel,
-} from '@material-ui/core';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import Add from '@material-ui/icons/Add';
-import * as routecall from '../../utils/routecall';
-import { url } from '../../utils/constants';
-import AuthContext from '../../AuthContext';
-import { toast } from 'react-toastify';
-import { DEFAULT_ERROR_TEXT } from '../../utils/text';
+  FormLabel
+} from "@material-ui/core";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Add from "@material-ui/icons/Add";
+import * as routecall from "../../utils/routecall";
+import { url } from "../../utils/constants";
+import AuthContext from "../../AuthContext";
+import { toast } from "react-toastify";
+import { DEFAULT_ERROR_TEXT } from "../../utils/text";
 
 function AddChannelDialog({ ...props }) {
   const [open, setOpen] = React.useState(false);
@@ -33,18 +33,19 @@ function AddChannelDialog({ ...props }) {
   }
   function handleSubmit(event) {
     event.preventDefault();
-    const channel_name = event.target[0].value;
+    const name = event.target[0].value;
     const secret = event.target[1].checked;
     const is_public = !secret;
     console.log(is_public);
 
-    if (!channel_name) return;
+    if (!name) return;
 
-    routecall.post(`${url}/channels/create`, { token, channel_name, is_public })
-      .then((response) => {
+    routecall
+      .post(`${url}/channels/create`, { token, name, is_public })
+      .then(response => {
         console.log(response);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         toast.error(DEFAULT_ERROR_TEXT);
       });
@@ -88,7 +89,7 @@ function AddChannelDialog({ ...props }) {
                   control={
                     <Switch
                       value="secret"
-                      inputProps={{ 'aria-label': 'Secret' }}
+                      inputProps={{ "aria-label": "Secret" }}
                     />
                   }
                   label="Secret"
