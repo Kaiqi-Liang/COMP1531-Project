@@ -1,6 +1,6 @@
 import React from 'react';
-import * as routecall from '../../utils/routecall';
 import timeago from 'epoch-timeago';
+import axios from 'axios';
 
 import {
   Avatar,
@@ -9,8 +9,6 @@ import {
   ListItemText,
 } from '@material-ui/core';
 
-
-import { url } from '../../utils/constants';
 
 import AuthContext from '../../AuthContext';
 import MessagePin from './MessagePin';
@@ -34,8 +32,8 @@ function Message({
   React.useEffect(() => {
     setName();
     setInitials();
-    routecall
-      .get(`${url}/user/profile`, {
+    axios
+      .get(`/user/profile`, {
         params: {
           token,
           u_id,
@@ -57,7 +55,7 @@ function Message({
   }, [message_id, token, u_id]);
 
   const messageRemove = () => {
-    routecall.post(`${url}/message/remove`, {
+    axios.post(`/message/remove`, {
       token,
       message_id,
     });

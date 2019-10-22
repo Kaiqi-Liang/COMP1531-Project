@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   AppBar,
   Button,
@@ -8,11 +9,10 @@ import {
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MenuIcon from '@material-ui/icons/Menu';
-import * as routecall from '../../utils/routecall';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import AuthContext from '../../AuthContext';
-import { drawerWidth, url } from '../../utils/constants';
+import { drawerWidth } from '../../utils/constants';
 import PollToggle from '../PollToggle';
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +41,7 @@ function Header({ handleMenuToggle = () => {} }) {
   const [loggedOut, setLoggedOut] = React.useState(false);
 
   if (loggedOut) {
-    routecall.post(`${url}/auth/logout`, { token })
+    axios.post(`/auth/logout`, { token })
       .then((response) => {
         console.log(response);
       })
@@ -50,6 +50,7 @@ function Header({ handleMenuToggle = () => {} }) {
         // toast.error(DEFAULT_ERROR_TEXT);
       });
     localStorage.removeItem('token');
+    localStorage.removeItem('u_id');
     return <Redirect to="/login" />;
   }
 

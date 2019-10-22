@@ -41,7 +41,13 @@ function PollToggle() {
     };
 
     return (<>
-        <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
+        <ButtonGroup
+            variant="contained"
+            color="primary"
+            ref={anchorRef}
+            aria-label="split button"
+            style={{marginRight: 15}}
+        >
             <Button onClick={handleClick} disabled={selectedIndex === 0}>{options[selectedIndex]}</Button>
             <Button
             color="primary"
