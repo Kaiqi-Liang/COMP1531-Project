@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   Button,
   TextField,
@@ -9,8 +10,6 @@ import SendIcon from '@material-ui/icons/Send';
 import TimerIcon from '@material-ui/icons/Timer';
 import { makeStyles } from '@material-ui/styles';
 import AuthContext from '../../AuthContext';
-import { url } from '../../utils/constants';
-import * as routecall from '../../utils/routecall';
 import { toast } from 'react-toastify';
 import { DEFAULT_ERROR_TEXT } from '../../utils/text';
 import AddMessageTimerDialog from './AddMessageTimerDialog';
@@ -53,7 +52,7 @@ function AddMessage({ channel_id = '' }) {
 
     // Depending on if timer active
     if (isTimerSet) {
-      routecall.post(`${url}/message/sendlater`, {
+      axios.post(`/message/sendlater`, {
         token,
         channel_id,
         message,
@@ -68,7 +67,7 @@ function AddMessage({ channel_id = '' }) {
         });
       setCurrentTimer(TIMER_INACTIVE_VALUE);
     } else {
-      routecall.post(`${url}/message/send`, {
+      axios.post(`/message/send`, {
         token,
         channel_id,
         message,
