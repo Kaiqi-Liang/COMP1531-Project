@@ -72,19 +72,19 @@ def passwordreset_reset():
 @APP.route('/channel/details', methods=['GET'])
 def details():
     """ Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel """
-    return dumps(channel.channel_details(request.form.get('token'), request.form.get('channel_id')))
+    return dumps(channel.channel_details(request.args.get('token'), request.args.get('channel_id')))
 
 
 @APP.route('/channels/list', methods=['GET'])
 def list():
     """ Provide a list of all channels (and their associated details) that the authorised user is part of """
-    return dumps(channel.channels_list(request.form.get('token')))
+    return dumps(channel.channels_list(request.args.get('token')))
 
 
 @APP.route('/channels/listall', methods=['GET'])
 def listall():
     """ Provide a list of all channels (and their associated details) """
-    return dumps(channel.channels_listall(request.form.get('token')))
+    return dumps(channel.channels_listall(request.args.get('token')))
 
 
 @APP.route('/channels/create', methods=['POST'])
