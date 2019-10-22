@@ -13,25 +13,40 @@ def channel_details(token, channel_id):
     for channel in get_data()['channel']:
         if channel['channel_id'] == channel_id and u_id in channel['members']:
             return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-        if channel['channel_id'] != channel_id and u_id in channel['members']:
-            raise ValueError("Channel ID is not a valid channel")
+
         if channel['channel_id'] == channel_id and u_id not in channel['members']:
             raise AccessError("Authorised user is not a member of channel with channel_id")
 
+    raise ValueError("Channel ID is not a valid channel")
+
+
 def channel_messages(token, channel_id, start):
-    raise ValueError
+    u_id = get_user_from_token(token)
+    for channel in get_data()['channel']:
+        if channel['channel_id'] == channel_id and u_id in channel['members']:
+            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+
+        if channel['channel_id'] == channel_id and u_id not in channel['members']:
+            raise AccessError("Authorised user is not a member of channel with channel_id")
+
+    raise ValueError("Channel ID is not a valid channel")
+
 
 def channel_leave(token, channel_id):
     raise ValueError
 
+
 def channel_join(token, channel_id):
     raise ValueError
+
 
 def channel_addowner(token, channel_id, u_id):
     raise ValueError
 
+
 def channel_removeowner(token, channel_id, u_id):
     raise ValueError
+
 
 def channels_list(token):
     u_id = get_user_from_token

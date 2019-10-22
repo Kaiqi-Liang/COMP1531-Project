@@ -1,7 +1,6 @@
 DATA = {
     'user': [],
-    'channel': [],
-    'message': []
+    'channel': []
 }
 
 '''
@@ -28,9 +27,11 @@ DATA = {
                 'is_public': True,
                 'owners': [],
                 'members': [],
-        ],
-    'message':
-        [
+                'messages': [
+                                {
+                                    'message_id': message_id,
+                                }
+                            ]
         ]
 '''
 

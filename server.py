@@ -75,6 +75,12 @@ def details():
     return dumps(channel.channel_details(request.args.get('token'), request.args.get('channel_id')))
 
 
+@APP.route('/channel/messages', methods=['GET'])
+def messages():
+    """ Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 in "end" to indicate there are no more messages to load after this return """
+    return dumps(channel.channel_messages(request.args.get('token'), request.args.get('channel_id'), request.args.get('start')))
+
+
 @APP.route('/channels/list', methods=['GET'])
 def list():
     """ Provide a list of all channels (and their associated details) that the authorised user is part of """
