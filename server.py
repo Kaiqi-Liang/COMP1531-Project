@@ -1,39 +1,40 @@
 """Flask server"""
 import sys
+import random
 from json import dumps
 from flask_cors import CORS
 from flask_mail import Mail, Message
 from flask import Flask, request
-import random
 
 from backend import auth
 from backend import channel
 from backend.database import get_data
+from backend.helpers.exception import ValueError, defaultHandler
 
 
 APP = Flask(__name__)
+CORS(APP)
 APP.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=465,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME = 'my.gmail@gmail.com',
-    MAIL_PASSWORD = ""
+    MAIL_USERNAME='lkq137055338@gmail.com',
+    MAIL_PASSWORD="lkq99896288"
 )
-CORS(APP)
+APP.config['TRAP_HTTP_EXCEPTIONS'] = True
+APP.register_error_handler(Exception, defaultHandler)
 
 
 @APP.route('/send-mail/')
-def send_mail():
+def send_mail(email, reset_code):
     mail = Mail(APP)
     try:
-        msg = Message("Send Mail Test!",
-            sender="my.gmail@gmail.com",
-            recipients=["person.sending.to@gmail.com"])
-        msg.body = "Hello! This is a test body"
+        msg = Message("Authentication", sender="lkq137055338@gmail.com", recipients=[email])
+        msg.body = reset_code
         mail.send(msg)
         return 'Mail sent!'
-    except Exception as e:
-        return (str(e))
+    except Exception as err:
+        return (str(err))
 
 
 @APP.route('/auth/login', methods=['POST'])
@@ -67,20 +68,7 @@ def passwordreset_request():
         if user['email'] == email:
             reset_code = str(random.randint(10000, 999999))
             user['reset'] = reset_code
-
-            #send them an email
-            mail = Mail(APP)
-            try:
-                msg = Message("Send Mail Test!",
-                    sender="my.gmail@gmail.com",
-                    recipients=["person.sending.to@gmail.com"])
-                #secret code (generated randomly)
-                msg.body = reset_code
-                mail.send(msg)
-                return 'Mail sent!'
-            except Exception as e:
-                return (str(e))
-
+            send_mail(email, reset_code)
     return dumps({})
 
 
@@ -94,6 +82,7 @@ def passwordreset_reset():
 def details():
     ''' Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel '''
     return dumps(channel.channel_details(request.form.get('token'), request.form.get('channel_id')))
+
 
 @APP.route('/channels/create', methods=['POST'])
 def create():
