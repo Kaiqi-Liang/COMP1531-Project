@@ -98,7 +98,7 @@ def auth_register(email, password, name_first, name_last):
         'token' : token
     }
 
-def auth_passwordreset_request (email):
+def auth_passwordreset_request(email):
     if email == "":
         raise ValueError("No email")
     users = get_data()['users']
@@ -120,11 +120,10 @@ def auth_passwordreset_request (email):
             return 'Mail sent!'
         except Exception as e:
             return (str(e))
-    '''
-             
+    '''            
     return
 
-def auth_passwordreset_reset (reset_code, new_password):
+def auth_passwordreset_reset(reset_code, new_password):
     if isinstance(reset_code, str): # Check if reset_code is valid i.e. a string
         raise ValueError("Invalid reset code")
     if len(new_password) < 6:
