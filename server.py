@@ -81,9 +81,16 @@ def list():
     return dumps(channel.channels_list(request.form.get('token')))
 
 
+@APP.route('/channels/listall', methods=['GET'])
+def listall():
+    """ Provide a list of all channels (and their associated details) """
+    return dumps(channel.channels_listall(request.form.get('token')))
+
+
 @APP.route('/channels/create', methods=['POST'])
 def create():
     """ Creates a new channel with that name that is either a public or private channel """
+    print(request.form.get('name'))
     return dumps(channel.channels_create(request.form.get('token'), request.form.get('name'), request.form.get('is_public')))
 
 

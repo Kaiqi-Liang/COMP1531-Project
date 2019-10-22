@@ -39,12 +39,15 @@ def channels_list(token):
     for channel in get_data()['channel']:
         if u_id in channel['members']:
             channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
-
     return {'channels': channels}
 
 
 def channels_listall(token):
-    pass
+    u_id = get_user_from_token
+    channels = []
+    for channel in get_data()['channel']:
+            channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
+    return {'channels': channels}
 
 def channels_create(token, name, is_public):
     if len(name) > 20:
