@@ -10,11 +10,11 @@ DATA = {
         [
             {
                 'u_id': u_id,
-                'email': email,
+                'email': 'email',
                 'password': hash,
-                'name_first': first,
-                'name_last': last,
-                'handle': firstlast,
+                'name_first': 'first',
+                'name_last': 'last',
+                'handle': 'firstlast',
                 'permission_id': p_id,
                 'tokens': [],
                 'reset': ''
@@ -22,6 +22,12 @@ DATA = {
         ],
     'channel':
         [
+            {
+                'channel_id': channel_id,
+                'name': 'name',
+                'is_public': True,
+                'owners': [],
+                'members': [],
         ],
     'message':
         [

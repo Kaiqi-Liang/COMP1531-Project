@@ -1,4 +1,4 @@
-"""Flask server"""
+""" Flask server """
 import sys
 import random
 from json import dumps
@@ -9,7 +9,7 @@ from flask import Flask, request
 from backend import auth
 from backend import channel
 from backend.database import get_data
-from backend.helpers.exception import ValueError, defaultHandler
+from backend.helpers.exception import defaultHandler
 
 
 APP = Flask(__name__)
@@ -27,13 +27,9 @@ APP.register_error_handler(Exception, defaultHandler)
 
 def send_mail(email, reset_code):
     mail = Mail(APP)
-    try:
-        msg = Message("Authentication", sender="kaiqi.liang9989@gmail.com", recipients=[email])
-        msg.body = reset_code
-        mail.send(msg)
-        return 'Mail sent!'
-    except Exception as err:
-        return (str(err))
+    msg = Message("Authentication", sender="kaiqi.liang9989@gmail.com", recipients=[email])
+    msg.body = reset_code
+    mail.send(msg)
 
 
 @APP.route('/auth/login', methods=['POST'])
@@ -69,19 +65,26 @@ def passwordreset_request():
 
 @APP.route('/auth/passwordreset/reset', methods=['POST'])
 def passwordreset_reset():
-    ''' Given a reset code for a user, set that user's new password to the password provided '''
+    """ Given a reset code for a user, set that user's new password to the password provided """
     return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
 
 
 @APP.route('/channel/details', methods=['GET'])
 def details():
-    ''' Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel '''
+    """ Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel """
     return dumps(channel.channel_details(request.form.get('token'), request.form.get('channel_id')))
+
+
+@APP.route('/channels/list', methods=['GET'])
+def list():
+    """ Provide a list of all channels (and their associated details) that the authorised user is part of """
+    return dumps(channel.channels_list(request.form.get('token')))
 
 
 @APP.route('/channels/create', methods=['POST'])
 def create():
-    ''' Creates a new channel with that name that is either a public or private channel '''
+    """ Creates a new channel with that name that is either a public or private channel """
+    print(request.form.get('name'))
     return dumps(channel.channels_create(request.form.get('token'), request.form.get('name'), request.form.get('is_public')))
 
 
