@@ -58,11 +58,7 @@ def register():
 def passwordreset_request():
     """ Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email. """
     email = request.form.get('email')
-    if email == "":
-        raise ValueError("No email")
-
     users = get_data()['user']
-    #Given an email address check if the user is a registered user
     for user in users:
         if user['email'] == email:
             reset_code = str(random.randint(100000, 999999))

@@ -3,6 +3,7 @@ import hashlib
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
 from backend.helpers.helpers import check_email
+from backend.helpers.exception import ValueError
 
 
 def auth_login(email, password):
@@ -111,4 +112,5 @@ def auth_passwordreset_reset(reset_code, new_password):
             user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
             user['reset'] = None
 
+    raise ValueError("Invalid reset code")
     return {}
