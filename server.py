@@ -18,18 +18,17 @@ APP.config.update(
     MAIL_SERVER='smtp.gmail.com',
     MAIL_PORT=465,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME='lkq137055338@gmail.com',
-    MAIL_PASSWORD="lkq99896288"
+    MAIL_USERNAME='kaiqi.liang9989@gmail.com',
+    MAIL_PASSWORD="1234567890-zxcvbnm,./"
 )
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
 
 
-@APP.route('/send-mail/')
 def send_mail(email, reset_code):
     mail = Mail(APP)
     try:
-        msg = Message("Authentication", sender="lkq137055338@gmail.com", recipients=[email])
+        msg = Message("Authentication", sender="kaiqi.liang9989@gmail.com", recipients=[email])
         msg.body = reset_code
         mail.send(msg)
         return 'Mail sent!'
@@ -66,7 +65,7 @@ def passwordreset_request():
     #Given an email address check if the user is a registered user
     for user in users:
         if user['email'] == email:
-            reset_code = str(random.randint(10000, 999999))
+            reset_code = str(random.randint(100000, 999999))
             user['reset'] = reset_code
             send_mail(email, reset_code)
     return dumps({})
