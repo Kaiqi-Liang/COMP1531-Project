@@ -101,7 +101,7 @@ def auth_passwordreset_reset(reset_code, new_password):
 
     users = get_data()['user']
 
-    if isinstance(reset_code, str): # Check if reset_code is valid i.e. a string
+    if not isinstance(reset_code, str): # Check if reset_code is valid i.e. a string
         raise ValueError("Invalid reset code")
     if len(new_password) < 6:
         raise ValueError("Password entered is less than 6 characters long")
@@ -111,4 +111,4 @@ def auth_passwordreset_reset(reset_code, new_password):
             user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
             user['reset'] = None
 
-    return
+    return {}

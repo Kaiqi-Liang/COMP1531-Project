@@ -61,27 +61,33 @@ def passwordreset_request():
     if email == "":
         raise ValueError("No email")
 
-    users = get_data()['users']
+    users = get_data()['user']
     #Given an email address check if the user is a registered user
     for user in users:
         if user['email'] == email:
-            reset_code = reset_code + str(random.randint(10000, 999999))
+            reset_code = str(random.randint(10000, 999999))
             user['reset'] = reset_code
 
-    #send them an email
-    mail = Mail(APP)
-    try:
-        msg = Message("Send Mail Test!",
-            sender="my.gmail@gmail.com",
-            recipients=["person.sending.to@gmail.com"])
-        #secret code (generated randomly)
-        msg.body = body + str(random.randint(10000, 999999))
-        mail.send(msg)
-        return 'Mail sent!'
-    except Exception as e:
-        return (str(e))
+            #send them an email
+            mail = Mail(APP)
+            try:
+                msg = Message("Send Mail Test!",
+                    sender="my.gmail@gmail.com",
+                    recipients=["person.sending.to@gmail.com"])
+                #secret code (generated randomly)
+                msg.body = reset_code
+                mail.send(msg)
+                return 'Mail sent!'
+            except Exception as e:
+                return (str(e))
 
     return dumps({})
+
+
+@APP.route('/auth/passwordreset/reset', methods=['POST'])
+def passwordreset_reset():
+    ''' Given a reset code for a user, set that user's new password to the password provided '''
+    return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
 
 
 @APP.route('/channel/details', methods=['GET'])
@@ -92,6 +98,7 @@ def details():
 @APP.route('/channels/create', methods=['POST'])
 def create():
     ''' Creates a new channel with that name that is either a public or private channel '''
+    # print(request.form.get('name'))
     return dumps(channel.channels_create(request.form.get('token'), request.form.get('name'), request.form.get('is_public')))
 
 
