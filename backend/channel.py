@@ -1,6 +1,7 @@
 ''' Local packages '''
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
+from backend.helpers.exception import ValueError, AccessError
 
 def channel_invite(token, channel_id, u_id):
     raise ValueError
@@ -38,9 +39,9 @@ def channels_listall(token):
 
 def channels_create(token, name, is_public):
     if len(name) > 20:
-        raise ValueError
+        raise ValueError('Name is more than 20 characters long')
     channels = get_data()['channel']
-    channel_id = len(channels + 1)
+    channel_id = len(channels) + 1
     channels.append({
         'name': name,
         'channel_id': channel_id,

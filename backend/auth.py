@@ -1,14 +1,14 @@
 import hashlib
-import random
 
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
 from backend.helpers.helpers import check_email
+from backend.helpers.exception import ValueError
 
 
 def auth_login(email, password):
     if not check_email(email):
-        raise ValueError("Invalid login email")
+        raise ValueError(description="Invalid login email")
 
     for user in get_data()['user']:
         if user['email'] == email:
@@ -20,7 +20,6 @@ def auth_login(email, password):
                 raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
-    return {'Error': 'Error'}
 
 def auth_logout(token):
     u_id = get_user_from_token(token)
@@ -98,34 +97,16 @@ def auth_register(email, password, name_first, name_last):
         'token' : token
     }
 
-def auth_passwordreset_request(email):
-    if email == "":
-        raise ValueError("No email")
-    users = get_data()['users']
-    #Given an email address check if the user is a registered user
-    for user in users:
-        if user['email'] == email:
-            reset_code = reset_code + str(random.randint(10000, 999999))
-            user['reset'] = reset_code
-    '''
-        #send them an email
-        mail = Mail(APP)
-        try:
-            msg = Message("Send Mail Test!",
-                sender="my.gmail@gmail.com",
-                recipients=["person.sending.to@gmail.com"])
-            #secret code (generated randomly)
-            msg.body = body + str(random.randint(10000, 999999))
-            mail.send(msg)
-            return 'Mail sent!'
-        except Exception as e:
-            return (str(e))
-    '''            
-    return
 
 def auth_passwordreset_reset(reset_code, new_password):
     if isinstance(reset_code, str): # Check if reset_code is valid i.e. a string
         raise ValueError("Invalid reset code")
     if len(new_password) < 6:
         raise ValueError("Password entered is less than 6 characters long")
-    return
+
+    for user in users:
+        if user['reset'] == reset_code:
+            user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
+            user['reset'] = None
+
+    raise ValueError("Invalid reset code")
