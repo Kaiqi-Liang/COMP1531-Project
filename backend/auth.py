@@ -7,7 +7,7 @@ from backend.helpers.helpers import check_email
 
 def auth_login(email, password):
     if not check_email(email):
-        raise ValueError("Invalid login email")
+        raise ValueError(description="Invalid login email")
 
     for user in get_data()['user']:
         if user['email'] == email:
