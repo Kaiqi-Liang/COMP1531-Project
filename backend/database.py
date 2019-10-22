@@ -15,7 +15,7 @@ DATA = {
                 'name_last': 'last',
                 'handle': 'firstlast',
                 'permission_id': p_id,
-                'tokens': [],
+                'tokens': ['token'],
                 'reset': ''
             }
         ],
@@ -25,13 +25,24 @@ DATA = {
                 'channel_id': channel_id,
                 'name': 'name',
                 'is_public': True,
-                'owners': [],
-                'members': [],
+                'owners': [u_id],
+                'members': [u_id],
                 'messages': [
                                 {
                                     'message_id': message_id,
+                                    'message': 'message',
+                                    'time_created': time,
+                                    'reacts': [
+                                                  {
+                                                       'react_id': react_id,
+                                                       'u_ids, [u_id],
+                                                       'is_this_user_reacted': True
+                                                  }
+                                              ],
+                                    'is_pinned': True
                                 }
                             ]
+            }
         ]
 '''
 
