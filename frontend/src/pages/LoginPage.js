@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Axios from 'axios';
+import * as routecall from '../utils/routecall';
 import React from 'react';
 import { toast } from 'react-toastify';
 import { url } from '../utils/constants';
@@ -38,14 +38,14 @@ function LoginPage({ setAuth, ...props }) {
     event.preventDefault();
 
     // Get user inputs (TODO:)
-    const handle = event.target[0].value;
+    const email = event.target[0].value;
     const password = event.target[2].value;
 
     // Quick validation
-    if (!handle || !password) return;
+    if (!email || !password) return;
 
     // Send to backend
-    Axios.post(`${url}/auth/login`, { handle, password })
+    routecall.post(`${url}/auth/login`, { email, password })
       .then((response) => {
         console.log(response);
         const data = response.data;

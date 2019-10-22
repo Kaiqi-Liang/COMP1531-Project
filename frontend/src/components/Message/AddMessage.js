@@ -10,7 +10,7 @@ import TimerIcon from '@material-ui/icons/Timer';
 import { makeStyles } from '@material-ui/styles';
 import AuthContext from '../../AuthContext';
 import { url } from '../../utils/constants';
-import Axios from 'axios';
+import * as routecall from '../../utils/routecall';
 import { toast } from 'react-toastify';
 import { DEFAULT_ERROR_TEXT } from '../../utils/text';
 import AddMessageTimerDialog from './AddMessageTimerDialog';
@@ -53,7 +53,7 @@ function AddMessage({ channel_id = '' }) {
 
     // Depending on if timer active
     if (isTimerSet) {
-      Axios.post(`${url}/message/sendlater`, {
+      routecall.post(`${url}/message/sendlater`, {
         token,
         channel_id,
         message,
@@ -68,7 +68,7 @@ function AddMessage({ channel_id = '' }) {
         });
       setCurrentTimer(TIMER_INACTIVE_VALUE);
     } else {
-      Axios.post(`${url}/message/send`, {
+      routecall.post(`${url}/message/send`, {
         token,
         channel_id,
         message,

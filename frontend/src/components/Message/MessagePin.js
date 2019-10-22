@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import * as routecall from '../../utils/routecall';
 
 import MdiIcon from '@mdi/react';
 import { mdiPin, mdiPinOutline } from '@mdi/js';
@@ -23,12 +23,12 @@ function MessagePin({
 
   const toggle = () => {
     if (isPinned) {
-      axios.post(`${url}/message/unpin`, {
+      routecall.post(`${url}/message/unpin`, {
         token,
         message_id,
       });
     } else {
-      axios.post(`${url}/message/pin`, {
+      routecall.post(`${url}/message/pin`, {
         token,
         message_id,
       });

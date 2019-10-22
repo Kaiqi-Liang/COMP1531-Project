@@ -12,7 +12,6 @@ import {
 
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import { url } from '../utils/constants';
 import AuthContext from '../AuthContext';
 import AddChannelDialog from './Channel/AddChannelDialog';
 
@@ -23,22 +22,10 @@ function ChannelList({ channel_id: curr_channel_id }) {
   const token = React.useContext(AuthContext);
   React.useEffect(() => {
     // fetch channels data
-    const getMyChannels = () => {
-      return axios.get(`${url}/channels/list`, {
-        params: {
-          token,
-        },
-      });
-    };
+    const getMyChannels = axios.get('/channels/list', { params: { token } });
+    const getAllChannels = axios.get('/channels/listall', { params: { token } });
 
-    const getAllChannels = () => {
-      return axios.get(`${url}/channels/listall`, {
-        params: {
-          token,
-        },
-      });
-    };
-    axios.all([getMyChannels(), getAllChannels()]).then(
+    axios.all([getMyChannels, getAllChannels]).then(
       axios.spread((myChannelResponse, allChannelResponse) => {
         const myChannelData = myChannelResponse.data.channels;
         console.log(myChannelData);

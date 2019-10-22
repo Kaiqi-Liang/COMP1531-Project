@@ -6,7 +6,7 @@
 - Assume all of the messages passed into test_message_unpin are pinned already
 - Assume all of the messages passed into test_message_pin are not pinned
 - Assume all of the messages passed into test_message_react have not been reacted to
-- Assume al of the messages passed into test_message_unreact have been reacted to
+- Assume all of the messages passed into test_message_unreact have been reacted to
 - Assume a not valid message based on message_id means that no message with the id exists (in tests use -1 as an example)
 - Assume value of is_unread stays the same if a message is edited
 - Assume the messages sent in message_send and message_sendlater are unread for testing
@@ -28,3 +28,5 @@
 - Assume handles can be a max 20 characters and not minimum
 - Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
 - Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y
+
+- Assume reset_code is unique enough that the user won't be resetting somebody else's password

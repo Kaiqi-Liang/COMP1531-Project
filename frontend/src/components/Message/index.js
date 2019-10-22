@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import * as routecall from '../../utils/routecall';
 import timeago from 'epoch-timeago';
 
 import {
@@ -34,7 +34,7 @@ function Message({
   React.useEffect(() => {
     setName();
     setInitials();
-    axios
+    routecall
       .get(`${url}/user/profile`, {
         params: {
           token,
@@ -57,7 +57,7 @@ function Message({
   }, [message_id, token, u_id]);
 
   const messageRemove = () => {
-    axios.post(`${url}/message/remove`, {
+    routecall.post(`${url}/message/remove`, {
       token,
       message_id,
     });
