@@ -20,7 +20,6 @@ def auth_login(email, password):
                 raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
-    return {'Error': 'Error'}
 
 def auth_logout(token):
     u_id = get_user_from_token(token)
@@ -113,4 +112,3 @@ def auth_passwordreset_reset(reset_code, new_password):
             user['reset'] = None
 
     raise ValueError("Invalid reset code")
-    return {}

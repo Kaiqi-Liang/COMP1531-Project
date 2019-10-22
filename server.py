@@ -82,7 +82,6 @@ def details():
 @APP.route('/channels/create', methods=['POST'])
 def create():
     ''' Creates a new channel with that name that is either a public or private channel '''
-    # print(request.form.get('name'))
     return dumps(channel.channels_create(request.form.get('token'), request.form.get('name'), request.form.get('is_public')))
 
 

@@ -39,9 +39,9 @@ def channels_listall(token):
 
 def channels_create(token, name, is_public):
     if len(name) > 20:
-        raise ValueError
+        raise ValueError('Name is more than 20 characters long')
     channels = get_data()['channel']
-    channel_id = len(channels + 1)
+    channel_id = len(channels) + 1
     channels.append({
         'name': name,
         'channel_id': channel_id,
