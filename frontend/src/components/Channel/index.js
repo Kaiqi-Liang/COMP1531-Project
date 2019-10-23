@@ -32,7 +32,7 @@ function Channel({ channel_id, ...props }) {
 
   function fetchChannelData(channel_id, token) {
     axios
-      .get(`${url}/channel/details`, {
+      .get('/channel/details', {
         params: {
           token,
           channel_id,
@@ -51,13 +51,14 @@ function Channel({ channel_id, ...props }) {
         toast.error(CHANNEL_ERROR_TEXT);
       });
   }
+
   React.useEffect(() => {
     fetchChannelData(channel_id, token);
   }, [channel_id, token]);
 
   function joinChannel(channel_id, token) {
     axios
-      .post(`${url}/channel/join`, {
+      .post('/channel/join', {
         token,
         channel_id,
       })
@@ -72,7 +73,7 @@ function Channel({ channel_id, ...props }) {
 
   function leaveChannel(channel_id, token) {
     axios
-      .post(`${url}/channel/leave`, {
+      .post('/channel/leave', {
         token,
         channel_id,
       })
@@ -87,7 +88,7 @@ function Channel({ channel_id, ...props }) {
 
   function addOwner(u_id) {
     axios
-      .post(`${url}/channel/addowner`, {
+      .post('/channel/addowner', {
         token,
         channel_id,
         u_id,
@@ -103,7 +104,7 @@ function Channel({ channel_id, ...props }) {
 
   function removeOwner(u_id) {
     axios
-      .post(`${url}/channel/removeowner`, {
+      .post('/channel/removeowner', {
         token,
         channel_id,
         u_id,
