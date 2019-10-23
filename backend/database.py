@@ -47,6 +47,6 @@ DATA = {
 '''
 
 def get_data():
-    ''' get global variable ie. database'''
+    ''' get global variable i.e. database'''
     global DATA
     return DATA
