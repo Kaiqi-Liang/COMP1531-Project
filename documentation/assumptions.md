@@ -29,6 +29,7 @@
 - Assume handles can be a max 20 characters and not minimum
 - Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
 - Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y
+
 ## Iteration 2:
 - Assume reset_code is unique enough that the user won't be resetting somebody else's password
 - Assume that if a user is an owner of a channel and said channel is private, then they do not need to join (i.e. they are already in the channel)
