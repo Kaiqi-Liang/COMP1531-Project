@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   Avatar,
   Box,
@@ -10,9 +11,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import DeveloperOutlinedIcon from '@material-ui/icons/DeveloperModeOutlined';
-import * as routecall from '../utils/routecall';
 import React from 'react';
-import { url } from '../utils/constants';
 import { toast } from 'react-toastify';
 import { DEFAULT_ERROR_TEXT } from '../utils/text';
 
@@ -53,11 +52,11 @@ function RegisterPage({ setAuth, ...props }) {
     if (!values.email || !values.password) return;
 
     // Send to backend
-    routecall.post(`${url}/auth/register`, { ...values })
+    axios.post(`/auth/register`, { ...values })
       .then((response) => {
         console.log(response);
         const data = response.data;
-        setAuth(data.token);
+        setAuth(data.token, data.u_id);
         props.history.push('/');
       })
       .catch((err) => {

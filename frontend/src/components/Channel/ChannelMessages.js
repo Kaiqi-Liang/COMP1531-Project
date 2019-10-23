@@ -35,33 +35,14 @@ function ChannelMessages({ channel_id = '' }) {
   });
 
   React.useEffect(() => {
+    fetchChannelMessages();
     subscribeToStep(fetchChannelMessages);
     return () => unsubscribeToStep(fetchChannelMessages);
-  }, [])
+  }, [channel_id])
 
   useInterval(() => {
     if (getIsPolling()) fetchChannelMessages();
   }, pollingInterval);
-
-  React.useEffect(() => {
-    axios
-      .get(`${url}/channel/messages`, {
-        params: {
-          token,
-          channel_id,
-          start: currentStart,
-        },
-      })
-      .then(({ data }) => {
-        const { messages, start, end } = data;
-        setCurrentStart(end); // TODO: add/remove problems
-        setMessages(messages);
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error(CHANNEL_ERROR_TEXT);
-      });
-  }, [token, channel_id, currentStart]);
 
   return (
     <>

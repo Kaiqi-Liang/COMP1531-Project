@@ -1,4 +1,6 @@
+""" System imports """
 import hashlib
+import random
 
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
@@ -8,7 +10,7 @@ from backend.helpers.exception import ValueError
 
 def auth_login(email, password):
     if not check_email(email):
-        raise ValueError(description="Invalid login email")
+        raise ValueError("Invalid login email")
 
     for user in get_data()['user']:
         if user['email'] == email:
@@ -21,6 +23,7 @@ def auth_login(email, password):
 
     raise ValueError('Email entered does not belong to a user')
 
+
 def auth_logout(token):
     u_id = get_user_from_token(token)
     for user in get_data()['user']:
@@ -29,6 +32,7 @@ def auth_logout(token):
             return {'is_success': True}
 
     return {'is_success': False}
+
 
 def auth_register(email, password, name_first, name_last):
 
@@ -74,7 +78,7 @@ def auth_register(email, password, name_first, name_last):
     token = generate_token(u_id)
 
     # work out permission_id
-    if len(users) is 0:
+    if len(users) == 0:
         p_id = 1
     else:
         p_id = 3
@@ -108,5 +112,6 @@ def auth_passwordreset_reset(reset_code, new_password):
         if user['reset'] == reset_code:
             user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
             user['reset'] = None
+            return ({})
 
     raise ValueError("Invalid reset code")
