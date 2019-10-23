@@ -49,7 +49,7 @@ function ChannelMessages({ channel_id = '' }) {
         subheader={<ListSubheader>Messages</ListSubheader>}
         style={{ width: '100%' }}
       >
-        {messages.map((message) => (
+        {messages.slice().reverse().map((message) => (
           <Message {...message} />
         ))}
       </List>
