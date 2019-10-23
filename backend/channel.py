@@ -2,6 +2,7 @@
 from backend.database import get_data
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
+from backend.helpers.helpers import *
 
 
 def channel_invite(token, channel_id, u_id):
@@ -49,7 +50,7 @@ def channel_messages(token, channel_id, start):
                 if len(messages) == 50:
                     break
 
-            end = messages[-1]['message_id'] 
+            end = messages[-1]['message_id']
             return {'messages': messages, 'start': start, 'end': end}
 
         if channel['channel_id'] == channel_id and u_id not in channel['members']:
@@ -59,8 +60,11 @@ def channel_messages(token, channel_id, start):
 
 
 def channel_leave(token, channel_id):
-    raise ValueError
-
+    channel = is_valid_channel(channel_id)
+    if channel == None:
+        raise ValueError("Channel ID is not a valid channel")
+    u_id = get_user_from_token(token)
+    channel['members'].remove(u_id)
 
 def channel_join(token, channel_id):
     raise ValueError
@@ -89,7 +93,7 @@ def channel_removeowner(token, channel_id, u_id):
         raise AccessError("User is not an owner of the slackr or of this channel")
 
 def channels_list(token):
-    u_id = get_user_from_token
+    u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
         if u_id in channel['members']:
@@ -98,7 +102,7 @@ def channels_list(token):
 
 
 def channels_listall(token):
-    u_id = get_user_from_token
+    u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
             channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
