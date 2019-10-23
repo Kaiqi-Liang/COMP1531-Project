@@ -4,6 +4,10 @@ from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import *
 
+''' Permission id globals '''
+OWNER = 1
+ADMIN = 2
+MEMBER = 3
 
 def channel_invite(token, channel_id, u_id):
     #invite user to join a channel
@@ -66,14 +70,32 @@ def channel_leave(token, channel_id):
     u_id = get_user_from_token(token)
     channel['members'].remove(u_id)
 
+
 def channel_join(token, channel_id):
+    users = get_data()['user']
+
     channel = is_valid_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
     u_id = get_user_from_token(token)
 
-    
+    # If user is already in channel, ignore
+    if u_id in channel['members'] or u_id in channel['owners']:
+        return {}
 
+    # If channel is public
+    if channel['is_public']:
+        channel['members'].append(u_id)
+    else:
+        # If user is not an admin/owner (assumptions)
+        if not check_permission(u_id, OWNER) and not check_permission(u_id, ADMIN):
+            raise AccessError("User is not admin: unable to join private channel")
+        else:
+            # User is an admin/owner and can join channel
+            channel['owners'].append(u_id)
+            channel['members'].append(u_id)
+
+    return {}
 
 def channel_addowner(token, channel_id, u_id):
     #Make user with user id u_id an owner of this channel
@@ -83,7 +105,7 @@ def channel_addowner(token, channel_id, u_id):
         raise ValueError("Channel Id is not a valid channel")
     if u_id in channel['owners']:
         raise ValueError("User is already an owner of the channel")
-    if 
+    if
         raise AccessError("User is not an owner of the slackr or of this channel")
 
 
@@ -94,7 +116,7 @@ def channel_removeowner(token, channel_id, u_id):
         raise ValueError("Channel Id is not a valid channel")
     if u_id not in channel['owners']:
         raise ValueError("User is already an owner of the channel")
-    if 
+    if
         raise AccessError("User is not an owner of the slackr or of this channel")
 
 def channels_list(token):

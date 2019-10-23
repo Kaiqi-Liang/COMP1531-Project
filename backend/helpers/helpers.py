@@ -1,7 +1,23 @@
+''' syspath hack for local imports '''
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+
+from backend.database import get_data
+
+''' regex import'''
 import re
 
+''' USER '''
+''' Check user with u_id to see if they have permission p_id'''
+def check_permission(u_id, p_id):
+    slackr = get_data()['slackr']
+    return True if u_id in slackr[p_id] else False
+
+''' CHANNEL'''
+''' Check if user is in channel '''
 def check_in_channel(token, channel_id):
-    ''' Check if user is in channel '''
     channels = get_data()['channel']
     for channel in channels:
         if channel['channel_id'] == channel_id:
@@ -15,9 +31,11 @@ def is_valid_channel(channel_id):
             return channel
     return None
 
-EMAIL = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$' # regex for email address
+
+''' AUTH '''
+''' Check if an email is valid '''
 def check_email(email):
-    ''' Check if an email is valid '''
-    if(re.search(EMAIL, email)):
+    email_regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$' # regex for email address
+    if(re.search(email_regex, email)):
         return True
     return False
