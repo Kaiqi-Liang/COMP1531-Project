@@ -16,7 +16,6 @@ import PersonAddDisabled from '@material-ui/icons/PersonAddDisabled';
 import axios from 'axios';
 import React from 'react';
 import { toast } from 'react-toastify';
-import { url } from '../../utils/constants';
 import { CHANNEL_ERROR_TEXT, DEFAULT_ERROR_TEXT } from '../../utils/text';
 import AddMemberDialog from './AddMemberDialog';
 import ChannelMessages from './ChannelMessages';
