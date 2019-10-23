@@ -32,7 +32,6 @@ function ChannelList({ channel_id: curr_channel_id }) {
     axios.all([getMyChannels, getAllChannels]).then(
       axios.spread((myChannelResponse, allChannelResponse) => {
         const myChannelData = myChannelResponse.data.channels;
-        console.log(myChannelData);
         const allChannelData = allChannelResponse.data.channels;
         const filteredChannels = allChannelData.filter((channel) => {
           return (
@@ -40,7 +39,6 @@ function ChannelList({ channel_id: curr_channel_id }) {
             undefined
           );
         });
-        console.log(filteredChannels);
         setMyChannels(myChannelData);
         setAllChannels(filteredChannels);
       })
@@ -55,7 +53,7 @@ function ChannelList({ channel_id: curr_channel_id }) {
 
   useInterval(() => {
     if (getIsPolling()) fetchChannelsData();
-  }, pollingInterval);
+  }, pollingInterval * 2);
 
   return (
     <>

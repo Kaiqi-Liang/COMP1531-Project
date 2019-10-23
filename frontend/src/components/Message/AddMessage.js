@@ -67,6 +67,9 @@ function AddMessage({ channel_id = '' }) {
         });
       setCurrentTimer(TIMER_INACTIVE_VALUE);
     } else {
+      if (message == '/standup') {
+        alert('Hello. This feature isn\'t finished yet. We won\'t be expecting you to demonstrate this on the frontend in iteration 2'); // TODO
+      }
       axios.post(`/message/send`, {
         token,
         channel_id,
