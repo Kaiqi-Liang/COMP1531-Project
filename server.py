@@ -31,7 +31,7 @@ def send_mail(email, reset_code):
     msg.body = reset_code
     mail.send(msg)
 
-
+''' AUTH '''
 @APP.route('/auth/login', methods=['POST'])
 def login():
     """ Given a registered users' email and password and generates a valid token for the user to remain authenticated """
@@ -68,6 +68,7 @@ def passwordreset_reset():
     """ Given a reset code for a user, set that user's new password to the password provided """
     return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
 
+''' CHANNEL '''
 
 @APP.route('/channel/details', methods=['GET'])
 def details():
@@ -99,6 +100,15 @@ def create():
     print(request.form.get('name'))
     return dumps(channel.channels_create(request.form.get('token'), request.form.get('name'), request.form.get('is_public')))
 
+@APP.route('/channel/leave', methods=['POST'])
+def jleave():
+    ''' Given a channel ID, the user removed as a member of this channel '''
+    return dumps(channel.channel_join(request.form.get('token', request.form.get('channel_id'))))
+
+@APP.route('/channel/join', methods=['POST'])
+def join():
+    ''' Given a channel_id of a channel that the authorised user can join, adds them to that channel '''
+    return dumps(channel.channel_join(request.form.get('token', request.form.get('channel_id'))))
 
 if __name__ == '__main__':
     APP.run(port=(sys.argv[1] if len(sys.argv) > 1 else 5000), debug=True)
