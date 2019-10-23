@@ -55,7 +55,12 @@ def channel_leave(token, channel_id):
     channel['members'].remove(u_id)
 
 def channel_join(token, channel_id):
-    raise ValueError
+    channel = is_valid_channel(channel_id)
+    if channel == None:
+        raise ValueError("Channel ID is not a valid channel")
+    u_id = get_user_from_token(token)
+
+    
 
 
 def channel_addowner(token, channel_id, u_id):
