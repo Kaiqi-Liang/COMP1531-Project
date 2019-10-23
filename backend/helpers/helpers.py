@@ -39,3 +39,36 @@ def check_email(email):
     if(re.search(email_regex, email)):
         return True
     return False
+    
+''' MESSAGES'''
+''' Check message exists '''
+def check_message_exists(message_id):
+
+    channel_list = get_data()['channel']
+    for channel in channel_list:
+        for mess in channel['messages']:
+            if mess['message_id'] == message_id:
+                return True
+    
+    return False 
+    
+''' Get user permission_id '''
+def get_permission(user_id):
+    
+    users = getdata()['users']
+    for user in users:
+        if user_id == user['u_id']:
+            permission = user['permission_id']
+            
+    return permission
+    
+''' Return message dict'''
+def message_dict(message_id):
+    
+    channel_list = get_data['channel']
+    
+    for channel in channel_list:
+        for mess in channel['messages']:
+            if mess['message_id'] == message_id:
+                return mess
+            
