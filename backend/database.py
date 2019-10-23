@@ -48,9 +48,9 @@ DATA = {
     'slackr':
         [
             {
-            OWNER: [u_id],
-            ADMIN: [u_id],
-            MEMBER: [u_id]
+                OWNER: [u_id],
+                ADMIN: [u_id],
+                MEMBER: [u_id]
             }
         ]
 '''

@@ -97,6 +97,7 @@ def channel_join(token, channel_id):
 
     return {}
 
+
 def channel_addowner(token, channel_id, u_id):
     #Make user with user id u_id an owner of this channel
     channel['owners'].append(u_id)
@@ -119,6 +120,7 @@ def channel_removeowner(token, channel_id, u_id):
     else:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
+
 def channels_list(token):
     u_id = get_user_from_token(token)
     channels = []
@@ -134,6 +136,7 @@ def channels_listall(token):
     for channel in get_data()['channel']:
             channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
+
 
 def channels_create(token, name, is_public):
     if len(name) > 20:
