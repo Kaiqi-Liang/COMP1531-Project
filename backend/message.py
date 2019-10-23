@@ -81,7 +81,6 @@ def message_edit(token, message_id, message):
 def message_react(token, message_id, react_id):
     
     channel_list = getdata()['channel']
-    react_list = message_list['reacts']
     # value error: message is not apart of a channel that the user is in 
     for channel in channel_list:
         for mess in channel['messages']:
@@ -89,18 +88,28 @@ def message_react(token, message_id, react_id):
                 if not check_in_channel(token, channel['id']):
                     raise ValueError("User is not part of channel")
     # value error: react_id is not a valid react id 
-    if react_id not in react_list['react_id']:
-        raise ValueError("react_id is not valid")
-    # value error: user has already reacted to the message -> this isn't right, need to do it based off message :( 
+    for channel in channel_list:
+        for mess in channel['messages']:
+            if react_id not in mess['reacts']['react_id']:  # check back to see if this is valid 
+                raise ValueError("react_id is not valid")
+    # value error: user has already reacted to the message -> this isn't right, need to do it based off message 
+    for channel in channel_list:
+        for mess in channel['messages']:
+            if message_id == mess['message_id']:
+                for react in mess['reacts']:
+                    if react_id == react['react_id']:
+                        if is_this_user_reacted == True:
+                            raise ValueError("Message already contains a react_id from user")
 
     
     # add the react to the message
-    for m in message_list:
-        if m['message_id'] == message_id:
-            for r_id in m['reacts']:
-                if r_id['react_id'] == react_id:
-                    r_id['is_this_user_reacted']  = True
-                    r_id['u_ids'].append(get_user_from_token(token))
+    for channel in chanel_list:
+        for m in message_list:
+            if m['message_id'] == message_id:
+                for r_id in m['reacts']:
+                    if r_id['react_id'] == react_id:
+                        r_id['is_this_user_reacted']  = True
+                        r_id['u_ids'].append(get_user_from_token(token))
 
 def message_unreact(token, message_id, react_id):
     
