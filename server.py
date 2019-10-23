@@ -103,15 +103,15 @@ def create():
 @APP.route('/channel/leave', methods=['POST'])
 def leave():
     ''' Given a channel ID, the user removed as a member of this channel '''
-    return dumps(channel.channel_join(request.form.get('token', request.form.get('channel_id'))))
+    return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
 
 
 @APP.route('/channel/join', methods=['POST'])
 def join():
     ''' Given a channel_id of a channel that the authorised user can join, adds them to that channel '''
-    return dumps(channel.channel_join(request.form.get('token', request.form.get('channel_id'))))
+    return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
 
-''' MESSAGE''''
+''' MESSAGE '''
 
 @APP.route('/message/remove', methods=['DELETE'])
 def remove():
