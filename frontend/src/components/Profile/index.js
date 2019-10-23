@@ -51,9 +51,9 @@ function Profile({ profile }) {
       });
   }
 
-  function updateHandle(handle) {
+  function updateHandle(handle_str) {
     axios
-      .put(`/user/profile/sethandle`, { token, handle })
+      .put(`/user/profile/sethandle`, { token, handle_str })
       .then(() => {
         console.log('all good');
       })
