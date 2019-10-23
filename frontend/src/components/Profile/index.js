@@ -11,10 +11,12 @@ import AuthContext from '../../AuthContext';
 import { extractUId } from '../../utils/token';
 import EditableFields from './EditableFields';
 
-function Profile({ profile, ...props }) {
+function Profile({ profile }) {
+
   const [profileDetails, setProfileDetails] = React.useState({});
   const token = React.useContext(AuthContext);
   const u_id = extractUId(token);
+
   React.useEffect(() => {
     axios
       .get(`/user/profile`, { params: { token, u_id } })
@@ -68,8 +70,8 @@ function Profile({ profile, ...props }) {
         <ListItem key={'name'}>
           <EditableFields
             editable={editable}
-            masterValue={profileDetails.last_name}
-            slaveValues={[profileDetails.first_name]}
+            masterValue={profileDetails.name_last}
+            slaveValues={[profileDetails.name_first]}
             master={(passed_props) => (
               <TextField label={'Last Name'} {...passed_props} />
             )}
@@ -94,7 +96,7 @@ function Profile({ profile, ...props }) {
         <ListItem key={'handle'}>
           <EditableFields
             editable={editable}
-            masterValue={'phlips'}
+            masterValue={profileDetails.handle_str}
             master={(passed_props) => (
               <TextField label={'Handle'} {...passed_props} />
             )}

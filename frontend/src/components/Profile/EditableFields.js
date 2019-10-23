@@ -13,11 +13,19 @@ function EditableFields({
   onSave,
   ...props
 }) {
+
   const [edit, setEdit] = React.useState(false);
   const [prevMasterValue, setPrevMasterValue] = React.useState();
   const [currMasterValue, setCurrMasterValue] = React.useState(masterValue);
   const [prevSlaveValues, setPrevSlaveValues] = React.useState([]);
   const [currSlaveValues, setCurrSlaveValues] = React.useState(slaveValues);
+
+  // Handle async passing of master/slave values
+  React.useEffect(() => {
+    setCurrMasterValue(masterValue);
+    setCurrSlaveValues(slaveValues);
+  }, [masterValue, slaveValues]);
+
   function toggleEdit() {
     setPrevMasterValue(currMasterValue);
     setPrevSlaveValues(currSlaveValues);
@@ -63,9 +71,11 @@ function EditableFields({
     });
     setCurrSlaveValues(copySlaves);
   }
+
   function onMasterChange(event) {
     setCurrMasterValue(event.target.value);
   }
+
   return (
     <Grid container spacing={1} alignItems="flex-end">
       {slaves &&
@@ -73,7 +83,7 @@ function EditableFields({
           return (
             <Grid item key={idx}>
               {slave({
-                value: currSlaveValues[idx],
+                value: currSlaveValues[idx] || "", // "" required for label placeholder mechanics
                 InputProps: { readOnly: !edit },
                 onChange: (event) => onSlaveChange(event, idx),
               })}
@@ -82,7 +92,7 @@ function EditableFields({
         })}
       <Grid item>
         {master({
-          value: currMasterValue,
+          value: currMasterValue || "", // "" required for label placeholder mechanics
           InputProps: { readOnly: !edit },
           onChange: onMasterChange,
         })}
