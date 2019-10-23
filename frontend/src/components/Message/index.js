@@ -14,6 +14,7 @@ import AuthContext from '../../AuthContext';
 import MessagePin from './MessagePin';
 import MessageReact from './MessageReact';
 import MessageRemove from './MessageRemove';
+import MessageEdit from './MessageEdit';
 
 
 function Message({
@@ -54,14 +55,6 @@ function Message({
       });
   }, [message_id, token, u_id]);
 
-  const messageRemove = () => {
-    axios.post(`/message/remove`, {
-      token,
-      message_id,
-    });
-  };
-
-
   return (
     <ListItem key={message_id} style={{ width: '100%' }}>
       {name && initials && message && (
@@ -97,6 +90,9 @@ function Message({
               <MessagePin
                 message_id={message_id}
                 is_pinned={is_pinned}
+              />
+              <MessageEdit
+                message_id={message_id}
               />
               <MessageRemove
                 message_id={message_id}
