@@ -1,6 +1,7 @@
 DATA = {
     'user': [],
-    'channel': []
+    'channel': [],
+    'slackr': []
 }
 
 '''
@@ -42,6 +43,14 @@ DATA = {
                                     'is_pinned': True
                                 }
                             ]
+            }
+        ],
+    'slackr':
+        [
+            {
+            'owners': [u_id],
+            'admins': [u_id],
+            'members': [u_id]
             }
         ]
 '''

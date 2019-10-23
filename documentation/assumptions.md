@@ -32,4 +32,4 @@
 
 ## Iteration 2:
 - Assume reset_code is unique enough that the user won't be resetting somebody else's password
-- Assume that if a user is an owner of a channel and said channel is private, then they do not need to join (i.e. they are already in the channel)
+- Assume that if a user is an admin of a channel and said channel is private, then they do not need to join (i.e. they are already in the channel)
