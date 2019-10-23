@@ -24,7 +24,21 @@ def channel_messages(token, channel_id, start):
     u_id = get_user_from_token(token)
     for channel in get_data()['channel']:
         if channel['channel_id'] == channel_id and u_id in channel['members']:
-            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+            if start >= len(channel['messages']):
+                raise ValueError("start is greater than or equal to the total number of messages in the channel")
+
+            messages = []
+            for message in channel['messages']:
+                if message['message_id'] < start:
+                    continue
+
+                messages.append(message)
+
+                if len(messages) == 50:
+                    break
+
+            end = messages[-1]['message_id'] 
+            return {'messages': messages, 'start': start, 'end': end}
 
         if channel['channel_id'] == channel_id and u_id not in channel['members']:
             raise AccessError("Authorised user is not a member of channel with channel_id")
