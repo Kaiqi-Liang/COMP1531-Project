@@ -83,7 +83,7 @@ def channel_addowner(token, channel_id, u_id):
         raise ValueError("Channel Id is not a valid channel")
     if u_id in channel['owners']:
         raise ValueError("User is already an owner of the channel")
-    if 
+    else: 
         raise AccessError("User is not an owner of the slackr or of this channel")
 
 
@@ -94,7 +94,7 @@ def channel_removeowner(token, channel_id, u_id):
         raise ValueError("Channel Id is not a valid channel")
     if u_id not in channel['owners']:
         raise ValueError("User is already an owner of the channel")
-    if 
+    else: 
         raise AccessError("User is not an owner of the slackr or of this channel")
 
 def channels_list(token):
