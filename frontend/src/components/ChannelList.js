@@ -55,7 +55,7 @@ function ChannelList({ channel_id: curr_channel_id }) {
 
   useInterval(() => {
     if (getIsPolling()) fetchChannelsData();
-  }, pollingInterval);
+  }, pollingInterval * 2);
 
   return (
     <>
