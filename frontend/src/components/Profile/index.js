@@ -19,7 +19,7 @@ function Profile({ profile }) {
 
   React.useEffect(() => {
     axios
-      .get(`/user/profile`, { params: { token, u_id } })
+      .get(`/user/profile`, { params: { token, u_id: profile } })
       .then(({ data }) => {
         console.log(data);
         setProfileDetails(data);
@@ -63,6 +63,7 @@ function Profile({ profile }) {
   }
 
   const editable = u_id.toString() === profile;
+
   return (
     <>
       <Typography variant="h4">Profile</Typography>
