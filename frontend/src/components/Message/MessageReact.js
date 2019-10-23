@@ -1,5 +1,5 @@
 import React from 'react';
-import * as routecall from '../../utils/routecall';
+import axios from 'axios';
 
 import {
   Badge,
@@ -8,8 +8,6 @@ import {
 
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
-
-import { url } from '../../utils/constants';
 
 import AuthContext from '../../AuthContext';
 
@@ -22,13 +20,13 @@ function MessageReact({
 
   const messageReact = (is_reacted) => {
     if (is_reacted) {
-      routecall.post(`${url}/message/unreact`, {
+      axios.post(`/message/unreact`, {
         token,
         message_id,
         react_id: 1 /* FIXME */,
       });
     } else {
-      routecall.post(`${url}/message/react`, {
+      axios.post(`/message/react`, {
         token,
         message_id,
         react_id: 1 /* FIXME */,

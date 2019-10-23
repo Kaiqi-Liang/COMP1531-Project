@@ -20,8 +20,9 @@ function App() {
     localStorage.getItem('token')
   );
 
-  function setAuth(token) {
+  function setAuth(token, u_id) {
     localStorage.setItem('token', token);
+    localStorage.setItem('u_id', u_id);
     setAuthDetails(token);
   }
   return (

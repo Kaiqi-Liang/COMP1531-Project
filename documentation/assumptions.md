@@ -1,4 +1,5 @@
 # Assumptions:
+## Iteration 1:
 - Assume when message_remove is called the message with message_id is deleted from the messages list
 - Assume when a message is edited, the time_created stays to when the message was posted, not edited
 - Assume when a message is edited, the user_id remains as the original poster of the message
@@ -29,4 +30,7 @@
 - Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
 - Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y
 
+## Iteration 2:
 - Assume reset_code is unique enough that the user won't be resetting somebody else's password
+- Assume that if a user is an admin of a channel and said channel is private, then they do not need to join (i.e. they are already in the channel)
+- Assume that when checking if a user can join a private channel, we are only considering them if they are not owners/admins and not just admins

@@ -103,7 +103,6 @@ def auth_register(email, password, name_first, name_last):
 
 
 def auth_passwordreset_reset(reset_code, new_password):
-
     users = get_data()['user']
 
     if not isinstance(reset_code, str): # Check if reset_code is valid i.e. a string
