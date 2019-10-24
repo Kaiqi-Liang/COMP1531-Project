@@ -42,25 +42,31 @@ def channel_details(token, channel_id):
 
 def channel_messages(token, channel_id, start):
     start = int(start)
+    channel_id = int(channel_id)
     u_id = get_user_from_token(token)
-    return {'messages':[], 'start': start, 'end': -1}
     for channel in get_data()['channel']:
-        if channel['channel_id'] == channel_id and u_id in channel['members']:
-            if start > len(channel['messages']):
-                raise ValueError("start is greater than or equal to the total number of messages in the channel")
+        if channel['channel_id'] == channel_id:
+            members = channel['members']
+            for user in members:
+                if u_id == user['u_id']:
+                    if start > len(channel['messages']):
+                        raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
-            messages = []
-            for message in channel['messages']:
-                if message['message_id'] < start:
-                    continue
+                    messages = []
+                    for message in channel['messages']:
+                        if message['message_id'] < start:
+                            continue
 
-                messages.append(message)
+                        messages.append(message)
 
-                if len(messages) == 50:
-                    break
+                        if len(messages) == 50:
+                            break
 
-            end = messages[-1]['message_id']
-            return {'messages': messages, 'start': start, 'end': end}
+                    if len(messages) == 0:
+                        return {'messages': messages, 'start': start, 'end': -1}
+                    else:
+                        end = messages[-1]['message_id']
+                        return {'messages': messages, 'start': start, 'end': end}
 
         if channel['channel_id'] == channel_id and u_id not in channel['members']:
             raise AccessError("Authorised user is not a member of channel with channel_id")
@@ -132,6 +138,9 @@ def channels_list(token):
     for channel in get_data()['channel']:
         members = channel['members']
         for user in members:
+            print(u_id)
+            print(user)
+            print(user['u_id'])
             if u_id == user['u_id']:
                 channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}

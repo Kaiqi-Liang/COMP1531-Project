@@ -76,11 +76,7 @@ def passwordreset_reset():
 @APP.route('/channel/details', methods=['GET'])
 def details():
     """ Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel """
-    ret = channel.channel_details(request.args.get('token'), request.args.get('channel_id'))
-    print()
-    print(ret)
-    print()
-    return dumps(ret)
+    return dumps(channel.channel_details(request.args.get('token'), request.args.get('channel_id')))
 
 
 @APP.route('/channel/messages', methods=['GET'])
