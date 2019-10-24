@@ -31,7 +31,7 @@ def send_mail(email, reset_code):
     msg.body = reset_code
     mail.send(msg)
 
-
+''' AUTH '''
 @APP.route('/auth/login', methods=['POST'])
 def login():
     """ Given a registered users' email and password and generates a valid token for the user to remain authenticated """
@@ -68,6 +68,7 @@ def passwordreset_reset():
     """ Given a reset code for a user, set that user's new password to the password provided """
     return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
 
+''' CHANNEL '''
 
 @APP.route('/channel/details', methods=['GET'])
 def details():
@@ -96,8 +97,56 @@ def listall():
 @APP.route('/channels/create', methods=['POST'])
 def create():
     """ Creates a new channel with that name that is either a public or private channel """
-    print(request.form.get('name'))
     return dumps(channel.channels_create(request.form.get('token'), request.form.get('name'), request.form.get('is_public')))
+
+
+@APP.route('/channel/leave', methods=['POST'])
+def leave():
+    ''' Given a channel ID, the user removed as a member of this channel '''
+    return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
+
+
+@APP.route('/channel/join', methods=['POST'])
+def join():
+    ''' Given a channel_id of a channel that the authorised user can join, adds them to that channel '''
+    return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
+
+''' MESSAGE '''
+
+@APP.route('/message/remove', methods=['DELETE'])
+def remove():
+    '''Given a message_id for a message, this message is removed from the channel'''
+    return dumps(message.message_remove(request.args.get('token'), request.args.get('message_id')))
+
+
+@APP.route('/message/edit', methods=['PUT'])
+def edit():
+    ''' Given a message, update it's text with new text'''
+    return dumps(message.message_edit(request.args.get('token'), request.args.get('message_id'), request.args.get('message')))
+
+
+@APP.route('/message/react', methods=['POST'])
+def react():
+    ''' Given a message within a channel the authorised user is part of, add a "react" to that particular message'''
+    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id'), request.form.get('react_id')))
+
+
+@APP.route('/message/unreact', methods=['POST'])
+def unreact():
+    ''' Given a message within a channel the authorised user is part of, remove a "react" to that particular message'''
+    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id'), request.form.get('react_id')))
+
+
+@APP.route('/message/pin', methods=['POST'])
+def pin():
+    ''' Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend'''
+    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
+
+
+@APP.route('/message/unpin', methods=['POST'])
+def unpin():
+    '''Given a message within a channel, remove it's mark as unpinned'''
+    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
 
 
 if __name__ == '__main__':
