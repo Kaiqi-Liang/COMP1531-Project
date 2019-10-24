@@ -18,7 +18,11 @@ function MessageEdit({
     const messageEdit = () => {
         const message = prompt();
         if (!message) return; // basic validation
+<<<<<<< HEAD
         axios.post(`/message/edit`, {
+=======
+        axios.put(`/message/edit`, {
+>>>>>>> COMP1531/19T3-cs1531-project-master
             token,
             message_id,
             message,
