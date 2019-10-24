@@ -71,4 +71,20 @@ def message_dict(message_id):
         for mess in channel['messages']:
             if mess['message_id'] == message_id:
                 return mess
-            
+                
+''' Return a list of owners of a channel a message with message_id is in'''
+def owners_channel(message_id):
+    channel_list = getdata()['channel']
+    for channel in channel_list:
+        for message in channel['messages']:
+            if message['message_id'] == message_id:
+                return channel['owners']
+                
+''' Check if a react_id is valid'''
+def check_valid_react(react_id, message):
+
+    for react in message['reacts']:
+        if react['react_id'] == react_id:
+            return True
+    
+    return False
