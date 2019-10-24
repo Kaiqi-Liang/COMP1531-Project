@@ -22,8 +22,11 @@ A video describing this project and the background here can be found here.
 * 17/10/2019: Clarification added to "permissions" by providing examples to explain the difference more between general permissions and channel permissions
 * 18/10/2019: "note: this is not requried to be completed until iteration 3" added to uploadphoto
 * 24/10/2019: "exactly members" in the data types updated to say "ends in members"
-* 24/10/2019: Helpful example of how to use python datetime numerically
+* 24/10/2019: Helpful example of how to use python datetime numerically (i.e. unix timestamp)
 * 24/10/2019: Clarified that { channels } refers to a dictionary
+* 24/10/2019: "49" to "50" for the EXAMPLE for channel/messages. "or equal" to remove from the error check 
+* 24/10/2019: Clarified for iteration 2 that the only valid react ID is 1
+* 24/10/2019: Removed "working with frontend" as per notice on Oct 24th
 
 ## Overview
 
@@ -157,7 +160,7 @@ Details concerning the front-end will be released in week 5.
 
 |Section|Weighting|Criteria|
 |---|---|---|
-|Implementation|50%|<ul><li>All interface functions are implemented correctly based on the specification</li><li>Backend tested and working with frontend provided</li><li>Appropriate data structures are used to store application state.</li><li>The flask wrapper for the interface is complete and functional.</li></ul>|
+|Implementation|50%|<ul><li>All interface functions are implemented correctly based on the specification</li><li>Backend tested and working</li><li>Appropriate data structures are used to store application state.</li><li>The flask wrapper for the interface is complete and functional.</li></ul>|
 |Assurance|25%|<ul><li>Demonstration of an understanding of the need for software verification and validation</li><li>Development of appropriate acceptance criteria based on user stories and requirements.</li><li>Demonstration of appropriate tool usage for assurance (code coverage, linting, etc.)</li></ul>|
 |Teamwork|25%|<ul><li>Consistent work towards the goal of a working backend.</li><li>Task board is always up to date and reflects ongoing work</li><li>Demonstration of appropriate use of agile practices to work effectively as a team.</li></ul>|
 
@@ -186,7 +189,7 @@ Details will be released in week 7
 |contains substring **name**|string|
 |contains substring **code**|string|
 |has prefix **is_**|boolean|
-|has prefix **time_**|datetime (you'll probably want to convert it to something numerical, like a (unix timestamp)[https://www.tutorialspoint.com/How-to-convert-Python-date-to-Unix-timestamp]|
+|has prefix **time_**|datetime (expect this to be something numerical, like a (unix timestamp)[https://www.tutorialspoint.com/How-to-convert-Python-date-to-Unix-timestamp]|
 |has suffix **_id**|integer|
 |has suffix **_url**|string|
 |has suffix **_str**|string|
@@ -259,7 +262,7 @@ isaac: my catfish ate a toaster
 |POST|auth/passwordreset/reset|(reset_code, new_password)|{}|**ValueError** when:<ul><li>reset_code is not a valid reset code</li><li>Password entered is not a valid password</li>|Given a reset code for a user, set that user's new password to the password provided|
 |POST|channel/invite|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>channel_id does not refer to a valid channel that the authorised user is part of.</li><li>u_id does not refer to a valid user</li></ul>**AccessError** when<ul><li>the authorised user is not already a member of the channel</li>|Invites a user (with user id u_id) to join a channel with ID channel_id. Once invited the user is added to the channel immediately|
 |GET|channel/details|(token, channel_id)|{ name, owner_members, all_members }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel|
-|GET|channel/messages|(token, channel_id, start)|{ messages, start, end }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>start is greater than or equal to the total number of messages in the channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 in "end" to indicate there are no more messages to load after this return.|
+|GET|channel/messages|(token, channel_id, start)|{ messages, start, end }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>start is greater than the total number of messages in the channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 in "end" to indicate there are no more messages to load after this return.|
 |POST|channel/leave|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>|Given a channel ID, the user removed as a member of this channel|
 |POST|channel/join|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>channel_id refers to a channel that is private (when the authorised user is not an admin)</li></ul>|Given a channel_id of a channel that the authorised user can join, adds them to that channel|
 |POST|channel/addowner|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is already an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Make user with user id u_id an owner of this channel|
@@ -271,7 +274,7 @@ isaac: my catfish ate a toaster
 |POST|message/send|(token, channel_id, message)|{ message_id }|**ValueError** when:<ul><li>Message is more than 1000 characters</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id|
 |DELETE|message/remove|(token, message_id)|{}|**ValueError** when:<ul><li>Message (based on ID) no longer exists</li></ul>**AccessError** when none of the following are true:<ul><li>Message with message_id was sent by the authorised user making this request</li><li>The authorised user is an admin or owner of this channel or the slackr</li></ul>|Given a message_id for a message, this message is removed from the channel|
 |PUT|message/edit|(token, message_id, message)|{}|**AccessError** when none of the following are true:<ul><li>Message with message_id was sent by the authorised user making this request</li><li>The authorised user is an admin or owner of this channel or the slackr</li></ul>|Given a message, update it's text with new text|
-|POST|message/react|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID</li><li>Message with ID message_id already contains an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, add a "react" to that particular message|
+|POST|message/react|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID. For iteration 2, the only valid react ID is 1</li><li>Message with ID message_id already contains an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, add a "react" to that particular message|
 |POST|message/unreact|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID</li><li>Message with ID message_id does not contain an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, remove a "react" to that particular message|
 |POST|message/pin|(token, message_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already pinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend|
 |POST|message/unpin|(token, message_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already unpinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, remove it's mark as unpinned|
@@ -295,8 +298,8 @@ isaac: my catfish ate a toaster
 The behaviour in which channel_messages returns data is called **pagination**. It's a commonly used method when it comes to getting theoretially unbounded amounts of data from a server to display on a page in chunks. Most of the timelines you know and love - Facebook, Instagram, LinkedIn - do this.
 
 For example, if we imagine a user with token "12345" is trying to read messages from channel with ID 6, and this channel has 124 messages in it, 3 calls from the client to the server would be made. These calls, and their corresponding return values would be:
- * channel_messages("12345", 6, 0) => { [messages], 0, 49 }
- * channel_messages("12345", 6, 50) => { [messages], 50, 99 }
+ * channel_messages("12345", 6, 0) => { [messages], 0, 50 }
+ * channel_messages("12345", 6, 50) => { [messages], 50, 100 }
  * channel_messages("12345", 6, 100) => { [messages], 100, -1 }
 
 ## Due Dates and Weightings
