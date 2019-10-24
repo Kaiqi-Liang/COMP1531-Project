@@ -68,11 +68,7 @@ function ChannelMessages({ channel_id = '' }) {
         style={{ width: '100%' }}
       >
         {messages.slice().reverse().map((message) => (
-<<<<<<< HEAD
-          <Message {...message} />
-=======
           <Message key={message.message_id} {...message} />
->>>>>>> COMP1531/19T3-cs1531-project-master
         ))}
       </List>
       <AddMessage onAdd={resetChannelMessages} channel_id={channel_id} />
