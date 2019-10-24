@@ -1,15 +1,37 @@
-''' Local packages '''
-from server import get_data   # server.py
+""" Local packages """
+from backend.database import get_data
+from backend.helpers.token import get_user_from_token
+from backend.helpers.exception import ValueError, AccessError
+from backend.helpers.helpers import *
+
+from time import time
 
 def message_sendlater(token, channel_id, message, time_sent):
     pass
 
 
 def message_send(token, channel_id, message):
+    channel_id = int(channel_id)
+    message_id = 0
+    u_id = get_user_from_token(token)
     if len(message) > 1000:
-        raise ValueError
-    channel = is_valid_channel(channel_id)
-    channel['message'].append(message)
+        raise ValueError('Message is more than 1000 characters')
+
+    message_channel = None
+    for channel in get_data()['channel']:
+        message_id += len(channel['message'])
+        if channel_id == channel['channel_id']:
+            message_channel = channel
+
+    if message_channel == None:
+        raise ValueError('Channel ID is not a valid channel')
+
+    for user in message_channel['members']:
+        if user['u_id'] == u_id:
+            message_channel['message'].append({'message_id': message_id, 'message':message, 'time_created': time.time(), 'reacts': [], 'is_pinned', False})
+            return {'message_id': message_id}
+
+    raise AccessError
 
  
 def message_remove(token, message_id):
