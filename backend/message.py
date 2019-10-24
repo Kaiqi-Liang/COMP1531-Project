@@ -19,7 +19,7 @@ def message_send(token, channel_id, message):
 
     message_channel = None
     for channel in get_data()['channel']:
-        message_id += len(channel['message'])
+        message_id += len(channel['messages'])
         if channel_id == channel['channel_id']:
             message_channel = channel
 
@@ -28,7 +28,7 @@ def message_send(token, channel_id, message):
 
     for user in message_channel['members']:
         if user['u_id'] == u_id:
-            message_channel['message'].append({'message_id': message_id, 'message':message, 'time_created': time.time(), 'reacts': [], 'is_pinned', False})
+            message_channel['messages'].append({'message_id': message_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
             return {'message_id': message_id}
 
     raise AccessError
@@ -38,8 +38,8 @@ def message_remove(token, message_id):
 
     channel_list = getdata()['channel']
     user_id = get_user_from_token(token)
-               
-    # value error: message with message_id does not exist     
+
+    # value error: message with message_id does not exist
     if not check_message_exists(message_id):
         raise ValueError("Message no longer exists")
     # access error: authorised user did not send the message and are not an admin or owner of slackr
@@ -91,7 +91,7 @@ def message_react(token, message_id, react_id):
     # value error: user has already reacted to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
-            if react['is_this_user_reacted'] == True
+            if react['is_this_user_reacted'] == True:
                 raise ValueError("Message already contains a react_id from user")
 
     # add the react to the message
@@ -117,7 +117,7 @@ def message_unreact(token, message_id, react_id):
     # value error: user has not reacted to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
-            if react['is_this_user_reacted'] == False
+            if react['is_this_user_reacted'] == False:
                 raise ValueError("Message does not contains a react_id from user")
 
 
@@ -140,7 +140,7 @@ def message_pin(token, message_id):
     if get_permission(user_id) != 2:
         raise ValueError("User is not an admin")
     # value error: message is already pinned
-    mess = message_dict(message_id):
+    mess = message_dict(message_id)
     if mess['is_pinned'] == True:
         raise ValueError("Message is already pinned")
     # access error: authorised user is not apart of the channel the message is within
@@ -176,7 +176,5 @@ def message_unpin(token, message_id):
                 if not check_in_channel(token, channel['id']):
                     raise AccessError("User is not a member of the channel") 
     
-     # unpin the message
-     mess['is_pinned'] = False
-    
-    
+    # unpin the message
+    mess['is_pinned'] = False

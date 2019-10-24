@@ -8,6 +8,7 @@ from flask import Flask, request
 
 from backend import auth
 from backend import channel
+from backend import message
 from backend.database import get_data
 from backend.helpers.exception import defaultHandler
 
@@ -125,37 +126,37 @@ def send():
 
 @APP.route('/message/remove', methods=['DELETE'])
 def remove():
-    '''Given a message_id for a message, this message is removed from the channel'''
-    return dumps(message.message_remove(request.args.get('token'), request.args.get('message_id')))
+    """ Given a message_id for a message, this message is removed from the channel """
+    return dumps(message.message_remove(request.form.get('token'), request.form.get('message_id')))
 
 
 @APP.route('/message/edit', methods=['PUT'])
 def edit():
-    ''' Given a message, update it's text with new text'''
-    return dumps(message.message_edit(request.args.get('token'), request.args.get('message_id'), request.args.get('message')))
+    """ Given a message, update it's text with new text """
+    return dumps(message.message_edit(request.form.get('token'), request.form.get('message_id'), request.form.get('message')))
 
 
 @APP.route('/message/react', methods=['POST'])
 def react():
-    ''' Given a message within a channel the authorised user is part of, add a "react" to that particular message'''
+    """ Given a message within a channel the authorised user is part of, add a "react" to that particular message """
     return dumps(message.message_react(request.form.get('token'), request.form.get('message_id'), request.form.get('react_id')))
 
 
 @APP.route('/message/unreact', methods=['POST'])
 def unreact():
-    ''' Given a message within a channel the authorised user is part of, remove a "react" to that particular message'''
+    """ Given a message within a channel the authorised user is part of, remove a "react" to that particular message """
     return dumps(message.message_react(request.form.get('token'), request.form.get('message_id'), request.form.get('react_id')))
 
 
 @APP.route('/message/pin', methods=['POST'])
 def pin():
-    ''' Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend'''
+    """ Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend """
     return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
 
 
 @APP.route('/message/unpin', methods=['POST'])
 def unpin():
-    '''Given a message within a channel, remove it's mark as unpinned'''
+    """ Given a message within a channel, remove it's mark as unpinned """
     return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
 
 

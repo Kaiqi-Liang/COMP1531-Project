@@ -138,9 +138,6 @@ def channels_list(token):
     for channel in get_data()['channel']:
         members = channel['members']
         for user in members:
-            print(u_id)
-            print(user)
-            print(user['u_id'])
             if u_id == user['u_id']:
                 channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
