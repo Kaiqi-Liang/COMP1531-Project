@@ -12,8 +12,6 @@ import {
 } from '@material-ui/core';
 import DeveloperOutlinedIcon from '@material-ui/icons/DeveloperModeOutlined';
 import React from 'react';
-import { toast } from 'react-toastify';
-import { DEFAULT_ERROR_TEXT } from '../utils/text';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -48,10 +46,7 @@ function ForgotPasswordPage(props) {
         console.log(response);
         props.history.push('/reset_password');
       })
-      .catch((err) => {
-        console.error(err);
-        toast.error(DEFAULT_ERROR_TEXT);
-      });
+      .catch((err) => {});
   }
 
   const classes = useStyles();

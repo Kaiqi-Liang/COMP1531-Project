@@ -18,7 +18,7 @@ function MessageEdit({
     const messageEdit = () => {
         const message = prompt();
         if (!message) return; // basic validation
-        axios.post(`/message/edit`, {
+        axios.put(`/message/edit`, {
             token,
             message_id,
             message,

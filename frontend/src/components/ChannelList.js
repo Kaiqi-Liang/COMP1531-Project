@@ -61,7 +61,7 @@ function ChannelList({ channel_id: curr_channel_id }) {
         subheader={
           <ListSubheader style={{ display: 'flex' }}>
             <span style={{ flex: 1 }}>My Channels</span>
-            <AddChannelDialog />
+            <AddChannelDialog callback={fetchChannelsData} />
           </ListSubheader>
         }
       >
