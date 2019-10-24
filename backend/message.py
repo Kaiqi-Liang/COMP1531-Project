@@ -17,18 +17,16 @@ def message_remove(token, message_id):
 
     channel_list = getdata()['channel']
 
-    # get the permission_id of the authorised user, to use in testing  
+    # get the permission_id of the authorised user 
     user_id = get_user_from_token(token)
             
     # value error: message with message_id does not exist     
     if not check_message_exists(message_id):
         raise ValueError("Message no longer exists")
     # access error: authorised user did not send the message and are not an admin or owner
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                if mess['u_id'] != user_id and get_permission(user_id) == 3:
-                    raise AccessError("Don't have permission to remove message")
+    mess = message_dict(message_id)
+    if mess['u_id'] != user_id and get_permission(user_id) == 3:
+        raise AccessError("Don't have permission to remove message")
     
     # remove the message
     for channel in channel_list:
@@ -44,18 +42,13 @@ def message_edit(token, message_id, message):
     user_id = get_user_from_token(token)
     
     # access error: authorised user did not send the message and user is not an admin or owner
-    for channel in channel_list :
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                if mess['u_id'] != user_id and get_permission(user_id) == 3:
-                    raise AccessError("Don't have permission to remove message")
+    mess = message_dict(message_id)
+    if mess['u_id'] != user_id and get_permission(user_id) == 3:
+        raise AccessError("Don't have permission to remove message")
      
     # edit the message
-    for channel in channe_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                 mess['message'] = message
-     # leave the time_created and u_id the same 
+    mess['message'] = message
+    # leave the time_created and u_id the same 
             
 def message_react(token, message_id, react_id):
     
@@ -137,11 +130,9 @@ def message_pin(token, message_id):
     if get_permission(user_id) != 2:
         raise ValueError("User is not an admin")
     # value error: message is already pinned
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                if mess['is_pinned'] == True:
-                    raise ValueError("Message is already pinned")
+    mess = message_dict(message_id):
+    if mess['is_pinned'] == True:
+        raise ValueError("Message is already pinned")
     # access error: authorised user is not apart of the channel -> come back to after channels are set up 
     for channel in channel_list:
         for mess in channel['messages']:
@@ -149,11 +140,8 @@ def message_pin(token, message_id):
                 if not check_in_channel(token, channel['id']):
                     raise AccessError("User is not a member of the channel")
     
-    # pin the message
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                mess['is_pinned'] = True
+    # pin the message:
+    mess['is_pinned'] = True
     
 def message_unpin(token, message_id):
     
@@ -170,11 +158,9 @@ def message_unpin(token, message_id):
     if get_permission(user_id) != 2:
         raise ValueError("Not an admin")
     # value error: message is already pinned
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                if mess['is_pinned'] == False:
-                    raise ValueError("Message is already pinned")
+    mess = message_dict(message_id)
+    if mess['is_pinned'] == False:
+        raise ValueError("Message is already pinned")
     # access error: authorised user is not apart of the channel -> come back to after channels are set up 
     for channel in channel_list:
         for mess in channel['messages']:
@@ -183,9 +169,6 @@ def message_unpin(token, message_id):
                     raise AccessError("User is not a member of the channel") 
     
      # unpin the message
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                mess['is_pinned'] = True
+     mess['is_pinned'] = True
     
     
