@@ -27,7 +27,7 @@ def check_in_channel(token, channel_id):
 ''' If channel_id is valid, return channel. Else return None'''
 def is_valid_channel(channel_id):
     for channel in get_data()['channel']:
-        if channel['channel_id'] == channel_id:
+        if channel['channel_id'] == int(channel_id):
             return channel
     return None
 

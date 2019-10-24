@@ -1,17 +1,16 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' Local packages '''
 from server import get_data   # server.py
 
 def message_sendlater(token, channel_id, message, time_sent):
     pass
 
+
 def message_send(token, channel_id, message):
-    pass
+    if len(message) > 1000:
+        raise ValueError
+    channel = is_valid_channel(channel_id)
+    channel['message'].append(message)
+
  
 def message_remove(token, message_id):
 

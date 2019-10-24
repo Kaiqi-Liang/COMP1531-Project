@@ -26,6 +26,7 @@ def channel_invite(token, channel_id, u_id):
 
 
 def channel_details(token, channel_id):
+    channel_id = int(channel_id)
     u_id = get_user_from_token(token)
     for channel in get_data()['channel']:
         if channel['channel_id'] == channel_id and u_id in channel['members']:
@@ -38,10 +39,13 @@ def channel_details(token, channel_id):
 
 
 def channel_messages(token, channel_id, start):
+    start = int(start)
     u_id = get_user_from_token(token)
+    #return {'messages':[], 'start': start, 'end': -1}
     for channel in get_data()['channel']:
         if channel['channel_id'] == channel_id and u_id in channel['members']:
             if start >= len(channel['messages']):
+                #return {'messages':[], 'start': start, 'end': -1}
                 raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
             messages = []
@@ -134,6 +138,7 @@ def channels_listall(token):
     u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
+        if channel['is_public'] == 'true':
             channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
 
@@ -141,20 +146,25 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     if len(name) > 20:
         raise ValueError('Name is more than 20 characters long')
-    channels = get_data()['channel']
+    data = get_data()
+    channels = data['channel']
     channel_id = len(channels) + 1
     channels.append({
         'name': name,
         'channel_id': channel_id,
         'is_public': is_public,
         'owners': [],
-        'members': []
+        'members': [],
+        'messages': []
     })
 
     u_id = get_user_from_token(token)
+    users = data['user']
     for channel in channels:
         if channel_id == channel['channel_id']:
-            channel['owners'].append(u_id)
-            channel['members'].append(u_id)
+            for user in users:
+                if user['u_id'] == u_id:
+                    channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+                    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
 
     return {'channel_id': channel_id}

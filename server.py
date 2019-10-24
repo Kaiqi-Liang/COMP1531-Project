@@ -31,7 +31,9 @@ def send_mail(email, reset_code):
     msg.body = reset_code
     mail.send(msg)
 
+
 ''' AUTH '''
+
 @APP.route('/auth/login', methods=['POST'])
 def login():
     """ Given a registered users' email and password and generates a valid token for the user to remain authenticated """
@@ -68,12 +70,17 @@ def passwordreset_reset():
     """ Given a reset code for a user, set that user's new password to the password provided """
     return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
 
+
 ''' CHANNEL '''
 
 @APP.route('/channel/details', methods=['GET'])
 def details():
     """ Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel """
-    return dumps(channel.channel_details(request.args.get('token'), request.args.get('channel_id')))
+    ret = channel.channel_details(request.args.get('token'), request.args.get('channel_id'))
+    print()
+    print(ret)
+    print()
+    return dumps(ret)
 
 
 @APP.route('/channel/messages', methods=['GET'])
@@ -111,7 +118,14 @@ def join():
     ''' Given a channel_id of a channel that the authorised user can join, adds them to that channel '''
     return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
 
+
 ''' MESSAGE '''
+
+@APP.route('/message/send', methods=['POST'])
+def send():
+    """ Send a message from authorised_user to the channel specified by channel_id """
+    return dumps(message.message_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
+
 
 @APP.route('/message/remove', methods=['DELETE'])
 def remove():
