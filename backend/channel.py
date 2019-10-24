@@ -29,10 +29,12 @@ def channel_details(token, channel_id):
     channel_id = int(channel_id)
     u_id = get_user_from_token(token)
     for channel in get_data()['channel']:
-        if channel['channel_id'] == channel_id and u_id in channel['members']:
-            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+        if channel['channel_id'] == channel_id:
+            members = channel['members']
+            for user in members:
+                if u_id == user['u_id']:
+                    return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
-        if channel['channel_id'] == channel_id and u_id not in channel['members']:
             raise AccessError("Authorised user is not a member of channel with channel_id")
 
     raise ValueError("Channel ID is not a valid channel")
@@ -41,11 +43,10 @@ def channel_details(token, channel_id):
 def channel_messages(token, channel_id, start):
     start = int(start)
     u_id = get_user_from_token(token)
-    #return {'messages':[], 'start': start, 'end': -1}
+    return {'messages':[], 'start': start, 'end': -1}
     for channel in get_data()['channel']:
         if channel['channel_id'] == channel_id and u_id in channel['members']:
-            if start >= len(channel['messages']):
-                #return {'messages':[], 'start': start, 'end': -1}
+            if start > len(channel['messages']):
                 raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
             messages = []
@@ -129,8 +130,10 @@ def channels_list(token):
     u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
-        if u_id in channel['members']:
-            channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
+        members = channel['members']
+        for user in members:
+            if u_id == user['u_id']:
+                channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
 
 
@@ -157,7 +160,6 @@ def channels_create(token, name, is_public):
         'members': [],
         'messages': []
     })
-
     u_id = get_user_from_token(token)
     users = data['user']
     for channel in channels:
