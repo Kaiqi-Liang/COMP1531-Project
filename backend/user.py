@@ -1,6 +1,6 @@
 """ Local packages """
-from backend.database import get_data
-from backend.helpers.token import get_user_from_token, get_user
+from backend.database import get_data, get_user
+from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import * # helpers/*.py
 
 ''' pip3 packages '''
@@ -24,7 +24,6 @@ def user_profile_setname(token, name_first, name_last):
     if (len(name_first) > 50 or len(name_last) > 50):
          raise ValueError("Name too long!")
 
-    users = get_data()['user']
     user = get_user(get_user_from_token(token))
     if user != None:
         user['name_first'] = name_first
@@ -33,7 +32,7 @@ def user_profile_setname(token, name_first, name_last):
 
 
 def user_profile_setemail(token, email):
-    if (email == "notvalidemail.com"):
+    if not check_email(email):
         raise ValueError("Invalid email address!")
 
     users = get_data()['user']

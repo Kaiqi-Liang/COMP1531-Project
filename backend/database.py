@@ -72,3 +72,15 @@ def get_data():
     ''' get global variable i.e. database'''
     global DATA
     return DATA
+
+def get_user(u_id):
+    for user in get_data()['user']:
+        if u_id == user['u_id']:
+            return user
+    return None
+
+def get_channel(channel_id):
+    for channel in get_data()['channel']:
+        if channel_id == channel['channel_id']:
+            return channel
+    return None

@@ -166,7 +166,6 @@ def unpin():
 @APP.route('/user/profile', methods=['GET'])
 def profile():
     """ For a valid user, returns information about their email, first name, last name, and handle """
-    print(request.args.get('u_id'))
     return dumps(user.user_profile(request.args.get('token'), request.args.get('u_id')))
 
 

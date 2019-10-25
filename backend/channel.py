@@ -1,6 +1,6 @@
 """ Local packages """
-from backend.database import get_data
-from backend.helpers.token import get_user_from_token, get_channel
+from backend.database import get_data, get_user, get_channel
+from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import *
 
@@ -156,8 +156,7 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     if len(name) > 20:
         raise ValueError('Name is more than 20 characters long')
-    data = get_data()
-    channels = data['channel']
+    channels = get_data()['channel']
     channel_id = len(channels) + 1
     channels.append({
         'name': name,
@@ -167,13 +166,12 @@ def channels_create(token, name, is_public):
         'members': [],
         'messages': []
     })
+
+    channel = get_channel(channel_id)
     u_id = get_user_from_token(token)
-    users = data['user']
-    for channel in channels:
-        if channel_id == channel['channel_id']:
-            for user in users:
-                if user['u_id'] == u_id:
-                    channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
-                    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+    user = get_user(u_id)
+    if channel and user:
+        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
 
     return {'channel_id': channel_id}
