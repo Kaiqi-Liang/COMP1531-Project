@@ -34,7 +34,6 @@ function SetUserPermissionsDialog({ children, ...props }) {
 
     function handleClose() {
         setOpen(false);
-        setPermissionId(PERMISSION_IDS.MEMBER);
     }
 
     function handleSubmit(event) {
@@ -43,7 +42,7 @@ function SetUserPermissionsDialog({ children, ...props }) {
         if (!event.target[0].value) return;
 
         const u_id = parseInt(event.target[0].value,10);
-        const permission_id = parseInt(event.target[1].value,10);
+        const permission_id = parseInt(permissionId,10);
 
         axios
         .post(`/admin/userpermission/change`, { token, u_id, permission_id })
