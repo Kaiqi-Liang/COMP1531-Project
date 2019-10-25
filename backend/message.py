@@ -5,9 +5,12 @@ from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import *
 
 from time import time
+from threading import Timer
 
 def message_sendlater(token, channel_id, message, time_sent):
-    pass
+    timeout = int(time_sent) - time()
+    send = Timer(timeout, message_send, (token, channel_id, message))
+    send.start()
 
 
 def message_send(token, channel_id, message):
