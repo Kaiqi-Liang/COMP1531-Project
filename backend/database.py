@@ -43,6 +43,7 @@ DATA = {
                 'messages': [
                                 {
                                     'message_id': message_id,
+                                    'u_id': u_id,
                                     'message': 'message',
                                     'time_created': time,
                                     'reacts': [

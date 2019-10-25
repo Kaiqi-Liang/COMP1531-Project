@@ -9,6 +9,7 @@ from flask import Flask, request
 from backend import auth
 from backend import channel
 from backend import message
+from backend import user
 from backend.database import get_data
 from backend.helpers.exception import defaultHandler
 
@@ -158,6 +159,21 @@ def pin():
 def unpin():
     """ Given a message within a channel, remove it's mark as unpinned """
     return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
+
+
+''' PROFILE '''
+
+@APP.route('/user/profile', methods=['GET'])
+def profile():
+    """ For a valid user, returns information about their email, first name, last name, and handle """
+    print(request.args.get('u_id'))
+    return dumps(user.user_profile(request.args.get('token'), request.args.get('u_id')))
+
+
+@APP.route('/user/profile/setname', methods=['PUT'])
+def setname():
+    """ For a valid user, returns information about their email, first name, last name, and handle """
+    return dumps(user.user_profile(request.args.get('token'), request.args.get('u_id')))
 
 
 if __name__ == '__main__':

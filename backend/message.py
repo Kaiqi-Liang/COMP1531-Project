@@ -1,6 +1,6 @@
 """ Local packages """
 from backend.database import get_data
-from backend.helpers.token import get_user_from_token
+from backend.helpers.token import get_user_from_token, get_channel
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import *
 
@@ -31,7 +31,7 @@ def message_send(token, channel_id, message):
 
     for user in message_channel['members']:
         if user['u_id'] == u_id:
-            message_channel['messages'].append({'message_id': message_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
+            message_channel['messages'].append({'message_id': message_id, 'u_id': u_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
             return {'message_id': message_id}
 
     raise AccessError
@@ -80,7 +80,7 @@ def message_edit(token, message_id, message):
             
 def message_react(token, message_id, react_id):
     
-    channel_list = getdata()['channel']
+    channel_list = get_data()['channel']
     mess = message_dict(message_id)
     # value error: message is not apart of a channel that the user is in 
     for channel in channel_list:

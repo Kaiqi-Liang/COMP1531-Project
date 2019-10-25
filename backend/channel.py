@@ -1,6 +1,6 @@
 """ Local packages """
 from backend.database import get_data
-from backend.helpers.token import get_user_from_token
+from backend.helpers.token import get_user_from_token, get_channel
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import *
 
@@ -27,49 +27,50 @@ def channel_invite(token, channel_id, u_id):
 
 def channel_details(token, channel_id):
     channel_id = int(channel_id)
+    channel = get_channel(channel_id)
+    if channel == None:
+        raise ValueError("Channel ID is not a valid channel")
+
     u_id = get_user_from_token(token)
-    for channel in get_data()['channel']:
-        if channel['channel_id'] == channel_id:
-            members = channel['members']
-            for user in members:
-                if u_id == user['u_id']:
-                    return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+    members = channel['members']
+    for user in members:
+        if u_id == user['u_id']:
+            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+        raise AccessError("Authorised user is not a member of channel with channel_id")
 
-            raise AccessError("Authorised user is not a member of channel with channel_id")
-
-    raise ValueError("Channel ID is not a valid channel")
 
 
 def channel_messages(token, channel_id, start):
     start = int(start)
     channel_id = int(channel_id)
+    channel = get_channel(channel_id)
+    if channel == None:
+        raise ValueError("Channel ID is not a valid channel")
+
     u_id = get_user_from_token(token)
-    for channel in get_data()['channel']:
-        if channel['channel_id'] == channel_id:
-            members = channel['members']
-            for user in members:
-                if u_id == user['u_id']:
-                    if start > len(channel['messages']):
-                        raise ValueError("start is greater than or equal to the total number of messages in the channel")
+    members = channel['members']
+    for user in members:
+        if u_id == user['u_id']:
+            if start > len(channel['messages']):
+                raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
-                    messages = []
-                    for message in channel['messages']:
-                        if message['message_id'] < start:
-                            continue
+            messages = []
+            for message in channel['messages']:
+                if message['message_id'] < start:
+                    continue
 
-                        messages.append(message)
+                messages.append(message)
 
-                        if len(messages) == 50:
-                            break
+                if len(messages) == 50:
+                    break
 
-                    if len(messages) == 0:
-                        return {'messages': messages, 'start': start, 'end': -1}
-                    else:
-                        end = messages[-1]['message_id']
-                        return {'messages': messages, 'start': start, 'end': end}
+            if len(messages) == 0:
+                return {'messages': messages, 'start': start, 'end': -1}
+            else:
+                end = messages[-1]['message_id']
+                return {'messages': messages, 'start': start, 'end': end}
 
-        if channel['channel_id'] == channel_id and u_id not in channel['members']:
-            raise AccessError("Authorised user is not a member of channel with channel_id")
+        raise AccessError("Authorised user is not a member of channel with channel_id")
 
     raise ValueError("Channel ID is not a valid channel")
 
@@ -161,7 +162,7 @@ def channels_create(token, name, is_public):
     channels.append({
         'name': name,
         'channel_id': channel_id,
-        'is_public': is_public,
+        'is_public': bool(is_public),
         'owners': [],
         'members': [],
         'messages': []
