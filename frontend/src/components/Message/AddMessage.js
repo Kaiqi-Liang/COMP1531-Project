@@ -54,7 +54,7 @@ function AddMessage({ channel_id = '', onAdd = () => {} }) {
         token,
         channel_id,
         message,
-        time_sent: currentTimer.toISOString(),
+        time_sent: currentTimer.getTime(),
       })
         .then(({ data }) => {
           console.log(data);
