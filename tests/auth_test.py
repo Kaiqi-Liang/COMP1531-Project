@@ -8,11 +8,11 @@ sys.path.insert(0,parentdir)
 import pytest
 
 ''' Local packages '''
-from backend import auth
+from backend.auth import *
 
 def test_login1 ():
         loginDict = {}
-        loginDict = auth.auth_login("emmarosemayall@gmail.com", "123456")
+        loginDict = auth_login("emmarosemayall@gmail.com", "123456")
         uid = loginDict['u_id']
         token = loginDict['token']
         assert uid != "" and token != ""
