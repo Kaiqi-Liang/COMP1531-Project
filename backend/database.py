@@ -75,12 +75,12 @@ def get_data():
 
 def get_user(u_id):
     for user in get_data()['user']:
-        if u_id == user['u_id']:
+        if int(u_id) == user['u_id']:
             return user
     return None
 
 def get_channel(channel_id):
     for channel in get_data()['channel']:
-        if channel_id == channel['channel_id']:
+        if int(channel_id) == channel['channel_id']:
             return channel
     return None

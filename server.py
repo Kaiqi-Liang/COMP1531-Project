@@ -74,6 +74,12 @@ def passwordreset_reset():
 
 ''' CHANNEL '''
 
+@APP.route('/channel/invite', methods=['POST'])
+def invite():
+    """ Invites a user (with user id u_id) to join a channel with ID channel_id. Once invited the user is added to the channel immediately """
+    return dumps(channel.channel_invite(request.form.get('token'), request.form.get('channel_id'), request.form.get('u_id')))
+
+
 @APP.route('/channel/details', methods=['GET'])
 def details():
     """ Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel """
@@ -115,7 +121,14 @@ def join():
     ''' Given a channel_id of a channel that the authorised user can join, adds them to that channel '''
     return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
 
+
 ''' MESSAGE '''
+
+@APP.route('/message/send', methods=['POST'])
+def send():
+    """ Send a message from authorised_user to the channel specified by channel_id """
+    return dumps(message.message_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
+
 
 @APP.route('/message/remove', methods=['DELETE'])
 def remove():

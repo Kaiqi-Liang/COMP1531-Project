@@ -14,20 +14,15 @@ def message_sendlater(token, channel_id, message, time_sent):
 
 
 def message_send(token, channel_id, message):
-<<<<<<< HEAD
-    pass
-=======
     channel_id = int(channel_id)
     message_id = 0
     u_id = get_user_from_token(token)
     if len(message) > 1000:
         raise ValueError('Message is more than 1000 characters')
 
-    message_channel = None
+    message_channel = get_channel(channel_id)
     for channel in get_data()['channel']:
         message_id += len(channel['messages'])
-        if channel_id == channel['channel_id']:
-            message_channel = channel
 
     if message_channel == None:
         raise ValueError('Channel ID is not a valid channel')
@@ -37,9 +32,8 @@ def message_send(token, channel_id, message):
             message_channel['messages'].append({'message_id': message_id, 'u_id': u_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
             return {'message_id': message_id}
 
-    raise AccessError
+    raise AccessError("the authorised user has not joined the channel they are trying to post to")
 
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1
  
 def message_remove(token, message_id):
 
@@ -47,13 +41,7 @@ def message_remove(token, message_id):
 
     # get the permission_id of the authorised user, to use in testing  
     user_id = get_user_from_token(token)
-<<<<<<< HEAD
-            
-    # value error: message with message_id does not exist     
-=======
-
     # value error: message with message_id does not exist
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1
     if not check_message_exists(message_id):
         raise ValueError("Message no longer exists")
     # access error: authorised user did not send the message and are not an admin or owner
@@ -77,7 +65,7 @@ def message_edit(token, message_id, message):
     user_id = get_user_from_token(token)
     
     # access error: authorised user did not send the message and user is not an admin or owner
-    for channel in channel_list :
+    for channel in channel_list:
         for mess in channel['messages']:
             if message_id == mess['message_id']:
                 if mess['u_id'] != user_id and get_permission(user_id) == 3:
@@ -92,33 +80,14 @@ def message_edit(token, message_id, message):
             
 def message_react(token, message_id, react_id):
     
-<<<<<<< HEAD
-    channel_list = getdata()['channel']
-=======
     channel_list = get_data()['channel']
     mess = message_dict(message_id)
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1
     # value error: message is not apart of a channel that the user is in 
     for channel in channel_list:
         for mess in channel['messages']:
             if message_id == mess['message_id']:
                 if not check_in_channel(token, channel['id']):
                     raise ValueError("User is not part of channel")
-<<<<<<< HEAD
-    # value error: react_id is not a valid react id 
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if react_id not in mess['reacts']['react_id']:  
-                raise ValueError("react_id is not valid")
-    # value error: user has already reacted to the message -> this isn't right, need to do it based off message 
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                for react in mess['reacts']:
-                    if react_id == react['react_id']:
-                        if is_this_user_reacted == True:
-                            raise ValueError("Message already contains a react_id from user")
-=======
     # value error: react_id is not a valid react id
     if not check_valid_react(react_id, mess):
         raise ValueError("react_id is not valid")
@@ -127,8 +96,6 @@ def message_react(token, message_id, react_id):
         if react['react_id'] == react_id:
             if react['is_this_user_reacted'] == True:
                 raise ValueError("Message already contains a react_id from user")
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1
-
     
     # add the react to the message
     for channel in chanel_list:
@@ -149,31 +116,6 @@ def message_unreact(token, message_id, react_id):
         for mess in channel['messages']:
             if message_id == mess['message_id']:
                 if not check_in_channel(token, channel['id']):
-<<<<<<< HEAD
-                    raise ValueError("User is not part of channel")
-    # value error: react_id is not valid
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if react_id not in mess['reacts']['react_id']:  
-                raise ValueError("react_id is not valid")
-    # value error: message does not contain the active react_id from user 
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                for react in mess['reacts']:
-                    if react_id == react['react_id']:
-                        if is_this_user_reacted == False:
-                            raise ValueError("Message already contains a react_id from user")
-    
-    # unreact to the message
-    for channel in chanel_list:
-        for mess in message_list:
-            if mess['message_id'] == message_id:
-                for r_id in mess['reacts']:
-                    if r_id['react_id'] == react_id:
-                        r_id['is_this_user_reacted']  = False
-                        r_id['u_ids'].remove(get_user_from_token(token))
-=======
                     raise ValueError("User is not part of channel")                 
     # value error: react_id is not a valid react id
     if not check_valid_react(react_id, mess):
@@ -190,7 +132,6 @@ def message_unreact(token, message_id, react_id):
         if react['react_id'] == react_id:
             react['is_this_user_reacted'] = False
             react['u_ids'].remove(get_user_from_token(token))  
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1
 
 def message_pin(token, message_id):
      
@@ -205,19 +146,10 @@ def message_pin(token, message_id):
     if get_permission(user_id) != 2:
         raise ValueError("User is not an admin")
     # value error: message is already pinned
-<<<<<<< HEAD
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                if mess['is_pinned'] == True:
-                    raise ValueError("Message is already pinned")
-    # access error: authorised user is not apart of the channel -> come back to after channels are set up 
-=======
     mess = message_dict(message_id)
     if mess['is_pinned'] == True:
         raise ValueError("Message is already pinned")
     # access error: authorised user is not apart of the channel the message is within
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1
     for channel in channel_list:
         for mess in channel['messages']:
             if message_id == mess['message_id']:
@@ -257,15 +189,5 @@ def message_unpin(token, message_id):
                 if not check_in_channel(token, channel['id']):
                     raise AccessError("User is not a member of the channel") 
     
-<<<<<<< HEAD
-     # unpin the message
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                mess['is_pinned'] = True
-    
-    
-=======
     # unpin the message
     mess['is_pinned'] = False
->>>>>>> aa884a9ad64dd1d8be5b50470dadaec9fa00eea1

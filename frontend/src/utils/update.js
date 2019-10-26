@@ -1,4 +1,4 @@
-let isPolling = true;
+let isPolling = false;
 export const getIsPolling = () => isPolling;
 export const setIsPolling = bool => isPolling = !!bool; // force boolean type
 export const pollingInterval = 2000;

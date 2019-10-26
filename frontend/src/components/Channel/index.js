@@ -15,11 +15,6 @@ import PersonAdd from '@material-ui/icons/PersonAdd';
 import PersonAddDisabled from '@material-ui/icons/PersonAddDisabled';
 import axios from 'axios';
 import React from 'react';
-<<<<<<< HEAD
-import { toast } from 'react-toastify';
-import { CHANNEL_ERROR_TEXT, DEFAULT_ERROR_TEXT } from '../../utils/text';
-=======
->>>>>>> 760cab0852d04714f96583f53649d5895803ed06
 import AddMemberDialog from './AddMemberDialog';
 import ChannelMessages from './ChannelMessages';
 import AuthContext from '../../AuthContext';
