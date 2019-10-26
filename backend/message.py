@@ -65,7 +65,7 @@ def message_edit(token, message_id, message):
     user_id = get_user_from_token(token)
     
     # access error: authorised user did not send the message and user is not an admin or owner
-    for channel in channel_list :
+    for channel in channel_list:
         for mess in channel['messages']:
             if message_id == mess['message_id']:
                 if mess['u_id'] != user_id and get_permission(user_id) == 3:
