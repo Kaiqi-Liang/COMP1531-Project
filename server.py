@@ -70,7 +70,6 @@ def passwordreset_reset():
     """ Given a reset code for a user, set that user's new password to the password provided """
     return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
 
-''' CHANNEL '''
 
 ''' CHANNEL '''
 
@@ -151,19 +150,19 @@ def react():
 @APP.route('/message/unreact', methods=['POST'])
 def unreact():
     """ Given a message within a channel the authorised user is part of, remove a "react" to that particular message """
-    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id'), request.form.get('react_id')))
+    return dumps(message.message_unreact(request.form.get('token'), request.form.get('message_id'), request.form.get('react_id')))
 
 
 @APP.route('/message/pin', methods=['POST'])
 def pin():
     """ Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend """
-    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
+    return dumps(message.message_pin(request.form.get('token'), request.form.get('message_id')))
 
 
 @APP.route('/message/unpin', methods=['POST'])
 def unpin():
     """ Given a message within a channel, remove it's mark as unpinned """
-    return dumps(message.message_react(request.form.get('token'), request.form.get('message_id')))
+    return dumps(message.message_unpin(request.form.get('token'), request.form.get('message_id')))
 
 
 ''' PROFILE '''

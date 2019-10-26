@@ -50,4 +50,10 @@ def check_message_exists(message_id):
             if mess['message_id'] == message_id:
                 return True
     
-    return False 
+    return False
+
+def check_user_in_channel(u_id, channel):
+    for member in channel['members']:
+        if int(u_id) == member['u_id']:
+            return True
+    return False
