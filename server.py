@@ -177,7 +177,7 @@ def profile():
 @APP.route('/user/profile/setname', methods=['PUT'])
 def setname():
     """ Update the authorised user's first and last name """
-    return dumps(user.user_profile(request.form.get('token'), request.form.get('name_first')request.form.get('name_last')))
+    return dumps(user.user_profile(request.form.get('token'), request.form.get('name_first'), request.form.get('name_last')))
 
 
 @APP.route('/user/profile/setemail', methods=['PUT'])
