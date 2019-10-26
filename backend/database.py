@@ -15,7 +15,7 @@ DATA = {
                 'password': hash,
                 'name_first': 'first',
                 'name_last': 'last',
-                'handle': 'firstlast',
+                'handle_str': 'firstlast',
                 'permission_id': p_id,
                 'tokens': ['token'],
                 'reset': ''

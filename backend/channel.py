@@ -25,7 +25,7 @@ def channel_invite(token, channel_id, u_id):
         if user['u_id'] == member['u_id']:
             invite = get_user(u_id)
             channel['members'].append({'u_id': u_id, 'name_first': invite['name_first'], 'name_last': invite['name_last']})
-    
+
     raise AccessError("the authorised user is not already a member of the channel")
 
 
@@ -33,15 +33,15 @@ def channel_details(token, channel_id):
     channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-    
+
     if not channel['is_public']:
         u_id = get_user_from_token(token)
         members = channel['members']
         for member in members:
             if u_id == member['u_id']:
                 return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-        raise AccessError("Authorised user is not a member of channel with channel_id")
-    
+        raise AccessError("channel_details authorisation error")
+
     else:
         return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
@@ -102,22 +102,29 @@ def channel_join(token, channel_id):
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
     u_id = get_user_from_token(token)
+    user = get_user(u_id)
 
     # If user is already in channel, ignore
-    if u_id in channel['members'] or u_id in channel['owners']:
+    if check_in_channel(token, user['u_id']):
         return {}
+
+    member_info = {
+        'u_id': user['u_id'],
+        'name_first': user['name_first'],
+        'name_last': user['name_last']
+    }
 
     # If channel is public
     if channel['is_public']:
-        channel['members'].append(u_id)
+        channel['members'].append(member_info)
     else:
         # If user is not an admin/owner (assumptions)
         if not check_permission(u_id, OWNER) and not check_permission(u_id, ADMIN):
             raise AccessError("User is not admin: unable to join private channel")
         else:
             # User is an admin/owner and can join channel
-            channel['owners'].append(u_id)
-            channel['members'].append(u_id)
+            channel['owners'].append(member_info)
+            channel['members'].append(member_info)
 
     return {}
 
@@ -129,7 +136,7 @@ def channel_addowner(token, channel_id, u_id):
         raise ValueError("Channel ID is not a valid channel")
     if u_id in channel['owners']:
         raise ValueError("User is already an owner of the channel")
-    else: 
+    else:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
     channel['owners'].append(u_id)
