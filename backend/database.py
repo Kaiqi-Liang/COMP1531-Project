@@ -48,7 +48,7 @@ DATA = {
                                     'time_created': time,
                                     'reacts': [
                                                   {
-                                                       'react_id': react_id,
+                                                       'react_id': 1,
                                                        'u_ids, [u_id],
                                                        'is_this_user_reacted': True
                                                   }
@@ -87,9 +87,7 @@ def get_channel(channel_id):
 
 ''' Return message dict'''
 def get_message(message_id):
-    
     channel_list = get_data()['channel']
-    
     for channel in channel_list:
         for mess in channel['messages']:
             if mess['message_id'] == int(message_id):
@@ -98,10 +96,16 @@ def get_message(message_id):
 
 ''' Get user permission_id '''
 def get_permission(user_id):
-    
-    users = getdata()['users']
+    users = get_data()['user']
     for user in users:
         if int(user_id) == user['u_id']:
-            permission = user['permission_id']
-            
-    return permission
+            return user['permission_id']
+    return None
+
+def get_message_channel(message_id):
+    channels = get_data()['channel']
+    for channel in channels:
+        for message in channel['messages']:
+            if int(message_id) == message['message_id']:
+                return channel
+    return None
