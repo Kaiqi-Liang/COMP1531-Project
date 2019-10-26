@@ -1,10 +1,20 @@
+''' syspath hack for local imports '''
+import os, sys, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
+''' pip3 packages '''
 import pytest
-from auth import auth_login
-from admin_userpermission_change import admin_userpermission_change
+
+''' Local packages '''
+from backend.auth import auth_register
+from backend.auth import auth_login
+from admin_userpermission_change import *
 
 def test_admin_userpermission_change1():
     # setup begin
-    loginDict = auth_login("emmarosemayall@gmail.com", "1233456")
+    loginDict = auth_register("emmarosemayall@gmail.com", "1233456")
     token = loginDict["token"]
     uid = loginDict["u_id"]
     #setup end
