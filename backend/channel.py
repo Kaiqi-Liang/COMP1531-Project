@@ -90,7 +90,7 @@ def channel_leave(token, channel_id):
     u_id = get_user_from_token(token)
     members = channel['members']
     for member in members:
-        if u_id = member['u_id']:
+        if u_id == member['u_id']:
             members.remove(member)
     return {}
 
