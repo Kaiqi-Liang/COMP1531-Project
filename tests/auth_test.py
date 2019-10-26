@@ -8,7 +8,7 @@ sys.path.insert(0,parentdir)
 import pytest
 
 ''' Local packages '''
-from backend import auth
+from backend.auth import *
 
 def test_login1 ():
         loginDict = {}
