@@ -33,6 +33,7 @@ def send_mail(email, reset_code):
     msg.body = reset_code
     mail.send(msg)
 
+
 ''' AUTH '''
 @APP.route('/auth/login', methods=['POST'])
 def login():
@@ -175,8 +176,14 @@ def profile():
 
 @APP.route('/user/profile/setname', methods=['PUT'])
 def setname():
-    """ For a valid user, returns information about their email, first name, last name, and handle """
-    return dumps(user.user_profile(request.args.get('token'), request.args.get('u_id')))
+    """ Update the authorised user's first and last name """
+    return dumps(user.user_profile(request.form.get('token'), request.form.get('name_first')request.form.get('name_last')))
+
+
+@APP.route('/user/profile/setemail', methods=['PUT'])
+def setemail():
+    """ Update the authorised user's email addredss """
+    return dumps(user.user_profile(request.form.get('token'), request.form.get('email')))
 
 
 if __name__ == '__main__':
