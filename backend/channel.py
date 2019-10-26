@@ -86,7 +86,7 @@ def channel_leave(token, channel_id):
     channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-
+    print(channel)
     u_id = get_user_from_token(token)
     members = channel['members']
     for member in members:
