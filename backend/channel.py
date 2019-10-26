@@ -43,7 +43,6 @@ def channel_details(token, channel_id):
         raise AccessError("Authorised user is not a member of channel with channel_id")
     
     else:
-        print(channel['is_public'])
         return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 

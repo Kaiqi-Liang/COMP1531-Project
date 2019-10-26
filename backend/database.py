@@ -84,3 +84,24 @@ def get_channel(channel_id):
         if int(channel_id) == channel['channel_id']:
             return channel
     return None
+
+''' Return message dict'''
+def get_message(message_id):
+    
+    channel_list = get_data()['channel']
+    
+    for channel in channel_list:
+        for mess in channel['messages']:
+            if mess['message_id'] == int(message_id):
+                return mess
+    return None 
+
+''' Get user permission_id '''
+def get_permission(user_id):
+    
+    users = getdata()['users']
+    for user in users:
+        if int(user_id) == user['u_id']:
+            permission = user['permission_id']
+            
+    return permission
