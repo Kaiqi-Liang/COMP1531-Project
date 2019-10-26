@@ -8,7 +8,8 @@ sys.path.insert(0,parentdir)
 import pytest
 
 ''' Local packages '''
-from backend import *
+from backend.channel import *
+from backend.auth import *
 
 @pytest.fixture
 def register_owner():
