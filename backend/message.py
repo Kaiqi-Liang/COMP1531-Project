@@ -72,7 +72,7 @@ def message_edit(token, message_id, message):
                     raise AccessError("Don't have permission to remove message")
      
     # edit the message
-    for channel in channe_list:
+    for channel in channel_list:
         for mess in channel['messages']:
             if message_id == mess['message_id']:
                  mess['message'] = message

@@ -33,13 +33,18 @@ def channel_details(token, channel_id):
     channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-
-    u_id = get_user_from_token(token)
-    members = channel['members']
-    for member in members:
-        if u_id == member['u_id']:
-            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-    raise AccessError("Authorised user is not a member of channel with channel_id")
+    
+    if not channel['is_public']:
+        u_id = get_user_from_token(token)
+        members = channel['members']
+        for member in members:
+            if u_id == member['u_id']:
+                return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+        raise AccessError("Authorised user is not a member of channel with channel_id")
+    
+    else:
+        print(channel['is_public'])
+        return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
 
