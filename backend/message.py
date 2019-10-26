@@ -73,13 +73,13 @@ def message_edit(token, message_id, message):
     # get initial data
     channel_list = get_data()['channel']
     user_id = get_user_from_token(token)
-    
+
     mess = get_message(message_id)
     # access error: authorised user did not send the message and are not an admin or owner of slackr
     if mess['u_id'] != user_id:
         if get_permission(user_id) == 3:
             raise AccessError("Don't have permission to remove message")
-   
+
         for owner in owner_channel['owners']:
             if owner['u_id'] == u_id:
                 remove = True
@@ -126,15 +126,15 @@ def message_unreact(token, message_id, react_id):
     channel_list = getdata()['channel']
     mess = message_dict(message_id)
     
-    # value error: message is not in a channel the user is a valid member of
+    # value error: message is not in a channel the user is a valid
     for channel in channel_list:
         for mess in channel['messages']:
             if message_id == mess['message_id']:
                 if not check_in_channel(token, channel['id']):
-                    raise ValueError("User is not part of channel")                 
+                    raise ValueError("User is not part of channel")
     # value error: react_id is not a valid react id
     if not check_valid_react(react_id, mess):
-        raise ValueError("react_id is not valid")                   
+        raise ValueError("react_id is not valid")
     # value error: user has not reacted to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
