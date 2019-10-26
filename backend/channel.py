@@ -83,11 +83,16 @@ def channel_messages(token, channel_id, start):
 
 
 def channel_leave(token, channel_id):
-    channel = is_valid_channel(channel_id)
+    channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
+
     u_id = get_user_from_token(token)
-    channel['members'].remove(u_id)
+    members = channel['members']
+    for member in members:
+        if u_id = member['u_id']:
+            members.remove(member)
+    return {}
 
 
 def channel_join(token, channel_id):

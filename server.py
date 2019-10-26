@@ -35,6 +35,7 @@ def send_mail(email, reset_code):
 
 
 ''' AUTH '''
+
 @APP.route('/auth/login', methods=['POST'])
 def login():
     """ Given a registered users' email and password and generates a valid token for the user to remain authenticated """

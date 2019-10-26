@@ -73,13 +73,13 @@ def message_edit(token, message_id, message):
     # get initial data
     channel_list = get_data()['channel']
     user_id = get_user_from_token(token)
-    
+
     mess = get_message(message_id)
     # access error: authorised user did not send the message and are not an admin or owner of slackr
     if mess['u_id'] != user_id:
         if get_permission(user_id) == 3:
             raise AccessError("Don't have permission to remove message")
-   
+
         for owner in owner_channel['owners']:
             if owner['u_id'] == u_id:
                 remove = True
