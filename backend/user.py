@@ -1,12 +1,7 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
-''' Local packages '''
-from server import get_data   # server.py
-from backend.helpers import * # helpers/*.py
+""" Local packages """
+from backend.database import get_data, get_user
+from backend.helpers.token import get_user_from_token
+from backend.helpers.helpers import * # helpers/*.py
 
 ''' pip3 packages '''
 from PIL import Image # pip3 name is "Pillow"
@@ -16,21 +11,39 @@ import requests
 import urllib
 
 def user_profile(token, u_id):
-    if u_id == None:
-        raise ValueError("u_id not found!")
-    return {"someemail@gmail.com","securepassword","John","Doe","johndoe"}
+    u_id = int(u_id)
+    users = get_data()['user']
+    if get_user(get_user_from_token(token)) != None:
+        for user in users:
+            if u_id == user['u_id']:
+                return {'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last']}
+        raise ValueError("User with u_id is not a valid user")
+
 
 def user_profile_setname(token, name_first, name_last):
     if (len(name_first) > 50 or len(name_last) > 50):
-        raise ValueError("Name too long!")
-    return
+         raise ValueError("Name too long!")
+
+    user = get_user(get_user_from_token(token))
+    if user != None:
+        user['name_first'] = name_first
+        user['name_last'] = name_last
+        return {}
+
 
 def user_profile_setemail(token, email):
-    if (email == "notvalidemail.com"):
+    if not check_email(email):
         raise ValueError("Invalid email address!")
-    elif (email == "someemail2@gmail.com"):
-        raise ValueError("Email in use!")
-    return
+
+    users = get_data()['user']
+    user = get_user(get_user_from_token(token))
+    if user != None:
+        for u in users:
+            if u['email'] == email:
+                raise ValueError('Email address is already being used by another user')
+
+        user['email'] = email
+        return {}
 
 def user_profile_sethandle(token, handle_str):
     if len(handle_str) > 20:
