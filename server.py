@@ -70,6 +70,8 @@ def passwordreset_reset():
 
 ''' CHANNEL '''
 
+''' CHANNEL '''
+
 @APP.route('/channel/details', methods=['GET'])
 def details():
     """ Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel """

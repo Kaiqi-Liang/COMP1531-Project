@@ -12,8 +12,6 @@ import {
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import React from 'react';
-import { toast } from 'react-toastify';
-import { DEFAULT_ERROR_TEXT } from '../utils/text';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -51,10 +49,7 @@ function LoginPage({ setAuth, ...props }) {
         setAuth(data.token, data.u_id);
         props.history.push('/');
       })
-      .catch((err) => {
-        console.error(err);
-        toast.error(DEFAULT_ERROR_TEXT);
-      });
+      .catch((err) => {});
   }
 
   const classes = useStyles();

@@ -14,6 +14,7 @@ import { Link, Redirect } from 'react-router-dom';
 import AuthContext from '../../AuthContext';
 import { drawerWidth } from '../../utils/constants';
 import PollToggle from '../PollToggle';
+import Admin from '../Admin';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -45,10 +46,7 @@ function Header({ handleMenuToggle = () => {} }) {
       .then((response) => {
         console.log(response);
       })
-      .catch((err) => {
-        console.error(err);
-        // toast.error(DEFAULT_ERROR_TEXT);
-      });
+      .catch((err) => {});
     localStorage.removeItem('token');
     localStorage.removeItem('u_id');
     return <Redirect to="/login" />;
@@ -80,6 +78,7 @@ function Header({ handleMenuToggle = () => {} }) {
         </div>
         <div style={{display:'flex'}}>
           <PollToggle />
+          <Admin />
           <Button
             color="inherit"
             className={classes.logoutButton}

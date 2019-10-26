@@ -26,8 +26,20 @@ DATA = {
                 'channel_id': channel_id,
                 'name': 'name',
                 'is_public': True,
-                'owners': [u_id],
-                'members': [u_id],
+                'owners': [
+                                {
+                                    'u_id': u_id,
+                                    'name_first': 'first',
+                                    'name_last': 'last'
+                                }
+                          ],
+                'members': [
+                                {
+                                    'u_id': u_id,
+                                    'name_first': 'first',
+                                    'name_last': 'last'
+                                }
+                          ],
                 'messages': [
                                 {
                                     'message_id': message_id,

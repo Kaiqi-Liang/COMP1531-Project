@@ -21,6 +21,9 @@ A video describing this project and the background here can be found here.
 * 17/10/2019: Rules for handle creation updated " If the concatenation is longer than 20 characters, it is cutoff at 20 characters. If the handle is already taken, you may modify the handle in any way you see fit to make it unique."
 * 17/10/2019: Clarification added to "permissions" by providing examples to explain the difference more between general permissions and channel permissions
 * 18/10/2019: "note: this is not requried to be completed until iteration 3" added to uploadphoto
+* 24/10/2019: "exactly members" in the data types updated to say "ends in members"
+* 24/10/2019: Helpful example of how to use python datetime numerically
+* 24/10/2019: Clarified that { channels } refers to a dictionary
 
 ## Overview
 
@@ -183,7 +186,7 @@ Details will be released in week 7
 |contains substring **name**|string|
 |contains substring **code**|string|
 |has prefix **is_**|boolean|
-|has prefix **time_**|datetime|
+|has prefix **time_**|datetime (you'll probably want to convert it to something numerical, like a (unix timestamp)[https://www.tutorialspoint.com/How-to-convert-Python-date-to-Unix-timestamp]|
 |has suffix **_id**|integer|
 |has suffix **_url**|string|
 |has suffix **_str**|string|
@@ -192,7 +195,7 @@ Details will be released in week 7
 |(outputs only) named exactly **messages**|List of dictionaries, where each dictionary contains types { message_id, u_id, message, time_created, reacts, is_pinned,  }|
 |(outputs only) named exactly **reacts**|List of dictionaries, where each dictionary contains types { react_id, u_ids, is_this_user_reacted } where react_id is the id of a react, and u_ids is a list of user id's of people who've reacted for that react. is_this_user_reacted is whether or not the authorised user has been one of the reacts to this post |
 |(outputs only) named exactly **channels**|List of dictionaries, where each dictionary contains types { channel_id, name }|
-|(outputs only) named exactly **members**|List of dictionaries, where each dictionary contains types { u_id, name_first, name_last }|
+|(outputs only) name ends in **members**|List of dictionaries, where each dictionary contains types { u_id, name_first, name_last }|
 
 ### Token
 Many of these functions (nearly all of them) need to be called from the perspective of a user who is logged in already. When calling these "authorised" functions, we need to know:
@@ -261,8 +264,8 @@ isaac: my catfish ate a toaster
 |POST|channel/join|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>channel_id refers to a channel that is private (when the authorised user is not an admin)</li></ul>|Given a channel_id of a channel that the authorised user can join, adds them to that channel|
 |POST|channel/addowner|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is already an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Make user with user id u_id an owner of this channel|
 |POST|channel/removeowner|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is not an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Remove user with user id u_id an owner of this channel|
-|GET|channels/list|(token)|{ channels }|N/A|Provide a list of all channels (and their associated details) that the authorised user is part of|
-|GET|channels/listall|(token)|{ channels }|N/A|Provide a list of all channels (and their associated details)|
+|GET|channels/list|(token)|{ channels: [] }|N/A|Provide a list of all channels (and their associated details) that the authorised user is part of|
+|GET|channels/listall|(token)|{ channels: [] }|N/A|Provide a list of all channels (and their associated details)|
 |POST|channels/create|(token, name, is_public)|{ channel_id }|**ValueError** when:<ul><li>Name is more than 20 characters long</li></ul>|Creates a new channel with that name that is either a public or private channel|
 |POST|message/sendlater|(token, channel_id, message, time_sent)|{ message_id }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>Message is more than 1000 characters</li><li>Time sent is a time in the past</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id automatically at a specified time in the future|
 |POST|message/send|(token, channel_id, message)|{ message_id }|**ValueError** when:<ul><li>Message is more than 1000 characters</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id|
@@ -279,7 +282,7 @@ isaac: my catfish ate a toaster
 |POST|user/profiles/uploadphoto (**note: this is not requried to be completed until iteration 3**)|(token, img_url, x_start, y_start, x_end, y_end)|{}|**ValueError** when:<ul><li>img_url is returns an HTTP status other than 200.</li><li>any of x_start, y_start, x_end, y_end are not within the dimensions of the image at the URL.</li></ul>|Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.|
 |POST|standup/start|(token, channel_id)|{ time_finish }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>An active standup is currently running in this channel</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|For a given channel, start the standup period whereby for the next 15 minutes if someone calls "standup_send" with a message, it is buffered during the 15 minute window then at the end of the 15 minute window a message will be added to the message queue in the channel from the user who started the standup. |
 |POST|standup/send|(token, channel_id, message)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>Message is more than 1000 characters</li><li>An active standup is not currently running in this channel</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Sending a message to get buffered in the standup queue, assuming a standup is currently active|
-|GET|search|(token, query_str)|{ messages }|N/A|Given a query string, return a collection of messages in all of the channels that the user has joined that match the query|
+|GET|search|(token, query_str)|{ messages: [] }|N/A|Given a query string, return a collection of messages in all of the channels that the user has joined that match the query|
 |POST|admin/userpermission/change|(token, u_id, permission_id)|{}|**ValueError** when:<ul><li>u_id does not refer to a valid user<li>permission_id does not refer to a value permission</li></ul>**AccessError** when<ul><li>The authorised user is not an admin or owner</li></ul>|Given a User by their user ID, set their permissions to new permissions described by permission_id|
 
 ### Errors for all functions
