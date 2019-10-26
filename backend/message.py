@@ -20,11 +20,9 @@ def message_send(token, channel_id, message):
     if len(message) > 1000:
         raise ValueError('Message is more than 1000 characters')
 
-    message_channel = None
+    message_channel = get_channel(channel_id)
     for channel in get_data()['channel']:
         message_id += len(channel['messages'])
-        if channel_id == channel['channel_id']:
-            message_channel = channel
 
     if message_channel == None:
         raise ValueError('Channel ID is not a valid channel')
@@ -34,7 +32,7 @@ def message_send(token, channel_id, message):
             message_channel['messages'].append({'message_id': message_id, 'u_id': u_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
             return {'message_id': message_id}
 
-    raise AccessError
+    raise AccessError("the authorised user has not joined the channel they are trying to post to")
 
  
 def message_remove(token, message_id):
