@@ -1,9 +1,10 @@
 # PLEASE NOTE
 
 **The following items are still incomplete**
-* Standups (Frontend component of this will be complete in iteration 3)
-* Search (Frontend component of this will be complete in iteration 3)
-* Uploading a photo (Frontend component of this will be complete in iteration 3)
+* Pagination for channel/messages
+* Message Edit
+* Standups (To be done in iteration 3)
+* Uploading a photo (To be done in iteration 3)
 
 # README
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
