@@ -121,7 +121,14 @@ def join():
     ''' Given a channel_id of a channel that the authorised user can join, adds them to that channel '''
     return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
 
+
 ''' MESSAGE '''
+
+@APP.route('/message/send', methods=['POST'])
+def send():
+    """ Send a message from authorised_user to the channel specified by channel_id """
+    return dumps(message.message_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
+
 
 @APP.route('/message/remove', methods=['DELETE'])
 def remove():

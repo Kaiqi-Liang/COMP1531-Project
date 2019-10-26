@@ -1,14 +1,8 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' pip3 packages '''
 import pytest
 
 ''' Local packages '''
-from backend import *
+from ..backend.search import *
 
 def test_search1():
     # setup begin
