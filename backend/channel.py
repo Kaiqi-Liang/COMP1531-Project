@@ -10,6 +10,7 @@ ADMIN = 2
 MEMBER = 3
 
 def channel_invite(token, channel_id, u_id):
+    u_id = get_user_from_token(token)
     #invite user to join a channel
     for user in u_id:
         invited = True
@@ -111,25 +112,28 @@ def channel_join(token, channel_id):
 
 def channel_addowner(token, channel_id, u_id):
     #Make user with user id u_id an owner of this channel
-    channel['owners'].append(u_id)
-
-    if channel['channel_id'] != channel_id:
-        raise ValueError("Channel Id is not a valid channel")
+    channel = is_valid_channel(channel_id)
+    if channel == None:
+        raise ValueError("Channel ID is not a valid channel")
     if u_id in channel['owners']:
         raise ValueError("User is already an owner of the channel")
     else: 
         raise AccessError("User is not an owner of the slackr or of this channel")
 
+    channel['owners'].append(u_id)
+
 
 def channel_removeowner(token, channel_id, u_id):
-    channel['owners'].remove(u_id)
-
-    if channel['channel_id'] != channel_id:
-        raise ValueError("Channel Id is not a valid channel")
+    #Remove user with user id u_id an owner of this channel
+    channel = is_valid_channel(channel_id)
+    if channel == None:
+        raise ValueError("Channel ID is not a valid channel")
     if u_id not in channel['owners']:
         raise ValueError("User is already an owner of the channel")
     else:
         raise AccessError("User is not an owner of the slackr or of this channel")
+
+    channel['owners'].remove(u_id)
 
 
 def channels_list(token):
