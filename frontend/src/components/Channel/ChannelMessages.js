@@ -1,11 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-<<<<<<< HEAD
-import { List, ListSubheader } from '@material-ui/core';
-=======
 import { List, ListSubheader, Button } from '@material-ui/core';
->>>>>>> 760cab0852d04714f96583f53649d5895803ed06
 import { pollingInterval, getIsPolling, subscribeToStep, unsubscribeToStep } from '../../utils/update';
 import Message from '../Message';
 import AuthContext from '../../AuthContext';
@@ -72,11 +68,7 @@ function ChannelMessages({ channel_id = '' }) {
         style={{ width: '100%' }}
       >
         {messages.slice().reverse().map((message) => (
-<<<<<<< HEAD
-          <Message {...message} />
-=======
           <Message key={message.message_id} {...message} />
->>>>>>> 760cab0852d04714f96583f53649d5895803ed06
         ))}
       </List>
       <AddMessage onAdd={resetChannelMessages} channel_id={channel_id} />
