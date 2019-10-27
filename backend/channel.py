@@ -49,6 +49,7 @@ def channel_details(token, channel_id):
 
 
 def channel_messages(token, channel_id, start):
+    blue("channel_messages() called!")
     start = int(start)
     channel_id = int(channel_id)
     channel = get_channel(channel_id)
@@ -57,6 +58,7 @@ def channel_messages(token, channel_id, start):
 
     u_id = get_user_from_token(token)
     members = channel['members']
+    print(get_data()['channel'])
     for user in members:
         if u_id == user['u_id']:
             if start > len(channel['messages']):
