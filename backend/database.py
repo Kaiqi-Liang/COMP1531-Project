@@ -117,9 +117,6 @@ def get_message_channel(message_id):
         for message in channel['messages']:
             if int(message_id) == message['message_id']:
                 return channel
-<<<<<<< HEAD
-    return None
-=======
     return None
 
 def clear():
@@ -132,5 +129,3 @@ def clear():
                 'member':[]
               }
      }
-
->>>>>>> 8331e5de3a2a1585ca9b993f86d73921d4c61c89
