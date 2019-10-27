@@ -8,7 +8,13 @@ from time import time
 from threading import Timer
 
 def message_sendlater(token, channel_id, message, time_sent):
-    timeout = int(time_sent) - time()
+    time_sent = int(time_sent) / 1000
+    print(time_sent)
+    now = time() * 1000
+    print(time())
+    timeout = time_sent - time()
+    print(timeout)
+    return {}
     send = Timer(timeout, message_send, (token, channel_id, message))
     send.start()
 

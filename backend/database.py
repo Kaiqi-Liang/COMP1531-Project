@@ -2,7 +2,11 @@
 DATA = {
     'user': [],
     'channel': [],
-    'slackr': []
+    'slackr': {
+                'admin':[],
+                'owner':[],
+                'member':[]
+              }
 }
 
 '''
@@ -62,9 +66,9 @@ DATA = {
     'slackr':
         [
             {
-                OWNER: [u_id],
-                ADMIN: [u_id],
-                MEMBER: [u_id]
+                'owner': [u_id],
+                'admin': [u_id],
+                'member': [u_id]
             }
         ]
 '''

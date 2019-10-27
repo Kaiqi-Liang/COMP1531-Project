@@ -6,13 +6,6 @@ sys.path.insert(0,parentdir)
 
 from backend.database import get_data
 
-BLUE = '\033[94m'
-GREEN = '\033[92m'
-YELLOW = '\033[93m'
-RED = '\033[91m'
-
-
-
 ''' regex import'''
 import re
 
@@ -65,5 +58,11 @@ def check_message_exists(message_id):
 def check_user_in_channel(u_id, channel):
     for member in channel['members']:
         if int(u_id) == member['u_id']:
+            return True
+    return False
+
+def is_owner(u_id, channel):
+    for owner in channel['owners']:
+        if int(u_id) == owner['u_id']:
             return True
     return False
