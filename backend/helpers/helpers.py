@@ -10,8 +10,16 @@ BLUE = '\033[94m'
 GREEN = '\033[92m'
 YELLOW = '\033[93m'
 RED = '\033[91m'
+WHITE = '\033[0m'
 
-
+def succ(str):
+    print(GREEN+str+WHITE)
+def warn(str):
+    print(YELLOW+str+WHITE)
+def blue(str):
+    print(BLUE+str+WHITE)
+def fail(str):
+    print(RED+str+WHITE)
 
 ''' regex import'''
 import re
