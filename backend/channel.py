@@ -60,8 +60,8 @@ def channel_messages(token, channel_id, start):
                 exception = False
                 break
 
-    if exception == True:
-        raise AccessError("Authorised user is not a member of channel with channel_id")
+        if exception == True:
+            raise AccessError("Authorised user is not a member of channel with channel_id")
 
     messages = []
     for message in channel['messages']:
