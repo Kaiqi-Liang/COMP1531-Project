@@ -12,14 +12,18 @@ import datetime
 from backend.message import *
 from backend.auth import auth_register
 from backend.auth import auth_login
-from backend.database import get_message
+from backend.channel import channel_join, channels_create, channel_invite
+from backend.database import *
+from backend.helpers import *
+from backend.admin_userpermission_change import *
 
 # FUNCTION SETUP
 
 @pytest.fixture
 def register_owner():
-    return auth_register("sarah@gmail.com", "123456", "Sarah", "Williams")
+    owner_dict = auth_register("sarah@gmail.com", "123456", "Sarah", "Williams")
     # return { u_id, token }
+    return owner_dict
 
 @pytest.fixture
 def register_user():
@@ -28,13 +32,13 @@ def register_user():
 
 @pytest.fixture
 def register_not_in_channel():
-    return auth_regiser("random@random.com", "123456", "first name", "last name")
+    return auth_register("random@random.com", "123456", "first name", "last name")
 
 @pytest.fixture
-def create_channel(register_owner):
-    token = register_owner['token']
+def create_channel(owner_token):
+    #token = register_owner['token']
     # return channel_id
-    return channels_create(token, "Test channel", False)
+    return channels_create(owner_token, "Test channel", True)
 
 @pytest.fixture
 def join_user(register_owner, register_user, create_channel):
@@ -72,194 +76,350 @@ def invalid_reactid():
 #TESTING FOR SEND LATER 
 #normal functioning
 def test_message_sendlater(register_owner, create_channel, message_valid, time_valid):  
-   m_id = message_sendlater(register_owner['token'], create_channel, message_valid, time_valid) 
-   mess = get_message(m_id)
-   assert mess['time_created'] == time_valid
+    clear()
+    m_id = message_sendlater(register_owner['token'], create_channel, message_valid, time_valid) 
+    mess = get_message(m_id)
+    assert mess['time_created'] == time_valid
 # channel id not valid
 def test_message_sendlater1(register_owner, create_channel, message_valid, time_valid):
+    clear()
     with pytest.raises(ValueError, match=r"*"):
         message_sendlater(register_owner['token'], -1, message_valid, time_valid)
 #message is invalid
 def test_message_sendlater2(register_owner, create_channel, message_invalid, time_valid):
+    clear()
     with pytest.raises(ValueError, match=r"*"):
         message_sendlater(register_owner['token'], create_channel, message_invalid, time_valid)
 #time is invalid
 def test_message_sendlater3(register_owner, create_channel, message_valid, time_invalid):
+    clear()
     with pytest.raises(ValueError, match=r"*"):
         message_sendlater(register_owner['token'], create_channel, message_valid, time_invalid)
 # authorised user is not apart of the channel
-def test_message_sendlater4(register_not_in_channel, create_channel, message_valid, time_valid):
+def test_message_sendlater4():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    user_dict = register_user()
+    time = int(datetime.datetime(2019, 12, 3, 5, 30, 30, 0))
     with pytest.raises(AccessError, match=r"*"):
-        message_sendlater(register_not_in_channel['token'], create_channel, message_valid, time_valid)
+        message_sendlater(user_dict['token'], channel_id, "Hello World", time)
 
 # TEST FOR MESSAGE_SEND
 # normal functioning
-def test_message_send(register_owner, create_channel, message_valid): 
-    m_id = message_send(register_owner['token'], create_channel, message_valid) 
-    for message in create_channel['messages']:
-        if message['message_id'] == m_id:
-            assert True
+def test_message_send():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_dict = create_channel(owner_token)
+    channel_id = channel_dict['channel_id']
     
-    assert False
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id'] 
+    assert get_message(m_id) != None
 # invalid message
-def test_message_send1(register_owner, create_channel, message_invalid):
+def test_message_send1():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    message = message_invalid()
     with pytest.raises(ValueError, match=r"*"):
-        message_send(register_owner['token'], create_channel, message_invalid)
+        message_send(owner_token, channel_id, message)
 # authorised user is not apart of the channel
-def test_message_send2(register_not_in_channel, create_channel, message_valid):
+def test_message_send2():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    user_dict = register_user()
     with pytest.raises(AccessError, match=r"*"):
-        message_send(register_not_in_channel['token'], create_channel, message_valid)
+        message_send(user_dict['token'], channel_id, "Hello world")
        
 # TESTS FOR MESSAGE_REMOVE
 # functioning properly
-def test_message_remove(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Hello world")
-    message_remove(register_owner['token'], m_id)
+def test_message_remove():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
+    message_remove(owner_token, m_id)
     # assert based on the message_id not existing
     assert get_message(m_id) == None 
 # message based on id no longer exists -> call remove twice
-def test_message_remove1(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Hello world")
-    message_remove(register_owner['token'], m_id)
+def test_message_remove1():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
+    message_remove(owner_token, m_id)
     with pytest.raises(ValueError,match=r"*"):
-        message_remove(register_owner['token'], m_id)
+        message_remove(owner_token, m_id)
 # message was not sent by authorised user and user is not admin 
-def test_message_remove2(register_owner, register_user, create_channel):
-     m_id = message_send(register_owner['token'], create_channel, "Hello world")
-     with pytest.raises(AccessError, match=r"*"):
-        message_remove(register_user['token'], m_id)
+def test_message_remove2():
+    clear()
+    owner_dict = register_owner()
+    user_dict = register_user()
+    owner_token = owner_dict['token']
+    user_token = user_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
+    with pytest.raises(AccessError, match=r"*"):
+        message_remove(user_token, m_id)
        
 # TESTS FOR MESSAGE_EDIT
 # normal functioning
-def test_message_edit(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Hello World")
-    message_edit(register_owner['token'], m_id, "Edited message")
+def test_message_edit():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
+    message_edit(owner_token, m_id, "Edited message")
     mess = get_message(m_id)
     assert mess['message'] == "Edited message"
-#access error
-def test_message_edit1(register_owner, register_user, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Hello World")
+#access error -> COME BACK TO THIS 
+def test_message_edit1():
+    clear()
+    owner_dict = register_owner()
+    user_dict = register_user()
+    owner_token = owner_dict['token']
+    user_token = user_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
     with pytest.raises(AccessError, match=r"*"):
-        message_edit(register_user['token'], m_id, "Can not edit")   
+        message_edit(user_token, m_id, "Can not edit")   
         
 # TESTS FOR MESSAGE_REACT
-# normal functioning 
-def test_message_react(register_owner, valid_reactid, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Hello")
-    message_react(register_owner['token'], m_id, valid_reactid)
+# normal functioning -> COME BACK TO THIS 
+def test_message_react():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test react")['message_id']
+
+    message_react(owner_token, m_id, 1)
     mess = get_message(m_id)
     for react in mess['reacts']:
         if valid_reactid == react['react_id']:
             if register_owner['u_id'] in react['u_ids']:
              assert True
-    
-    assert False
+
 # message_id is not a valid message
-def test_message_react1(register_owner, valid_reactid):
+def test_message_react1():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
     with pytest.raises(ValueError, match=r"*"):
-        message_react(register_owner['token'], -100, valid_reactid)
+        message_react(owner_token, -100, 1)
+        
 # react_id is not valid
-def test_message_react2(register_owner, create_channel, invalid_reactid, valid_reactid):
-    m_id = message_send(register_owner['token'], create_channel, "Hello")
+def test_message_react2():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test react")['message_id']
     with pytest.raises(ValueError, match=r"*"):
-        message_react(register_owner['token'], m_id, invalid_reactid)
+        message_react(owner_token, m_id, 0)
+    
 # message already contains an active react
-def test_message_react3(register_owner, create_chanel, valid_reactid):
-    m_id = message_send(register_owner['token'], create_channel, "Hello")
-    message_react(register_owner['token'], m_id, valid_reactid)
+def test_message_react3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test react")['message_id']
+    message_react(owner_token, m_id, 1)
     with pytest.raises(ValueError, match=r"*"):
-        message_react(register_owner['token'], mi_id, valid_reactid)
+        message_react(owner_token, m_id, 1)
 
 # TESTS FOR MESSAGE_UNREACT
-# normal functioning  
-def test_message_unreact(register_owner, valid_reactid, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Hello")
-    message_react(register_owner['token'], m_id, valid_reactid)
+# normal functioning  -> COME BACK TO 
+def test_message_unreact():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
     
-    mess_unreact(register_owner['token'], m_id, valid_reactid)
+    m_id = message_send(owner_token, channel_id, "Test react")['message_id']
+    message_react(owner_token, m_id, 1)
+    message_unreact(owner_token, m_id, 1)
     mess = get_message(m_id)
     
     for react in mess['reacts']:
-        if valid_reactid == react['react_id']:
-            if register_owner['u_id'] not in react['u_ids']:
-                assert True
-    assert False 
-
+        if 1 == react['react_id']:
+            for users in react['u_ids']:
+                if owner_dict['u_id'] == users['u_id']:
+                    assert True
 # message_id is not a valid message
-def test_message_unreact1(register_owner, valid_reactid):
-    m_id = message_send(register_owner['token'], create_channel, "Hello")
-    message_react(register_owner['token'], m_id, valid_reactid)
+def test_message_unreact1():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
     with pytest.raises(ValueError, match=r"*"):
-        message_unreact(register_owner['token'], -100, valid_reactid)
+        message_unreact(owner_token, -100, 1)
 # react_id is not valid
-def test_message_unreact2(register_owner, create_channel, invalid_reactid, valid_reactid):
-    m_id = message_send(register_owner['token'], create_channel, "Hello")
-    message_react(register_owner['token'], m_id, valid_reactid)
+def test_message_unreact2():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test unreact")['message_id']
+
+    message_react(owner_token, m_id, 1)
     with pytest.raises(ValueError, match=r"*"):
-        message_unreact(register_owner['token'], m_id, invalid_reactid)
+        message_unreact(owner_token, m_id, 0)
 # message does not contain an active react -> dont call react before i test unreact
-def test_message_unreact3(register_owner, create_channel, valid_reactid):
-    m_id = message_send(register_owner['token'], create_channel, "Test")
+def test_message_unreact3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test unreact")['message_id']
     with pytest.raises(ValueError, match=r"*"):
-        message_unreact(register_owner['token'], m_id, valid_reactid)
+        message_unreact(owner_token, m_id, 1)
 
 # TESTS FOR MESSAGE_PIN
 # normal functioning
-def test_message_pin(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Test pin")
-    message_pin(register_owner['token'], m_id)
+def test_message_pin():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
+    message_pin(owner_token, m_id)
     mess = get_message(m_id)
     assert mess['is_pinned'] == True
 # message id is not valid
-def test_message_pin1(register_owner, create_channel):
+def test_message_pin1():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
     with pytest.raises(ValueError, match=r"*"):
-        message_pin(register_owner['token'], -100)
-# autorised user is not admin
-def test_message_pin2(register_owner, register_user, create_channel):
-    m_id = message_send(register_ower['token'], create_channel, "Test pin")
+        message_pin(owner_token, -100)
+# autorised user is not admin -> COME BACK TO 
+def test_message_pin2():
+    # SETUP
+    clear()
+    owner_dict = register_owner()
+    user_dict = register_user()
+    owner_token = owner_dict['token']
+    user_token = user_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    channel_join(user_token, channel_id)
+    
+    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
+    
     with pytest.raises(ValueError, match=r"*"):
-        message_pin(register_user['token'], m_id)
+        message_pin(user_token, m_id)
+        
 # message is already pinned -> run pin twice
-def test_message_pin3(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Test pin")
-    message_pin(register_owner['token'], m_id)
+def test_message_pin3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
+    message_pin(owner_token, m_id)
     with pytest.raises(ValueError, match=r"*"):
-        message_pin(register_owner['token'], m_id)   
+        message_pin(owner_token, m_id)   
 # authorised user is not member of the channel
-def test_message_pin4(register_owner, register_not_in_channel, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Test pin")
+def test_message_pin4():
+    # SET UP 
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    not_register = register_not_in_channel()['token']
+    
+    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
     with pytest.raises(ValueError, match=r"*"):
-        message_pin(register_not_in_channel['token'], m_id)
+        message_pin(not_register, m_id)
+
     
 # TEST FOR MESSAGE_UNPIN
 # normal functioning
-def test_message_unpin(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Test unpin")
-    message_pin(register_owner['token'], m_id)
+def test_message_unpin():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+   
+    m_id = message_send(owner_token, channel_id, "Test unpin")['message_id']
+    message_pin(owner_token, m_id)
     # now need to unpin
-    message_unpin(register_owner['token'], m_id)
+    message_unpin(owner_token, m_id)
     mess = get_message(m_id)
     assert mess['is_pinned'] == False
 # message_id is not valid
-def test_message_unpin1(register_owner, create_channel):
+def test_message_unpin1():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
     with pytest.raises(ValueError, match=r"*"):
-        message_unpin(register_owner['token'], -100)
-# autorised user is not admin
-def test_message_unpin2(register_owner, register_user, create_channel):
-    m_id = message_send(register_ower['token'], create_channel, "Test pin")
-    message_pin(register_owner['token'], m_id)
+        message_unpin(owner_token, -100)
+# autorised user is not admin 
+def test_message_unpin2():
+    # SETUP
+    clear()
+    owner_dict = register_owner()
+    user_dict = register_user()
+    owner_token = owner_dict['token']
+    user_token = user_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    channel_join(user_token, channel_id)
+    
+    m_id = message_send(owner_token, channel_id, "Test unpin")['message_id']
+    
+    message_pin(owner_token, m_id)
     with pytest.raises(ValueError, match=r"*"):
-        message_unpin(register_user['token'], m_id)
-# message is already pinned -> don't run pin
-def test_message_unpin3(register_owner, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Test pin")
+        message_unpin(user_token, m_id)
+        
+# message is already unpinned -> don't run pin
+def test_message_unpin3():
+    # SETUP
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    
+    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
     with pytest.raises(ValueError, match=r"*"):
-        message_unpin(register_owner['token'], m_id) 
-# authorised user is not member of the channel
-def test_message_unpin4(register_owner, register_not_in_channel, create_channel):
-    m_id = message_send(register_owner['token'], create_channel, "Test pin")
-    message_pin(register_owner['token'], m_id)
+        message_unpin(owner_token, m_id) 
+# authorised user is not member of the channel -> potential issue here 
+def test_message_unpin4(): 
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    not_register = register_not_in_channel()['token']
+
+    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
+    message_pin(owner_token, m_id)
     with pytest.raises(ValueError, match=r"*"):
-        message_pin(register_not_in_channel['token'], m_id)
+        message_unpin(not_register, m_id)
 
 
