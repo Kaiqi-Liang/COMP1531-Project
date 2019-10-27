@@ -6,6 +6,7 @@ from flask_cors import CORS
 from flask_mail import Mail, Message
 from flask import Flask, request
 
+import backend.search
 from backend import auth
 from backend import channel
 from backend import message
@@ -204,7 +205,22 @@ def setemail():
     return dumps(user.user_profile_setemail(request.form.get('token'), request.form.get('email')))
 
 
+@APP.route('/user/profile/sethandle', methods=['PUT'])
+def sethandle():
+    """ Update the authorised user's handle """
+    return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
+
+
 ''' STANDUP '''
+
+
+
+''' OTHER '''
+@APP.route('/search', methods=['GET'])
+def search():
+    """ Given a query string, return a collection of messages in all of the channels that the user has joined that match the query """
+    return dumps(search(request.args.get('token'), request.args.get('query_string')))
+
 
 if __name__ == '__main__':
     APP.run(port=(sys.argv[1] if len(sys.argv) > 1 else 5000), debug=True)

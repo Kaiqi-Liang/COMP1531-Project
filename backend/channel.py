@@ -154,7 +154,7 @@ def channel_removeowner(token, channel_id, u_id):
     if not is_owner(user_id, channel) and user_id not in get_data()['slackr']['owner']:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    if len(channel['owners']) != 1:
+    if len(channel['owners']) != 1 and int(u_id) not in get_data()['slackr']['admin']:
         user = get_user(u_id)
         channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
     return {}
