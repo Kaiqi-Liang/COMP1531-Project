@@ -4,12 +4,6 @@ from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import *
 
-''' Permission id globals '''
-OWNER = 1
-ADMIN = 2
-MEMBER = 3
-
-
 def channel_invite(token, channel_id, u_id):
     u_id = int(u_id)
     user = get_user(get_user_from_token(token))
@@ -25,7 +19,8 @@ def channel_invite(token, channel_id, u_id):
         if user['u_id'] == member['u_id']:
             invite = get_user(u_id)
             channel['members'].append({'u_id': u_id, 'name_first': invite['name_first'], 'name_last': invite['name_last']})
-    
+            return {}
+
     raise AccessError("the authorised user is not already a member of the channel")
 
 
@@ -33,18 +28,17 @@ def channel_details(token, channel_id):
     channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-    
+
     if not channel['is_public']:
         u_id = get_user_from_token(token)
         members = channel['members']
         for member in members:
             if u_id == member['u_id']:
                 return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-        raise AccessError("Authorised user is not a member of channel with channel_id")
-    
+        raise AccessError("channel_details authorisation error")
+
     else:
         return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-
 
 
 def channel_messages(token, channel_id, start):
@@ -54,93 +48,121 @@ def channel_messages(token, channel_id, start):
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
 
-    u_id = get_user_from_token(token)
-    members = channel['members']
-    for user in members:
-        if u_id == user['u_id']:
-            if start > len(channel['messages']):
-                raise ValueError("start is greater than or equal to the total number of messages in the channel")
+    if start > len(channel['messages']):
+        raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
-            messages = []
-            for message in channel['messages']:
-                if message['message_id'] < start:
-                    continue
+    if not channel['is_public']:
+        exception = True
+        u_id = get_user_from_token(token)
+        members = channel['members']
+        for user in members:
+            if u_id == user['u_id']:
+                exception = False
+                break
 
-                messages.append(message)
+        if exception == True:
+            raise AccessError("Authorised user is not a member of channel with channel_id")
 
-                if len(messages) == 50:
-                    break
+    messages = []
+    for message in channel['messages']:
+        if message['message_id'] < start:
+            continue
 
-            if len(messages) == 0:
-                return {'messages': messages, 'start': start, 'end': -1}
-            else:
-                end = messages[-1]['message_id']
-                return {'messages': messages, 'start': start, 'end': end}
+        messages.append(message)
 
-        raise AccessError("Authorised user is not a member of channel with channel_id")
+        if len(messages) == 50:
+            break
 
-    raise ValueError("Channel ID is not a valid channel")
+    if len(messages) == 0:
+        return {'messages': messages, 'start': start, 'end': -1}
+    else:
+        end = messages[-1]['message_id']
+        return {'messages': messages, 'start': start, 'end': end}
+
 
 
 def channel_leave(token, channel_id):
-    channel = is_valid_channel(channel_id)
+    channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
+
     u_id = get_user_from_token(token)
-    channel['members'].remove(u_id)
+    members = channel['members']
+    owners = channel['owners']
+    for member in members:
+        if u_id == member['u_id']:
+            members.remove(member)
+    for owner in owners:
+        if u_id == owner['u_id']:
+            owners.remove(owner)
+    if len(owners) == 0 and len(members) == 0:
+        get_data()['channel'].remove(channel)
+    return {}
 
 
 def channel_join(token, channel_id):
     users = get_data()['user']
 
-    channel = is_valid_channel(channel_id)
+    channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
     u_id = get_user_from_token(token)
+    user = get_user(u_id)
 
     # If user is already in channel, ignore
-    if u_id in channel['members'] or u_id in channel['owners']:
+    if check_in_channel(token, user['u_id']):
         return {}
+
+    member_info = {
+        'u_id': user['u_id'],
+        'name_first': user['name_first'],
+        'name_last': user['name_last']
+    }
 
     # If channel is public
     if channel['is_public']:
-        channel['members'].append(u_id)
+        channel['members'].append(member_info)
     else:
         # If user is not an admin/owner (assumptions)
-        if not check_permission(u_id, OWNER) and not check_permission(u_id, ADMIN):
+        if not check_permission(u_id, 3) and not check_permission(u_id, 1):
             raise AccessError("User is not admin: unable to join private channel")
         else:
             # User is an admin/owner and can join channel
-            channel['owners'].append(u_id)
-            channel['members'].append(u_id)
+            channel['owners'].append(member_info)
+            channel['members'].append(member_info)
 
     return {}
 
 
 def channel_addowner(token, channel_id, u_id):
-    #Make user with user id u_id an owner of this channel
-    channel = is_valid_channel(channel_id)
+    user_id = get_user_from_token(token)
+    channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-    if u_id in channel['owners']:
+    if is_owner(u_id, channel):
         raise ValueError("User is already an owner of the channel")
-    else: 
+    if not is_owner(user_id, channel):
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    channel['owners'].append(u_id)
+    user = get_user(u_id)
+    channel['owners'].append({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+    return {}
 
 
 def channel_removeowner(token, channel_id, u_id):
-    #Remove user with user id u_id an owner of this channel
-    channel = is_valid_channel(channel_id)
+    user_id = get_user_from_token(token)
+    channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-    if u_id not in channel['owners']:
-        raise ValueError("User is already an owner of the channel")
-    else:
+    if not is_owner(u_id, channel):
+        raise ValueError("When user with user id u_id is not an owner of the channel")
+    if not is_owner(user_id, channel) and user_id not in get_data()['slackr']['owner']:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    channel['owners'].remove(u_id)
+    if len(channel['owners']) != 1 and int(u_id) not in get_data()['slackr']['admin']:
+        user = get_user(u_id)
+        channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+    return {}
 
 
 def channels_list(token):
@@ -188,4 +210,9 @@ def channels_create(token, name, is_public):
         channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
         channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
 
+    for admin_id in get_data()['slackr']['admin']:
+        admin = get_user(admin_id)
+        if not check_user_in_channel(u_id, channel):
+            channel['owners'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
+            channel['members'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
     return {'channel_id': channel_id}

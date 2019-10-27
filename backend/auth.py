@@ -60,19 +60,19 @@ def auth_register(email, password, name_first, name_last):
     # generate a u_id, this method is based on the number of users
     u_id = len(users) + 1
 
-    # generate a handle that is a lowercase concatenation of their first and last name
-    handle = name_first.lower() + name_last.lower()
+    # generate a handle_str that is a lowercase concatenation of their first and last name
+    handle_str = name_first.lower() + name_last.lower()
 
-    if len(handle) > 20:
-        handle = handle[:20]
+    if len(handle_str) > 20:
+        handle_str = handle_str[:20]
 
     for user in users:
-        if handle == user['handle']:
-            if len(handle) >= 19:
+        if handle_str == user['handle_str']:
+            if len(handle_str) >= 19:
                 # cut some out
-                handle = handle[:18]
+                handle_str = handle_str[:18]
             # then add number
-            handle = handle + str(random.randint(10, 100))
+            handle_str = handle_str + str(random.randint(10, 100))
 
     # generate a token
 
@@ -81,8 +81,11 @@ def auth_register(email, password, name_first, name_last):
     # work out permission_id
     if len(users) == 0:
         p_id = 1
+        get_data()['slackr']['owner'].append(u_id)
+        get_data()['slackr']['admin'].append(u_id)
     else:
         p_id = 3
+    get_data()['slackr']['member'].append(u_id)
 
     # add this data to the DATA members list
     users.append({
@@ -91,7 +94,7 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : u_id,
         'permission_id' : p_id,
         'email' : email,
-        'handle': handle,
+        'handle_str': handle_str,
         'tokens': [token],
         'password': hashlib.sha256(password.encode()).hexdigest(),
         'reset': None
