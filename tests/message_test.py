@@ -14,7 +14,7 @@ from backend.auth import auth_register
 from backend.channel import channel_join, channels_create, channel_invite
 from backend.database import *
 from backend.helpers import *
-from backend.admin_userpermission_change import *
+from backend.admin import *
 
 # FUNCTION SETUP
 
