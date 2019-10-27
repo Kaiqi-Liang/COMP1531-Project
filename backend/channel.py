@@ -25,6 +25,7 @@ def channel_invite(token, channel_id, u_id):
         if user['u_id'] == member['u_id']:
             invite = get_user(u_id)
             channel['members'].append({'u_id': u_id, 'name_first': invite['name_first'], 'name_last': invite['name_last']})
+            return {}
 
     raise AccessError("the authorised user is not already a member of the channel")
 
@@ -77,21 +78,25 @@ def channel_messages(token, channel_id, start):
                 end = messages[-1]['message_id']
                 return {'messages': messages, 'start': start, 'end': end}
 
-        raise AccessError("Authorised user is not a member of channel with channel_id")
-
-    raise ValueError("Channel ID is not a valid channel")
+    raise AccessError("Authorised user is not a member of channel with channel_id")
 
 
 def channel_leave(token, channel_id):
     channel = get_channel(channel_id)
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
-    print(channel)
+
     u_id = get_user_from_token(token)
     members = channel['members']
+    owners = channel['owners']
     for member in members:
         if u_id == member['u_id']:
             members.remove(member)
+    for owner in owners:
+        if u_id == owner['u_id']:
+            owners.remove(owner)
+    if len(owners) == 0 and len(members) == 0:
+        get_data()['channel'].remove(channel)
     return {}
 
 
