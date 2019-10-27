@@ -6,6 +6,13 @@ sys.path.insert(0,parentdir)
 
 from backend.database import get_data
 
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+YELLOW = '\033[93m'
+RED = '\033[91m'
+
+
+
 ''' regex import'''
 import re
 
@@ -17,11 +24,14 @@ def check_permission(u_id, p_id):
 
 ''' CHANNEL'''
 ''' Check if user is in channel '''
-def check_in_channel(token, channel_id):
+def check_in_channel(u_id, channel_id):
     channels = get_data()['channel']
     for channel in channels:
         if channel['channel_id'] == channel_id:
-            return True
+            for member in channel['members']:
+                if member['u_id'] == u_id:
+                    return True
+            return False
     return False
 
 ''' If channel_id is valid, return channel. Else return None'''
@@ -39,7 +49,7 @@ def check_email(email):
     if(re.search(email_regex, email)):
         return True
     return False
-    
+
 ''' MESSAGES'''
 ''' Check message exists '''
 def check_message_exists(message_id):
@@ -49,7 +59,7 @@ def check_message_exists(message_id):
         for mess in channel['messages']:
             if mess['message_id'] == message_id:
                 return True
-    
+
     return False
 
 def check_user_in_channel(u_id, channel):

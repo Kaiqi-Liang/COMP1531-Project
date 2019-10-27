@@ -35,6 +35,7 @@ def send_mail(email, reset_code):
 
 
 ''' AUTH '''
+
 @APP.route('/auth/login', methods=['POST'])
 def login():
     """ Given a registered users' email and password and generates a valid token for the user to remain authenticated """
@@ -113,7 +114,7 @@ def create():
 @APP.route('/channel/leave', methods=['POST'])
 def leave():
     ''' Given a channel ID, the user removed as a member of this channel '''
-    return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
+    return dumps(channel.channel_leave(request.form.get('token'), request.form.get('channel_id')))
 
 
 @APP.route('/channel/join', methods=['POST'])
@@ -123,6 +124,11 @@ def join():
 
 
 ''' MESSAGE '''
+
+@APP.route('/message/sendlater', methods=['POST'])
+def sendlater():
+    """ Send a message from authorised_user to the channel specified by channel_id automatically at a specified time in the future """
+    return dumps(message.message_sendlater(request.form.get('token'), request.form.get('channel_id'), request.form.get('message'), request.form.get('time_sent')))
 
 @APP.route('/message/send', methods=['POST'])
 def send():
@@ -177,13 +183,13 @@ def profile():
 @APP.route('/user/profile/setname', methods=['PUT'])
 def setname():
     """ Update the authorised user's first and last name """
-    return dumps(user.user_profile(request.form.get('token'), request.form.get('name_first'), request.form.get('name_last')))
+    return dumps(user.user_profile_setname(request.form.get('token'), request.form.get('name_first'), request.form.get('name_last')))
 
 
 @APP.route('/user/profile/setemail', methods=['PUT'])
 def setemail():
     """ Update the authorised user's email addredss """
-    return dumps(user.user_profile(request.form.get('token'), request.form.get('email')))
+    return dumps(user.user_profile_setemail(request.form.get('token'), request.form.get('email')))
 
 
 if __name__ == '__main__':

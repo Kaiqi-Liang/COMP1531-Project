@@ -16,7 +16,7 @@ def user_profile(token, u_id):
     if get_user(get_user_from_token(token)) != None:
         for user in users:
             if u_id == user['u_id']:
-                return {'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last']}
+                return {'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str']}
         raise ValueError("User with u_id is not a valid user")
 
 

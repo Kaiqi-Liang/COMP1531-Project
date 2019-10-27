@@ -1,6 +1,7 @@
 """ Local packages """
 from backend.database import get_data, get_channel, get_message, get_permission, get_message_channel
 from backend.helpers.token import get_user_from_token
+from backend.helpers.helpers import check_user_in_channel
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import check_user_in_channel
 
