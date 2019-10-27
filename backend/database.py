@@ -60,7 +60,8 @@ DATA = {
                                               ],
                                     'is_pinned': True
                                 }
-                            ]
+                            ],
+                'standup_queue': standup_message
             }
         ],
     'slackr':
@@ -117,3 +118,9 @@ def get_message_channel(message_id):
             if int(message_id) == message['message_id']:
                 return channel
     return None
+
+def clear():
+    global DATA
+    DATA = {'user': [],
+    'channel': [],
+    'slackr': []}

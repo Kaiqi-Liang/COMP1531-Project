@@ -3,18 +3,16 @@ from backend.database import get_data, get_channel, get_message, get_permission,
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel
 from backend.helpers.exception import ValueError, AccessError
+from backend.helpers.helpers import check_user_in_channel
 
 from time import time
 from threading import Timer
 
 def message_sendlater(token, channel_id, message, time_sent):
     time_sent = int(time_sent) / 1000
-    print(time_sent)
-    now = time() * 1000
-    print(time())
-    timeout = time_sent - time()
-    print(timeout)
-    return {}
+    timeout = int(time_sent) - int(time())
+    if timeout < 0:
+        raise ValueError("Time sent is a time in the past")
     send = Timer(timeout, message_send, (token, channel_id, message))
     send.start()
 
@@ -165,16 +163,16 @@ def message_pin(token, message_id):
     # value error: message_id is not valid
     if mess == None:
         raise ValueError("message_id is not valid")
-    # value error: authorised user is not an admin
-    if get_permission(user_id) == 3: #(assumption: owner of the slackr has permission)
-        raise ValueError("User is not an admin")
     # value error: message is already pinned
     if mess['is_pinned'] == True:
         raise ValueError("Message is already pinned")
-    # access error: authorised user is not apart of the channel -> come back to after channels are set up 
+    # access error: authorised user is not apart of the channel
     channel = get_message_channel(message_id)
     if not check_user_in_channel(user_id, channel):
         raise AccessError("User is not a member of the channel")
+    # value error: authorised user is not an admin
+    if get_permission(user_id) == 3: #(assumption: owner of the slackr has permission)
+        raise ValueError("User is not an admin")
 
     # pin the message
     mess['is_pinned'] = True
@@ -193,16 +191,16 @@ def message_unpin(token, message_id):
     # value error: message_id is not valid
     if mess == None:
         raise ValueError("message_id is not valid")
-    # value error: authorised user is not an admin
-    if get_permission(user_id) == 3: #(assumption: owner of the slackr has permission)
-        raise ValueError("User is not an admin")
     # value error: message is already pinned
     if mess['is_pinned'] == False:
         raise ValueError("Message is already pinned")
-    # access error: authorised user is not apart of the channel -> come back to after channels are set up 
+    # access error: authorised user is not apart of the channel
     channel = get_message_channel(message_id)
     if not check_user_in_channel(user_id, channel):
         raise AccessError("User is not a member of the channel")
+    # value error: authorised user is not an admin
+    if get_permission(user_id) == 3: #(assumption: owner of the slackr has permission)
+        raise ValueError("User is not an admin")
 
     # unpin the message
     mess['is_pinned'] = False

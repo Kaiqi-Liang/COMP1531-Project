@@ -151,11 +151,12 @@ def channel_removeowner(token, channel_id, u_id):
         raise ValueError("Channel ID is not a valid channel")
     if not is_owner(u_id, channel):
         raise ValueError("When user with user id u_id is not an owner of the channel")
-    if not is_owner(user_id, channel) or user_id not in get_data()['slackr']['owner']:
+    if not is_owner(user_id, channel) and user_id not in get_data()['slackr']['owner']:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    user = get_user(u_id)
-    channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+    if len(channel['owners']) != 1:
+        user = get_user(u_id)
+        channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
     return {}
 
 
@@ -206,6 +207,7 @@ def channels_create(token, name, is_public):
 
     for admin_id in get_data()['slackr']['admin']:
         admin = get_user(admin_id)
-        channel['owners'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
-        channel['members'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
+        if not check_user_in_channel(u_id, channel):
+            channel['owners'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
+            channel['members'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
     return {'channel_id': channel_id}
