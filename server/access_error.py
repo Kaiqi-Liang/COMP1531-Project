@@ -1,2 +1,2 @@
 class AccessError(Exception):
-    pass
+     pass

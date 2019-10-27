@@ -1,4 +1,5 @@
 # Assumptions:
+## Iteration 1:
 - Assume when message_remove is called the message with message_id is deleted from the messages list
 - Assume when a message is edited, the time_created stays to when the message was posted, not edited
 - Assume when a message is edited, the user_id remains as the original poster of the message
@@ -6,7 +7,7 @@
 - Assume all of the messages passed into test_message_unpin are pinned already
 - Assume all of the messages passed into test_message_pin are not pinned
 - Assume all of the messages passed into test_message_react have not been reacted to
-- Assume al of the messages passed into test_message_unreact have been reacted to
+- Assume all of the messages passed into test_message_unreact have been reacted to
 - Assume a not valid message based on message_id means that no message with the id exists (in tests use -1 as an example)
 - Assume value of is_unread stays the same if a message is edited
 - Assume the messages sent in message_send and message_sendlater are unread for testing
@@ -28,3 +29,13 @@
 - Assume handles can be a max 20 characters and not minimum
 - Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
 - Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y
+
+## Iteration 2:
+- Assume reset_code is unique enough that the user won't be resetting somebody else's password
+- Assume that if a user is an admin of a channel and said channel is private, then they do not need to join (i.e. they are already in the channel)
+- Assume that when checking if a user can join a private channel, we are only considering them if they are not owners/admins and not just admins
+- Assume that owners and admins are members/owners of all channels
+- Assume max length for messages in standup_send does not apply to standup queue i.e. the final concatenated message.
+- Assume names in final standup message are all lowercase.
+- Assume "Handle length between 3 and 20" is inclusive.
+- Assume AccessErrors are raised everytime someone of lower permissions tries to change a higher permitted user.

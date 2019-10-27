@@ -1,7 +1,7 @@
 import pytest
 import requests
 import urllib
-from PIL import Image
+import Image
 from access_error import AccessError
 
 def user_profile(token, u_id):
