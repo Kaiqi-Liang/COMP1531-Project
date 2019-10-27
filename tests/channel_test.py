@@ -14,7 +14,7 @@ def register_owner():
 @pytest.fixture
 def register_user():
     # return { u_id, token }
-    return auth_register('lkq137055338@gmail.com', '123456', 'kaiqi', 'liang')
+    return auth_register('kaiqi.liang9989@gmail.com', '123456', 'kaiqi', 'liang')
 
 @pytest.fixture
 def channel_create(register_owner):
