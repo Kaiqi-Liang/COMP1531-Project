@@ -46,9 +46,22 @@ def user_profile_setemail(token, email):
         return {}
 
 def user_profile_sethandle(token, handle_str):
-    if len(handle_str) > 20:
-        raise ValueError("Handle too long!")
-    return
+    u_id = get_user_from_token(token)
+    user = get_user(u_id)
+    users = get_data()['user']
+
+    if len(handle_str) > 20 or len(handle_str) < 3:
+        raise ValueError('Handle too long!')
+
+    for user in users:
+        if handle_str == user['handle_str']:
+            if len(handle_str) >= 19:
+                # cut some out
+                handle_str = handle_str[:18]
+            # then add number
+            handle_str = handle_str + str(random.randint(10, 100))
+    user['handle_str'] = handle_str
+    return {}
 
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     response = requests.get(img_url)

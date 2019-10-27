@@ -192,5 +192,11 @@ def setemail():
     return dumps(user.user_profile_setemail(request.form.get('token'), request.form.get('email')))
 
 
+@APP.route('/user/profile/sethandle', methods=['PUT'])
+def sethandle():
+    """ Update the authorised user's handle """
+    return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
+
+
 if __name__ == '__main__':
     APP.run(port=(sys.argv[1] if len(sys.argv) > 1 else 5000), debug=True)
