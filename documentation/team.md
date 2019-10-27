@@ -1,4 +1,4 @@
-#Teamwork
+# Teamwork
 
 Our team SAKE has worked through the second iteration to implement the functions for the tests which were created in iteration one. Using our knowledge and tests we were able to create thoroughly verified and validated functions. The group took a customer-oriented approach by driving the creation of functions from user stories. These user stories were created under epics which were based around each key function.
 
