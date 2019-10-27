@@ -81,8 +81,11 @@ def auth_register(email, password, name_first, name_last):
     # work out permission_id
     if len(users) == 0:
         p_id = 1
+        get_data()['slackr']['owner'].append(u_id)
+        get_data()['slackr']['admin'].append(u_id)
     else:
         p_id = 3
+    get_data()['slackr']['member'].append(u_id)
 
     # add this data to the DATA members list
     users.append({

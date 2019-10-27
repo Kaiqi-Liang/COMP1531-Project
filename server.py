@@ -123,6 +123,18 @@ def join():
     return dumps(channel.channel_join(request.form.get('token'), request.form.get('channel_id')))
 
 
+@APP.route('/channel/addowner', methods=['POST'])
+def addowner():
+    """ Make user with user id u_id an owner of this channel """
+    return dumps(channel.channel_addowner(request.form.get('token'), request.form.get('channel_id'), request.form.get('u_id')))
+
+
+@APP.route('/channel/removeowner', methods=['POST'])
+def removeowner():
+    """ Remove user with user id u_id an owner of this channel """
+    return dumps(channel.channel_removeowner(request.form.get('token'), request.form.get('channel_id'), request.form.get('u_id')))
+
+
 ''' MESSAGE '''
 
 @APP.route('/message/sendlater', methods=['POST'])

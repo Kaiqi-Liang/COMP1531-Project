@@ -9,7 +9,10 @@ from time import time
 from threading import Timer
 
 def message_sendlater(token, channel_id, message, time_sent):
-    timeout = int(time_sent) - time()
+    time_sent = int(time_sent) / 1000
+    timeout = int(time_sent) - int(time())
+    if timeout < 0:
+        raise ValueError("Time sent is a time in the past")
     send = Timer(timeout, message_send, (token, channel_id, message))
     send.start()
 
@@ -163,7 +166,7 @@ def message_pin(token, message_id):
     # value error: message is already pinned
     if mess['is_pinned'] == True:
         raise ValueError("Message is already pinned")
-    # access error: authorised user is not apart of the channel -> come back to after channels are set up 
+    # access error: authorised user is not apart of the channel
     channel = get_message_channel(message_id)
     if not check_user_in_channel(user_id, channel):
         raise AccessError("User is not a member of the channel")
@@ -191,7 +194,7 @@ def message_unpin(token, message_id):
     # value error: message is already pinned
     if mess['is_pinned'] == False:
         raise ValueError("Message is already pinned")
-    # access error: authorised user is not apart of the channel -> come back to after channels are set up 
+    # access error: authorised user is not apart of the channel
     channel = get_message_channel(message_id)
     if not check_user_in_channel(user_id, channel):
         raise AccessError("User is not a member of the channel")
