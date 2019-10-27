@@ -11,38 +11,59 @@ import urllib
 from PIL import Image
 
 ''' Local packages'''
-from backend import *
+from backend.user import *
+from backend.database import get_user
+from backend.helpers.token import get_user_from_token
+from backend.helpers import *
 
-def test_user_profile():
+def test_user_profile1():
+    clear()
+    u_id, token = auth_register("someemail@gmail.com","securepassword","John","Doe")
+    user_profile_sethandle(token,"johndoe")
+
+    assert user_profile(token, u_id)=={"someemail@gmail.com","John","Doe","johndoe"}
+
+def test_user_profile2():
+    clear()
     u_id, token = auth_register("someemail@gmail.com","securepassword","John","Doe")
     user_profile_sethandle(token,"johndoe")
 
     # Set arbitrary id thats invalid ...
-    invalid_u_id = None
-
-    # Valid case ...
-    assert user_profile(token, u_id)=={"someemail@gmail.com","securepassword","John","Doe","johndoe"}
-
-    # Invalid case ...
+    invalid_u_id = 2
     with pytest.raises(ValueError, match=r"*"):
         user_profile(token, invalid_u_id)
 
-def test_user_profile_setname():
-    u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
-    u_id2, token2 = auth_register("someemail2@gmail.com","securepassword","John","Smith")
-    u_id3, token3 = auth_register("someemail3@gmail.com","securepassword","Juan","Doe")
-    u_id4, token4 = auth_register("someemail4@gmail.com","securepassword","Juan","Smith")
+def test_user_profile_setname1():
+    clear()
+    u_id, token = auth_register("someemail1@gmail.com","securepassword","John","Doe")
 
-    user_profile_setname(token1, "Johnnette", "Doette")
+    user_profile_setname(token, "Johnnette", "Doette")
+    user = get_user(get_user_from_token(u_id))
+
+    assert user['name_first'] == "Doette" and user['name_last'] == "Doette"
+
+def test_user_profile_setname2():
+    clear()
+    u_id, token = auth_register("someemail3@gmail.com","securepassword","Juan","Doe")
+
+    with pytest.raises(ValueError, match=r"*"):
+        # Second name exceeding 50 chars ...
+        user_profile_setname(token, "Juan", "hugesecondtnamethatiscertainlylongerthanfiftycharacters")
+
+def test_user_profile_setname3():
+    clear()
+    u_id, token = auth_register("someemail2@gmail.com","securepassword","John","Smith")
 
     with pytest.raises(ValueError, match=r"*"):
         # First name exceeding 50 chars ...
-        user_profile_setname(token2, "hugefirstnamethatiscertainlylongerthanfiftycharacters", "Smith")
-        # Second name exceeding 50 chars ...
-        user_profile_setname(token3, "Juan", "hugesecondtnamethatiscertainlylongerthanfiftycharacters")
-        # Both names exceeding 50 chars ...
-        user_profile_setname(token4, "hugefirstnamethatiscertainlylongerthanfiftycharacters", "hugesecondtnamethatiscertainlylongerthanfiftycharacters")
+        user_profile_setname(token, "hugefirstnamethatiscertainlylongerthanfiftycharacters", "Smith")
 
+def test_user_profile_setname4():
+    u_id, token = auth_register("someemail4@gmail.com","securepassword","Juan","Smith")
+
+    with pytest.raises(ValueError, match=r"*"):
+        # Both names exceeding 50 chars ...
+        user_profile_setname(token, "hugefirstnamethatiscertainlylongerthanfiftycharacters", "hugesecondtnamethatiscertainlylongerthanfiftycharacters")
 
 def test_user_profile_setemail():
     u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
