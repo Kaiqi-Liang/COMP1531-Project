@@ -10,6 +10,7 @@ from backend import auth
 from backend import channel
 from backend import message
 from backend import user
+from backend import admin
 from backend.database import get_data
 from backend.helpers.exception import defaultHandler
 
@@ -209,6 +210,11 @@ def sethandle():
     """ Update the authorised user's handle """
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
+''' ADMIN '''
+@APP.route('/admin/userpermission/change', methods=['POST'])
+def userpermission_change():
+    """ Set a user's permissions """
+    return dumps(admin.admin_userpermission_change(request.form.get('token'), request.form.get('u_id'), request.form.get('permission_id')))
 
 if __name__ == '__main__':
     APP.run(port=(sys.argv[1] if len(sys.argv) > 1 else 5000), debug=True)

@@ -37,4 +37,5 @@
 - Assume that owners and admins are members/owners of all channels
 - Assume max length for messages in standup_send does not apply to standup queue i.e. the final concatenated message.
 - Assume names in final standup message are all lowercase.
-- Handle length between 3 and 20 is inclusive.
+- Assume "Handle length between 3 and 20" is inclusive.
+- Assume AccessErrors are raised everytime someone of lower permissions tries to change a higher permitted user.
