@@ -1,9 +1,3 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' pip3 packages '''
 import pytest
 import datetime
@@ -12,9 +6,9 @@ import datetime
 from backend.message import *
 from backend.auth import auth_register
 from backend.channel import channel_join, channels_create, channel_invite
-from backend.database import *
+from backend.database import clear
 from backend.helpers import *
-from backend.admin_userpermission_change import *
+from backend.admin import *
 
 # FUNCTION SETUP
 
