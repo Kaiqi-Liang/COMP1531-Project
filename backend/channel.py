@@ -89,13 +89,18 @@ def channel_leave(token, channel_id):
     u_id = get_user_from_token(token)
     members = channel['members']
     owners = channel['owners']
+    if is_owner(u_id, channel):
+        if len(owners) == 1 and len(members) > 1:
+            return {}
+
     for member in members:
         if u_id == member['u_id']:
             members.remove(member)
     for owner in owners:
         if u_id == owner['u_id']:
             owners.remove(owner)
-    if len(owners) == 0 and len(members) == 0:
+
+    if len(owners) == 1 and len(members) == 1:
         get_data()['channel'].remove(channel)
     return {}
 
