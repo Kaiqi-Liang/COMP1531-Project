@@ -12,7 +12,7 @@ def admin_userpermission_change(token, u_id, permission_id):
     if permission_id > 3:
         raise ValueError("permission_id not valid")
     if permission_id < -1:
-        raise ValueError("permission_id not valid")   
+        raise ValueError("permission_id not valid")
     if user2 == None:
         raise ValueError("u_id does not refer to a valid user")
 
