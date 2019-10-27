@@ -1,16 +1,10 @@
-''' syspath hack for local imports '''
-import os, sys, inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
 ''' pip3 packages '''
 import pytest
 
 ''' Local packages '''
 from backend.auth import auth_register
 from backend.auth import auth_login
-from admin_userpermission_change import admin_userpermission_change
+from admin import admin_userpermission_change
 
 def test_admin_userpermission_change1():
     # setup begin

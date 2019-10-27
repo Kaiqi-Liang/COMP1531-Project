@@ -2,6 +2,7 @@
 from backend.database import get_data, get_channel    # backend/database.py
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_in_channel
+from backend.helpers.exception import ValueError, AccessError
 
 ''' Std lib packages '''
 from datetime import datetime, timedelta
