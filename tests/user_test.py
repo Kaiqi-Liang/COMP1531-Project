@@ -1,9 +1,3 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' pip3 packages '''
 import pytest
 import requests
@@ -126,29 +120,30 @@ def test_user_profile_sethandle3():
 	user = get_user(get_user_from_token(ret['token']))
 
 	assert user['handle_str'] != "johndoe1"
+'''
+def test_user_profile_uploadphoto():
+    u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
 
-# def test_user_profile_uploadphoto():
-#     u_id1, token1 = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+    img_url = "https://yt3.ggpht.com/a/AGF-l7_fK0Hy4B4JO8ST-uGqSU69OTLHduk4Kri_fQ=s900-c-k-c0xffffffff-no-rj-mo"
+    invalid_url = "https://google.com/404"
 
-#     img_url = "https://yt3.ggpht.com/a/AGF-l7_fK0Hy4B4JO8ST-uGqSU69OTLHduk4Kri_fQ=s900-c-k-c0xffffffff-no-rj-mo"
-#     invalid_url = "https://google.com/404"
+   # Valid case ...
+   # Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
+    user_profiles_uploadphoto(token1, img_url, 0, 0, 800, 800)
 
-#    # Valid case ...
-#    # Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
-#     user_profiles_uploadphoto(token1, img_url, 0, 0, 800, 800)
-
-#     # Invalid cases ...
-#     with pytest.raises(ValueError, match=r"*"):
-#         # This call is done with an invalid url that will return a status code NOT 200
-#         user_profiles_uploadphoto(token1, invalid_url, 0, 0, 800, 800)
+    # Invalid cases ...
+    with pytest.raises(ValueError, match=r"*"):
+        # This call is done with an invalid url that will return a status code NOT 200
+        user_profiles_uploadphoto(token1, invalid_url, 0, 0, 800, 800)
 
 
-#         # Theses calls are done with crop x,y coords outside the img boundary ...
-#         # Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y ...
-#         user_profiles_uploadphoto(token1, img_url, -1, 0, 800, 800)
-#         user_profiles_uploadphoto(token1, img_url, 0, -1, 800, 800)
-#         user_profiles_uploadphoto(token1, img_url, 0, 0, 1000, 800)
-#         user_profiles_uploadphoto(token1, img_url, 0, 0, 800, 1000)
+        # Theses calls are done with crop x,y coords outside the img boundary ...
+        # Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y ...
+        user_profiles_uploadphoto(token1, img_url, -1, 0, 800, 800)
+        user_profiles_uploadphoto(token1, img_url, 0, -1, 800, 800)
+        user_profiles_uploadphoto(token1, img_url, 0, 0, 1000, 800)
+        user_profiles_uploadphoto(token1, img_url, 0, 0, 800, 1000)
 
-#         # Valid crop but invalid url ...
-#         user_profiles_uploadphoto(token1, invalid_url, 0, 0, 800, 800)
+        # Valid crop but invalid url ...
+        user_profiles_uploadphoto(token1, invalid_url, 0, 0, 800, 800)
+'''
