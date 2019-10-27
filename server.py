@@ -6,16 +6,15 @@ from flask_cors import CORS
 from flask_mail import Mail, Message
 from flask import Flask, request
 
-import backend.search
 from backend import auth
 from backend import channel
 from backend import message
 from backend import user
 from backend import admin
 from backend import standup
+from backend import search
 from backend.database import get_data
 from backend.helpers.exception import defaultHandler
-
 
 APP = Flask(__name__)
 CORS(APP)
@@ -31,13 +30,14 @@ APP.register_error_handler(Exception, defaultHandler)
 
 
 def send_mail(email, reset_code):
+    """ Send an email """
     mail = Mail(APP)
     msg = Message("Authentication", sender="kaiqi.liang9989@gmail.com", recipients=[email])
     msg.body = reset_code
     mail.send(msg)
 
 
-''' AUTH '''
+# AUTH
 
 @APP.route('/auth/login', methods=['POST'])
 def login():
@@ -61,11 +61,10 @@ def register():
 def passwordreset_request():
     """ Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email. """
     email = request.form.get('email')
-    users = get_data()['user']
-    for user in users:
-        if user['email'] == email:
+    for users in get_data()['user']:
+        if users['email'] == email:
             reset_code = str(random.randint(100000, 999999))
-            user['reset'] = reset_code
+            users['reset'] = reset_code
             send_mail(email, reset_code)
     return dumps({})
 
@@ -77,7 +76,7 @@ def passwordreset_reset():
 
 
 
-''' CHANNEL '''
+# CHANNEL
 
 @APP.route('/channel/invite', methods=['POST'])
 def invite():
@@ -140,7 +139,7 @@ def removeowner():
 
 
 
-''' MESSAGE '''
+# MESSAGE
 
 @APP.route('/message/sendlater', methods=['POST'])
 def sendlater():
@@ -148,7 +147,7 @@ def sendlater():
     return dumps(message.message_sendlater(request.form.get('token'), request.form.get('channel_id'), request.form.get('message'), request.form.get('time_sent')))
 
 @APP.route('/message/send', methods=['POST'])
-def dm():
+def send_message():
     """ Send a message from authorised_user to the channel specified by channel_id """
     return dumps(message.message_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
 
@@ -189,7 +188,7 @@ def unpin():
     return dumps(message.message_unpin(request.form.get('token'), request.form.get('message_id')))
 
 
-''' PROFILE '''
+# PROFILE
 
 @APP.route('/user/profile', methods=['GET'])
 def profile():
@@ -216,7 +215,7 @@ def sethandle():
 
 
 
-''' STANDUP '''
+# STANDUP
 
 @APP.route('/standup/start', methods=['POST'])
 def start():
@@ -231,12 +230,12 @@ def send():
 
 
 
-''' OTHER '''
+# OTHER
 
 @APP.route('/search', methods=['GET'])
-def search():
+def search_messages():
     """ Given a query string, return a collection of messages in all of the channels that the user has joined that match the query """
-    return dumps(search(request.args.get('token'), request.args.get('query_string')))
+    return dumps(search.search(request.args.get('token'), request.args.get('query_string')))
 
 
 @APP.route('/admin/userpermission/change', methods=['POST'])
