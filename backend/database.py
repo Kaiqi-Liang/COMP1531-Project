@@ -121,4 +121,12 @@ def get_message_channel(message_id):
 
 def clear():
     global DATA
-    DATA = {'user': [], 'channel': [], 'slackr': []}
+    DATA = {'user': [],
+    'channel': [],
+    'slackr': {
+                'admin':[],
+                'owner':[],
+                'member':[]
+              }
+     }
+

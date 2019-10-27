@@ -11,7 +11,6 @@ import datetime
 ''' Local packages '''
 from backend.message import *
 from backend.auth import auth_register
-from backend.auth import auth_login
 from backend.channel import channel_join, channels_create, channel_invite
 from backend.database import *
 from backend.helpers import *
@@ -41,12 +40,6 @@ def create_channel(owner_token):
     return channels_create(owner_token, "Test channel", True)
 
 @pytest.fixture
-def join_user(register_owner, register_user, create_channel):
-    token = register_user['token']
-    channel_join(register_owner['token'], create_channel, register_user['u_id'])
-    # nothing to return
-
-@pytest.fixture
 def message_valid():
     return "Hello World"
 
@@ -54,13 +47,6 @@ def message_valid():
 def message_invalid():
     return "Cranial exterior: Frontal bone: forms the  forehead, roofs of the orbits. Parietal bones: paired, form the greater portion of the sides and roof of the cranial cavity. Temporal bones: paired, form the lateral aspects of the cranium. Occipital bones:  forms the posterior part and most of the base of the cranium. Sphenoid bone: middle part of the base of the skull. Key part of the cranial floor, holds bones together (butterfly shape). Ethmoid bone: anterior part of the cranial floor, supporting structure of the nasal cavity. Foramen magnum: large hole on the inferior part of the bone. Occipital condyles: oval processes on either side of the foramen magnum, allows you to nod. External acoustic meatus: ear canal which directs sound waves into the ear. Mastoid process: rounded projection of the mastoid portion of the temporal bone (behind the ear). Cranial interior:Anterior cranial fossa: depression in the floor of the cranial base, housing the frontal lobes. Middle cranial fossa: depression in the middle region of the cranial base, and is deeper and wider than the anterior cranial fossa"
 
-@pytest.fixture
-def time_valid():
-    return datetime(2019, 12, 3, 5, 30, 30, 0)
-
-@pytest.fixture
-def time_invalid():
-    return (2005, 5, 5, 20, 0, 0, 0)
 
 @pytest.fixture
 def valid_reactid():
@@ -74,37 +60,16 @@ def invalid_reactid():
 # FUNCTION TESTING
 
 #TESTING FOR SEND LATER 
-#normal functioning
-def test_message_sendlater(register_owner, create_channel, message_valid, time_valid):  
-    clear()
-    m_id = message_sendlater(register_owner['token'], create_channel, message_valid, time_valid) 
-    mess = get_message(m_id)
-    assert mess['time_created'] == time_valid
-# channel id not valid
-def test_message_sendlater1(register_owner, create_channel, message_valid, time_valid):
-    clear()
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(register_owner['token'], -1, message_valid, time_valid)
-#message is invalid
-def test_message_sendlater2(register_owner, create_channel, message_invalid, time_valid):
-    clear()
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(register_owner['token'], create_channel, message_invalid, time_valid)
 #time is invalid
-def test_message_sendlater3(register_owner, create_channel, message_valid, time_invalid):
-    clear()
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(register_owner['token'], create_channel, message_valid, time_invalid)
-# authorised user is not apart of the channel
-def test_message_sendlater4():
+def test_message_sendlater1():
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
-    user_dict = register_user()
-    time = int(datetime.datetime(2019, 12, 3, 5, 30, 30, 0))
-    with pytest.raises(AccessError, match=r"*"):
-        message_sendlater(user_dict['token'], channel_id, "Hello World", time)
+    time_sent = int(0) / 1000
+    timeout = int(time_sent) - int(time())
+    with pytest.raises(ValueError, match=r"*"):
+        message_sendlater(owner_token, channel_id, "Test send later", timeout)
 
 # TEST FOR MESSAGE_SEND
 # normal functioning
@@ -423,5 +388,4 @@ def test_message_unpin4():
     message_pin(owner_token, m_id)
     with pytest.raises(AccessError, match=r"*"):
         message_unpin(not_register_token, m_id)
-
 
