@@ -3,7 +3,7 @@ import pytest
 
 ''' Local packages '''
 from backend.channel import *
-from backend.auth import *
+from backend.auth import auth_register
 from backend.database import clear
 from backend.helpers.exception import AccessError, ValueError
 

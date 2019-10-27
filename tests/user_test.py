@@ -5,11 +5,9 @@ import urllib
 from PIL import Image
 
 ''' Local packages'''
-from backend.auth import *
 from backend.user import *
-from backend.database import *
-from backend.helpers.token import get_user_from_token
-from backend.helpers.helpers import *
+from backend.auth import auth_register
+from backend.database import clear
 from backend.helpers.exception import ValueError, AccessError
 
 def test_user_profile1():

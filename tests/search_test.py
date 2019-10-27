@@ -1,9 +1,3 @@
-''' syspath hack for local imports '''
-import os, sys, inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
 ''' pip3 packages '''
 import pytest
 
@@ -31,7 +25,6 @@ def test_search2():
     # test for no message
     with pytest.raises(ValueError, match=r"*"):
         search(token, "")
-
 '''
 def test_search3():
     # setup begin
@@ -41,6 +34,5 @@ def test_search3():
 
     # test for a match
     messages_search = search(token, "Hello")
-   assert(len(messages_search) == 2)
+    assert(len(messages_search) == 2)
 '''
-
