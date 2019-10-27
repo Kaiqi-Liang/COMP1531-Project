@@ -36,16 +36,16 @@ def message_send(token, channel_id, message):
             message_channel['messages'].append({'message_id': message_id, 'u_id': u_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
             message = get_message(message_id)
             message['reacts'].append({'react_id': 1, 'u_ids': [], 'is_this_user_reacted': False})
-            return {'message_id': message_id} 
+            return {'message_id': message_id}
     raise AccessError("the authorised user has not joined the channel they are trying to post to")
 
- 
+
 def message_remove(token, message_id):
     message_id = int(message_id)
     channel_list = get_data()['channel']
     mess = get_message(message_id)
 
-    # get the permission_id of the authorised user, to use in testing  
+    # get the permission_id of the authorised user, to use in testing
     user_id = get_user_from_token(token)
     # value error: message with message_id does not exist
     if mess == None:
@@ -60,7 +60,7 @@ def message_remove(token, message_id):
     if mess['u_id'] != user_id:
         if get_permission(user_id) == 3:
             raise AccessError("Don't have permission to remove message")
-   
+
         for owner in owner_channel['owners']:
             if owner['u_id'] == u_id:
                 remove = True
@@ -71,7 +71,7 @@ def message_remove(token, message_id):
     # remove the message
     owners_channel['messages'].remove(mess)
     return {}
-    
+
 
 def message_edit(token, message_id, message):
     message_id = int(message_id)
@@ -95,7 +95,7 @@ def message_edit(token, message_id, message):
 
     # edit the message
     mess['message'] = message
-    # leave the time_created and u_id the same 
+    # leave the time_created and u_id the same
     return {}
 
 
@@ -155,10 +155,10 @@ def message_unreact(token, message_id, react_id):
 def message_pin(token, message_id):
     message_id = int(message_id)
     mess = get_message(message_id)
-     
+
     # get initial data
     channel_list = get_data()['channel']
-    user_id = get_user_from_token(token) 
+    user_id = get_user_from_token(token)
 
     # value error: message_id is not valid
     if mess == None:
@@ -183,7 +183,6 @@ def message_unpin(token, message_id):
     message_id = int(message_id)
     mess = get_message(message_id)
 
-    # set up data 
     # get initial data
     channel_list = get_data()['channel']
     user_id = get_user_from_token(token)

@@ -123,4 +123,10 @@ def clear():
     global DATA
     DATA = {'user': [],
     'channel': [],
-    'slackr': []}
+    'slackr': {
+                'admin':[],
+                'owner':[],
+                'member':[]
+              }
+     }
+

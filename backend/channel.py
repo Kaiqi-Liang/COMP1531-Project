@@ -41,7 +41,6 @@ def channel_details(token, channel_id):
         return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
-
 def channel_messages(token, channel_id, start):
     start = int(start)
     channel_id = int(channel_id)
@@ -49,31 +48,37 @@ def channel_messages(token, channel_id, start):
     if channel == None:
         raise ValueError("Channel ID is not a valid channel")
 
-    u_id = get_user_from_token(token)
-    members = channel['members']
-    for user in members:
-        if u_id == user['u_id']:
-            if start > len(channel['messages']):
-                raise ValueError("start is greater than or equal to the total number of messages in the channel")
+    if start > len(channel['messages']):
+        raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
-            messages = []
-            for message in channel['messages']:
-                if message['message_id'] < start:
-                    continue
+    if not channel['is_public']:
+        exception = True
+        u_id = get_user_from_token(token)
+        members = channel['members']
+        for user in members:
+            if u_id == user['u_id']:
+                exception = False
+                break
 
-                messages.append(message)
+        if exception == True:
+            raise AccessError("Authorised user is not a member of channel with channel_id")
 
+    messages = []
+    for message in channel['messages']:
+        if message['message_id'] < start:
+            continue
 
-                if len(messages) == 50:
-                    break
+        messages.append(message)
 
-            if len(messages) == 0:
-                return {'messages': messages, 'start': start, 'end': -1}
-            else:
-                end = messages[-1]['message_id']
-                return {'messages': messages, 'start': start, 'end': end}
+        if len(messages) == 50:
+            break
 
-    raise AccessError("Authorised user is not a member of channel with channel_id")
+    if len(messages) == 0:
+        return {'messages': messages, 'start': start, 'end': -1}
+    else:
+        end = messages[-1]['message_id']
+        return {'messages': messages, 'start': start, 'end': end}
+
 
 
 def channel_leave(token, channel_id):
@@ -154,7 +159,7 @@ def channel_removeowner(token, channel_id, u_id):
     if not is_owner(user_id, channel) and user_id not in get_data()['slackr']['owner']:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    if len(channel['owners']) != 1:
+    if len(channel['owners']) != 1 and int(u_id) not in get_data()['slackr']['admin']:
         user = get_user(u_id)
         channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
     return {}
