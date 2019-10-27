@@ -2,18 +2,19 @@ from backend.database import get_data, get_channel, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
 
-def admin_userpermission_change (token, u_id, permission_id):
+def admin_userpermission_change(token, u_id, permission_id):
     slackr = get_data()["slackr"]
     u_id = int(u_id)
     permission_id = int(permission_id)
 
     user1 = get_user(get_user_from_token(token))
     user2 = get_user(u_id)
+    if permission_id > 3:
+        raise ValueError("permission_id not valid")
+    if permission_id < -1:
+        raise ValueError("permission_id not valid")   
     if user2 == None:
         raise ValueError("u_id does not refer to a valid user")
-
-    if permission_id > 3 or permission_id < -1:
-        raise ValueError("permission_id not valid")
 
     # if user2's permission is the same as permission_id
     if user2['permission_id'] == permission_id:
