@@ -11,7 +11,6 @@ import datetime
 ''' Local packages '''
 from backend.message import *
 from backend.auth import auth_register
-from backend.auth import auth_login
 from backend.channel import channel_join, channels_create, channel_invite
 from backend.database import *
 from backend.helpers import *
@@ -74,37 +73,16 @@ def invalid_reactid():
 # FUNCTION TESTING
 
 #TESTING FOR SEND LATER 
-#normal functioning
-def test_message_sendlater(register_owner, create_channel, message_valid, time_valid):  
-    clear()
-    m_id = message_sendlater(register_owner['token'], create_channel, message_valid, time_valid) 
-    mess = get_message(m_id)
-    assert mess['time_created'] == time_valid
-# channel id not valid
-def test_message_sendlater1(register_owner, create_channel, message_valid, time_valid):
-    clear()
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(register_owner['token'], -1, message_valid, time_valid)
-#message is invalid
-def test_message_sendlater2(register_owner, create_channel, message_invalid, time_valid):
-    clear()
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(register_owner['token'], create_channel, message_invalid, time_valid)
 #time is invalid
-def test_message_sendlater3(register_owner, create_channel, message_valid, time_invalid):
-    clear()
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(register_owner['token'], create_channel, message_valid, time_invalid)
-# authorised user is not apart of the channel
-def test_message_sendlater4():
+def test_message_sendlater1():
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
-    user_dict = register_user()
-    time = int(datetime.datetime(2019, 12, 3, 5, 30, 30, 0))
-    with pytest.raises(AccessError, match=r"*"):
-        message_sendlater(user_dict['token'], channel_id, "Hello World", time)
+    time_sent = int(0) / 1000
+    timeout = int(time_sent) - int(time())
+    with pytest.raises(ValueError, match=r"*"):
+        message_sendlater(owner_token, channel_id, "Test send later", timeout)
 
 # TEST FOR MESSAGE_SEND
 # normal functioning
@@ -423,5 +401,4 @@ def test_message_unpin4():
     message_pin(owner_token, m_id)
     with pytest.raises(AccessError, match=r"*"):
         message_unpin(not_register_token, m_id)
-
 
