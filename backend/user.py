@@ -1,16 +1,10 @@
-""" Local packages """
+""" User functions """
 from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import * # helpers/*.py
 from backend.helpers.exception import ValueError
 
-''' pip3 packages '''
-from PIL import Image # pip3 name is "Pillow"
-import requests
 import random
-
-''' Std lib packages '''
-import urllib
 
 def user_profile(token, u_id):
     u_id = int(u_id)
@@ -26,10 +20,24 @@ def user_profile_setname(token, name_first, name_last):
     if (len(name_first) > 50 or len(name_last) > 50):
          raise ValueError("Name too long!")
 
-    user = get_user(get_user_from_token(token))
+    u_id = get_user_from_token(token)
+    user = get_user(u_id)
     if user != None:
         user['name_first'] = name_first
         user['name_last'] = name_last
+
+        # change the name of the user in all the channels the user appears in
+        for channel in get_data()['channel']:
+            if check_user_in_channel(u_id, channel):
+                for member in channel['members']:
+                    if member['u_id'] == u_id:
+                        member['name_first'] = name_first
+                        member['name_last'] = name_last
+            if is_owner(u_id, channel):
+                for owner in channel['owners']:
+                    if owner['u_id'] == u_id:
+                        owner['name_first'] = name_first
+                        owner['name_last'] = name_last
         return {}
 
 
@@ -46,6 +54,7 @@ def user_profile_setemail(token, email):
 
         user['email'] = email
         return {}
+
 
 def user_profile_sethandle(token, handle_str):
     u_id = get_user_from_token(token)
@@ -65,6 +74,7 @@ def user_profile_sethandle(token, handle_str):
     user['handle_str'] = handle_str
     return {}
 
+'''
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     response = requests.get(img_url)
     urllib.urlretrieve(img_url, "tmp/new_photo.jpg")
@@ -80,3 +90,4 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     elif y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
         raise ValueError("Invalid height crop!")
     return
+'''
