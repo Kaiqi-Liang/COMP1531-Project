@@ -46,9 +46,9 @@ def admin_userpermission_change (token, u_id, permission_id):
 
         user2["permission_id"] = permission_id
         if user2["permission_id"] <= 2:
-            slackr['admin'].append(user2['user_id'])
+            slackr['admin'].append(user2['u_id'])
             if user2["permission_id"] == 1:
-                slackr['owner'].append(user2['user_id'])
+                slackr['owner'].append(user2['u_id'])
 
     # if user1 is an admin of the slackr
     elif user1["permission_id"] == 2:
@@ -63,9 +63,9 @@ def admin_userpermission_change (token, u_id, permission_id):
 
             user2["permission_id"] = permission_id
             if user2["permission_id"] <= 3:
-                slackr['member'].append(user2['user_id'])
+                slackr['member'].append(user2['u_id'])
                 if user2["permission_id"] == 2:
-                    slackr['admin'].append(user2['user_id'])
+                    slackr['admin'].append(user2['u_id'])
     # members don't have rights >:)
     else:
         raise AccessError("Members don't have rights!")
