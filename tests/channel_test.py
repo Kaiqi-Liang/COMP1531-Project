@@ -1,25 +1,20 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' pip3 packages '''
 import pytest
 
 ''' Local packages '''
 from backend.channel import *
 from backend.auth import *
+from backend.database import clear
 
 @pytest.fixture
 def register_owner():
     # return { u_id, token }
-    return auth_register('z5210932@unsw.edu.au', '12345', 'Kaiqi', 'Liang')
+    return auth_register('z5210932@unsw.edu.au', '123456', 'Kaiqi', 'Liang')
 
 @pytest.fixture
 def register_user():
     # return { u_id, token }
-    return auth_register('lkq137055338@gmail.com', '12345', 'kaiqi', 'liang')
+    return auth_register('lkq137055338@gmail.com', '123456', 'kaiqi', 'liang')
 
 @pytest.fixture
 def channel_create(register_owner):
@@ -28,6 +23,7 @@ def channel_create(register_owner):
 
 
 def test_invite(register_owner, channel_create, register_user):
+    clear()
     with pytest.raises(ValueError):
         # invalid channel id
         channel_invite(register_owner['token'], -1, register_user['u_id'])
@@ -40,6 +36,7 @@ def test_invite(register_owner, channel_create, register_user):
 
 
 def test_details(register_owner, channel_create, register_user):
+    clear()
     # check if the owner is in the channel after the channel is first created
     assert channel_detail(register_owner['token'], channel_create) == { 'name', [{'u_id': register_own['u_id'], 'name_first': 'Kaiqi', 'name_last': 'Liang'}], [{'u_id': register_own['u_id'], 'name_first': 'Kaiqi', 'name_last': 'Liang'}] }
 
@@ -53,6 +50,7 @@ def test_details(register_owner, channel_create, register_user):
 
 
 def test_message(register_owner, channel_create, register_user):
+    clear()
     # no messages in the channel at the moment
     assert channel_message(register_owner['token'], channel_create, 0) == { 'messages': [], 'start': 0, 'end': 0 }
     with pytest.raises(ValueError):
@@ -67,6 +65,7 @@ def test_message(register_owner, channel_create, register_user):
 
 
 def test_leave(register_owner, channel_create):
+    clear()
     with pytest.raises(ValueError):
         # channel does not exist
         channel_leave(register_owner['token'], -1)
@@ -80,6 +79,7 @@ def test_leave(register_owner, channel_create):
 
 
 def test_join(register_owner, channel_create, register_user):
+    clear()
     # user joins a public channel created by the owner
     channel_join(register_user['token'], channel_create)
     assert channel_detail(register_user['token'], channel_create) == { 'name', [{'u_id': register_own['u_id'], 'name_first': 'Kaiqi', 'name_last': 'Liang'}], [{'u_id': register_own['u_id'], 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': register_user['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}] }
@@ -95,6 +95,7 @@ def test_join(register_owner, channel_create, register_user):
 
 
 def test_addowner(register_owner, channel_create, register_user):
+    clear()
     # make user the owner of the channel
     channel_invite(register_owner['token'], channel_create, register_user['u_id'])
     channel_addowner(register_owner['token'], channel_create, register_user['u_id'])
@@ -114,6 +115,7 @@ def test_addowner(register_owner, channel_create, register_user):
 
 
 def test_removeowner(register_owner, channel_create, register_user):
+    clear()
     # make user the owner of the channel then remove it
     channel_invite(register_owner['token'], channel_create, register_user['u_id'])
     channel_addowner(register_owner['token'], channel_create, register_user['u_id'])
@@ -133,6 +135,7 @@ def test_removeowner(register_owner, channel_create, register_user):
 
 
 def test_list(register_owner, channel_create, register_user):
+    clear()
     # user is not part of any channels
     assert channels_list(register_user['token']) == []
     # owner can see the channel created
@@ -150,6 +153,7 @@ def test_list(register_owner, channel_create, register_user):
 
 
 def test_listall(register_owner, register_user):
+    clear()
     # there is no channels at this point
     assert channels_listall(register_user['token']) == []
     assert channels_listall(register_onwer['token']) == []
@@ -168,6 +172,7 @@ def test_listall(register_owner, register_user):
 
 
 def test_create(register_owner):
+    clear()
     # owner creates a channel
     channel_id = channels_create(register_owner['token'], 'name', True)
     # a chanel has been created
