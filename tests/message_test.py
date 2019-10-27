@@ -167,6 +167,7 @@ def test_message_remove2():
     owner_token = owner_dict['token']
     user_token = user_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
+    channel_join(user_token, channel_id)
     
     m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
     with pytest.raises(AccessError, match=r"*"):
@@ -184,7 +185,7 @@ def test_message_edit():
     message_edit(owner_token, m_id, "Edited message")
     mess = get_message(m_id)
     assert mess['message'] == "Edited message"
-#access error -> COME BACK TO THIS 
+#access error 
 def test_message_edit1():
     clear()
     owner_dict = register_owner()
@@ -192,13 +193,14 @@ def test_message_edit1():
     owner_token = owner_dict['token']
     user_token = user_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
+    channel_join(user_token, channel_id)
     
     m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
     with pytest.raises(AccessError, match=r"*"):
         message_edit(user_token, m_id, "Can not edit")   
         
 # TESTS FOR MESSAGE_REACT
-# normal functioning -> COME BACK TO THIS 
+# normal functioning
 def test_message_react():
     clear()
     owner_dict = register_owner()
@@ -248,7 +250,7 @@ def test_message_react3():
         message_react(owner_token, m_id, 1)
 
 # TESTS FOR MESSAGE_UNREACT
-# normal functioning  -> COME BACK TO 
+# normal functioning 
 def test_message_unreact():
     clear()
     owner_dict = register_owner()
@@ -318,7 +320,7 @@ def test_message_pin1():
     
     with pytest.raises(ValueError, match=r"*"):
         message_pin(owner_token, -100)
-# autorised user is not admin -> COME BACK TO 
+# autorised user is not admin
 def test_message_pin2():
     # SETUP
     clear()
@@ -346,17 +348,17 @@ def test_message_pin3():
         message_pin(owner_token, m_id)   
 # authorised user is not member of the channel
 def test_message_pin4():
-    # SET UP 
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
-    not_register = register_not_in_channel()['token']
-    
-    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
-    with pytest.raises(ValueError, match=r"*"):
-        message_pin(not_register, m_id)
+    not_register = register_not_in_channel()
+    not_register_token = not_register['token']
+    not_register_uid = not_register['u_id']
 
+    m_id = message_send(owner_token, channel_id, "Test unpin")['message_id']
+    with pytest.raises(AccessError, match=r"*"):
+        message_pin(not_register_token, m_id)
     
 # TEST FOR MESSAGE_UNPIN
 # normal functioning
@@ -378,12 +380,12 @@ def test_message_unpin1():
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
+    m_id = message_send(owner_token, channel_id, "Test unpin")['message_id']
     
     with pytest.raises(ValueError, match=r"*"):
         message_unpin(owner_token, -100)
 # autorised user is not admin 
 def test_message_unpin2():
-    # SETUP
     clear()
     owner_dict = register_owner()
     user_dict = register_user()
@@ -396,11 +398,9 @@ def test_message_unpin2():
     
     message_pin(owner_token, m_id)
     with pytest.raises(ValueError, match=r"*"):
-        message_unpin(user_token, m_id)
-        
+        message_unpin(user_token, m_id)      
 # message is already unpinned -> don't run pin
 def test_message_unpin3():
-    # SETUP
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
@@ -409,17 +409,19 @@ def test_message_unpin3():
     m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
     with pytest.raises(ValueError, match=r"*"):
         message_unpin(owner_token, m_id) 
-# authorised user is not member of the channel -> potential issue here 
+# authorised user is not member of the channel
 def test_message_unpin4(): 
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
-    not_register = register_not_in_channel()['token']
+    not_register = register_not_in_channel()
+    not_register_token = not_register['token']
+    not_register_uid = not_register['u_id']
 
-    m_id = message_send(owner_token, channel_id, "Test pin")['message_id']
+    m_id = message_send(owner_token, channel_id, "Test unpin")['message_id']
     message_pin(owner_token, m_id)
-    with pytest.raises(ValueError, match=r"*"):
-        message_unpin(not_register, m_id)
+    with pytest.raises(AccessError, match=r"*"):
+        message_unpin(not_register_token, m_id)
 
 
