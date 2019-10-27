@@ -6,6 +6,7 @@ from backend.auth import *
 from backend.database import clear
 
 def test_login1():
+        clear()
         loginDict = {}
         auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayall")
         loginDict = auth_login("emmarosemayall@gmail.com", "123456")
