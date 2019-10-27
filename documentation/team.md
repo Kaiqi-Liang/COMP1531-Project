@@ -1,4 +1,5 @@
 #Teamwork
+
 Our team SAKE has worked through the second iteration to implement the functions for the tests which were created in iteration one. Using our knowledge and tests we were able to create thoroughly verified and validated functions. The group took a customer-oriented approach by driving the creation of functions from user stories. These user stories were created under epics which were based around each key function.
 
 To ensure we shared mutual understanding of what we would be working on and how much we had achieved, our group communicated digitally and scheduled meetings approximately three times a week. These meetings lasted from an hour to two hours and were made successful using standups. The use of standups ensured each team member knew what needed to be achieved and could receive advice or help from other members. Furthermore through using the taskboard on git and regularly committing our changes to files, we kept up to date with each others work.
