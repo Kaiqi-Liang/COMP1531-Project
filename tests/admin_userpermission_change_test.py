@@ -32,4 +32,4 @@ def test_admin_userpermission_change2():
 
     #test for when we have an invalid permission id
     with pytest.raises(ValueError, match=r"*"):
-        admin_userpermission_change (token, uid, 5)
+        admin_userpermission_change(token, uid, 5)
