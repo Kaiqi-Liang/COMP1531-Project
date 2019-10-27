@@ -1,14 +1,7 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 ''' Local packages '''
-from backend.database import get_data, get_channelm    # backend/database.py
+from backend.database import get_data, get_channel    # backend/database.py
 from backend.helpers.token import get_user_from_token
-from backend.channel import * # backend/channel.py
-from backend.helpers import * # backend/helpers/*.py
+from backend.helpers.helpers import check_in_channel
 
 ''' Std lib packages '''
 from datetime import datetime, timedelta
