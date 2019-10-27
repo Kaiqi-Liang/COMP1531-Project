@@ -12,6 +12,7 @@ from backend import channel
 from backend import message
 from backend import user
 from backend import admin
+from backend import standup
 from backend.database import get_data
 from backend.helpers.exception import defaultHandler
 
@@ -73,6 +74,7 @@ def passwordreset_request():
 def passwordreset_reset():
     """ Given a reset code for a user, set that user's new password to the password provided """
     return dumps(auth.auth_passwordreset_reset(request.form.get('reset_code'), request.form.get('new_password')))
+
 
 
 ''' CHANNEL '''
@@ -137,6 +139,7 @@ def removeowner():
     return dumps(channel.channel_removeowner(request.form.get('token'), request.form.get('channel_id'), request.form.get('u_id')))
 
 
+
 ''' MESSAGE '''
 
 @APP.route('/message/sendlater', methods=['POST'])
@@ -145,7 +148,7 @@ def sendlater():
     return dumps(message.message_sendlater(request.form.get('token'), request.form.get('channel_id'), request.form.get('message'), request.form.get('time_sent')))
 
 @APP.route('/message/send', methods=['POST'])
-def send():
+def dm():
     """ Send a message from authorised_user to the channel specified by channel_id """
     return dumps(message.message_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
 
@@ -211,21 +214,35 @@ def sethandle():
     """ Update the authorised user's handle """
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
-''' ADMIN '''
-@APP.route('/admin/userpermission/change', methods=['POST'])
-def userpermission_change():
-    """ Set a user's permissions """
-    return dumps(admin.admin_userpermission_change(request.form.get('token'), request.form.get('u_id'), request.form.get('permission_id')))
+
 
 ''' STANDUP '''
+
+@APP.route('/standup/start', methods=['POST'])
+def start():
+    """ For a given channel, start the standup period whereby for the next 15 minutes if someone calls "standup_send" with a message, it is buffered during the 15 minute window then at the end of the 15 minute window a message will be added to the message queue in the channel from the user who started the standup """
+    return dumps(standup.standup_start(request.form.get('token'), request.form.get('channel_id')))
+
+
+@APP.route('/standup/send', methods=['POST'])
+def send():
+    """ Sending a message to get buffered in the standup queue, assuming a standup is currently active """
+    return dumps(standup.standup_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
 
 
 
 ''' OTHER '''
+
 @APP.route('/search', methods=['GET'])
 def search():
     """ Given a query string, return a collection of messages in all of the channels that the user has joined that match the query """
     return dumps(search(request.args.get('token'), request.args.get('query_string')))
+
+
+@APP.route('/admin/userpermission/change', methods=['POST'])
+def userpermission_change():
+    """ Set a user's permissions """
+    return dumps(admin.admin_userpermission_change(request.form.get('token'), request.form.get('u_id'), request.form.get('permission_id')))
 
 
 if __name__ == '__main__':

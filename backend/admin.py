@@ -1,18 +1,8 @@
-''' syspath hack for local imports '''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-
 from backend.database import get_data, get_channel, get_user
 from backend.helpers.token import get_user_from_token
-from backend.helpers.exception import *
-
-def blue(str):
-    print(BLUE+str+WHITE)
+from backend.helpers.exception import ValueError, AccessError
 
 def admin_userpermission_change (token, u_id, permission_id):
-    print(str(permission_id))
     slackr = get_data()["slackr"]
     u_id = int(u_id)
     permission_id = int(permission_id)
