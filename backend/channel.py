@@ -100,7 +100,7 @@ def channel_leave(token, channel_id):
         if u_id == owner['u_id']:
             owners.remove(owner)
 
-    if len(owners) == 1 and len(members) == 1:
+    if len(owners) == 0 and len(members) == 0:
         get_data()['channel'].remove(channel)
     return {}
 
