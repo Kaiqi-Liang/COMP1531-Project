@@ -114,3 +114,10 @@ def get_message_channel(message_id):
                 return channel
     return None
 
+def clear():
+    global DATA
+    DATA = {'user': [],
+    'channel': [],
+    'slackr': []}
+    
+
