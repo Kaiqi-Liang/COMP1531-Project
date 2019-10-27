@@ -2,10 +2,12 @@
 from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import * # helpers/*.py
+from backend.helpers.exception import ValueError
 
 ''' pip3 packages '''
 from PIL import Image # pip3 name is "Pillow"
 import requests
+import random
 
 ''' Std lib packages '''
 import urllib
