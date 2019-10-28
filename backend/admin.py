@@ -1,5 +1,5 @@
 """ Admin functions """
-from backend.database import get_data, get_channel, get_user
+from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
 
@@ -16,7 +16,7 @@ def admin_userpermission_change(token, u_id, permission_id):
         raise ValueError("permission_id not valid")
     if permission_id < -1:
         raise ValueError("permission_id not valid")
-    if user2 == None:
+    if user2 is None:
         raise ValueError("u_id does not refer to a valid user")
 
     # if user2's permission is the same as permission_id
@@ -49,17 +49,18 @@ def admin_userpermission_change(token, u_id, permission_id):
         # if user2 is an owner of the slackr, user1 cannot change
         if user2["permission_id"] == 1 or permission_id == 1:
             raise AccessError("You're not an owner, you can't do that!")
-        else:
-            try:
-                slackr['admin'].remove(user2['u_id'])
-            except:
-                ValueError
 
-            user2["permission_id"] = permission_id
-            if user2["permission_id"] <= 3:
-                slackr['member'].append(user2['u_id'])
-                if user2["permission_id"] == 2:
-                    slackr['admin'].append(user2['u_id'])
+        try:
+            slackr['admin'].remove(user2['u_id'])
+        except:
+            ValueError
+
+        user2["permission_id"] = permission_id
+        if user2["permission_id"] <= 3:
+            slackr['member'].append(user2['u_id'])
+            if user2["permission_id"] == 2:
+                slackr['admin'].append(user2['u_id'])
+
     # members don't have rights >:)
     else:
         raise AccessError("Members don't have rights!")

@@ -17,8 +17,8 @@ def auth_login(email, password):
                 token = generate_token(user['u_id'])
                 user['tokens'].append(token)
                 return {'u_id': user['u_id'], 'token': token}
-            else:
-                raise ValueError("Invalid password")
+
+            raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
 
@@ -116,6 +116,6 @@ def auth_passwordreset_reset(reset_code, new_password):
         if user['reset'] == reset_code:
             user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
             user['reset'] = None
-            return ({})
+            return {}
 
     raise ValueError("Invalid reset code")
