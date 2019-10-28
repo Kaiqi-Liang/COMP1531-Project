@@ -42,10 +42,9 @@ def message_send(token, channel_id, message):
 
 def message_remove(token, message_id):
     message_id = int(message_id)
-    channel_list = get_data()['channel']
     mess = get_message(message_id)
 
-    # get the permission_id of the authorised user, to use in testing
+    channel_list = get_data()['channel']
     user_id = get_user_from_token(token)
     # value error: message with message_id does not exist
     if mess == None:
@@ -61,7 +60,7 @@ def message_remove(token, message_id):
         if get_permission(user_id) == 3:
             raise AccessError("Don't have permission to remove message")
 
-        for owner in owner_channel['owners']:
+        for owner in owners_channel['owners']:
             if owner['u_id'] == u_id:
                 remove = True
 
@@ -75,23 +74,30 @@ def message_remove(token, message_id):
 
 def message_edit(token, message_id, message):
     message_id = int(message_id)
-    # get initial data
+    mess = get_message(message_id)
+
     channel_list = get_data()['channel']
     user_id = get_user_from_token(token)
+    # value error: message with message_id does not exist
+    if mess == None:
+        raise ValueError("Message no longer exists")
 
-    mess = get_message(message_id)
+    for channel in channel_list:
+        for mess in channel['messages']:
+            if message_id == mess['message_id']:
+                owners_channel = channel
+
     # access error: authorised user did not send the message and are not an admin or owner of slackr
     if mess['u_id'] != user_id:
         if get_permission(user_id) == 3:
             raise AccessError("Don't have permission to remove message")
 
-        for owner in owner_channel['owners']:
+        for owner in owners_channel['owners']:
             if owner['u_id'] == u_id:
                 remove = True
 
         if not remove:
             raise AccessError("Don't have permission to remove message")
-        raise AccessError("Don't have permission to edit message")
 
     # edit the message
     mess['message'] = message
