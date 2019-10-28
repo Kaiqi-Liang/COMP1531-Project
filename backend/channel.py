@@ -1,4 +1,4 @@
-""" Local packages """
+""" Channel functions """
 from backend.database import get_data, get_user, get_channel
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
@@ -11,11 +11,11 @@ def channel_invite(token, channel_id, u_id):
         raise ValueError("u_id does not refer to a valid user")
     user_id = get_user_from_token(token)
     user = get_user(u_id)
-    if user == None:
+    if user is None:
         raise ValueError("u_id does not refer to a valid user")
 
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
 
     members = channel['members']
@@ -29,7 +29,7 @@ def channel_invite(token, channel_id, u_id):
 
 def channel_details(token, channel_id):
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel ID is not a valid channel")
 
     if not channel['is_public']:
@@ -40,15 +40,14 @@ def channel_details(token, channel_id):
                 return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
         raise AccessError("channel_details authorisation error")
 
-    else:
-        return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+    return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
 def channel_messages(token, channel_id, start):
     start = int(start)
     channel_id = int(channel_id)
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel ID is not a valid channel")
 
     if start > len(channel['messages']):
@@ -63,7 +62,7 @@ def channel_messages(token, channel_id, start):
                 exception = False
                 break
 
-        if exception == True:
+        if exception:
             raise AccessError("Authorised user is not a member of channel with channel_id")
 
     messages = []
@@ -78,14 +77,14 @@ def channel_messages(token, channel_id, start):
 
     if len(messages) == 0:
         return {'messages': messages, 'start': start, 'end': -1}
-    else:
-        end = messages[-1]['message_id']
-        return {'messages': messages, 'start': start, 'end': end}
+
+    end = messages[-1]['message_id']
+    return {'messages': messages, 'start': start, 'end': end}
 
 
 def channel_leave(token, channel_id):
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel ID is not a valid channel")
 
     u_id = get_user_from_token(token)
@@ -108,10 +107,8 @@ def channel_leave(token, channel_id):
 
 
 def channel_join(token, channel_id):
-    users = get_data()['user']
-
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel ID is not a valid channel")
     u_id = get_user_from_token(token)
     user = get_user(u_id)
@@ -133,10 +130,10 @@ def channel_join(token, channel_id):
         # If user is not an admin/owner (assumptions)
         if not check_permission(u_id, 3) and not check_permission(u_id, 1):
             raise AccessError("User is not admin: unable to join private channel")
-        else:
-            # User is an admin/owner and can join channel
-            channel['owners'].append(member_info)
-            channel['members'].append(member_info)
+
+        # User is an admin/owner and can join channel
+        channel['owners'].append(member_info)
+        channel['members'].append(member_info)
 
     return {}
 
@@ -144,7 +141,7 @@ def channel_join(token, channel_id):
 def channel_addowner(token, channel_id, u_id):
     user_id = get_user_from_token(token)
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel ID is not a valid channel")
     if is_owner(u_id, channel):
         raise ValueError("User is already an owner of the channel")
@@ -159,7 +156,7 @@ def channel_addowner(token, channel_id, u_id):
 def channel_removeowner(token, channel_id, u_id):
     user_id = get_user_from_token(token)
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel ID is not a valid channel")
     if not is_owner(u_id, channel):
         raise ValueError("When user with user id u_id is not an owner of the channel")

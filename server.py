@@ -2,9 +2,9 @@
 import sys
 import random
 from json import dumps
+from flask import Flask, request
 from flask_cors import CORS
 from flask_mail import Mail, Message
-from flask import Flask, request
 
 from backend import auth
 from backend import channel
