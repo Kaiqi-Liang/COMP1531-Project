@@ -1,28 +1,31 @@
 """ User functions """
+import random
+
 from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
-from backend.helpers.helpers import * # helpers/*.py
+from backend.helpers.helpers import check_email, check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError
-
-import random
 
 def user_profile(token, u_id):
     u_id = int(u_id)
     users = get_data()['user']
-    if get_user(get_user_from_token(token)) != None:
+    if get_user(get_user_from_token(token)) is not None:
         for user in users:
             if u_id == user['u_id']:
                 return {'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str']}
         raise ValueError("User with u_id is not a valid user")
+    return {}
 
 
 def user_profile_setname(token, name_first, name_last):
-    if (len(name_first) > 50 or len(name_last) > 50):
-         raise ValueError("Name too long!")
+    if len(name_first) > 50 or len(name_first) < 1:
+        raise ValueError("name_first is not between 1 and 50 characters in length")
+    if len(name_last) > 50 or len(name_last) < 1:
+        raise ValueError("name_last is not between 1 and 50 characters in length")
 
     u_id = get_user_from_token(token)
     user = get_user(u_id)
-    if user != None:
+    if user is not None:
         user['name_first'] = name_first
         user['name_last'] = name_last
 
@@ -38,22 +41,21 @@ def user_profile_setname(token, name_first, name_last):
                     if owner['u_id'] == u_id:
                         owner['name_first'] = name_first
                         owner['name_last'] = name_last
-        return {}
+    return {}
 
 
 def user_profile_setemail(token, email):
     if not check_email(email):
         raise ValueError("Invalid email address!")
 
-    users = get_data()['user']
     user = get_user(get_user_from_token(token))
-    if user != None:
-        for u in users:
-            if u['email'] == email:
+    if user is not None:
+        for users in get_data()['user']:
+            if users['email'] == email:
                 raise ValueError('Email address is already being used by another user')
 
         user['email'] = email
-        return {}
+    return {}
 
 
 def user_profile_sethandle(token, handle_str):

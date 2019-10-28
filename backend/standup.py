@@ -1,7 +1,7 @@
 ''' Standup functions '''
 from datetime import datetime, timedelta
 
-from backend.database import get_data, get_channel, get_user
+from backend.database import get_channel, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel
 from backend.helpers.exception import ValueError, AccessError
@@ -10,7 +10,7 @@ def standup_start(token, channel_id):
     channel_id = int(channel_id)
     # Check if channel exists ...
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel doesn't exist!")
 
     u_id = get_user_from_token(token)
@@ -28,7 +28,7 @@ def standup_send(token, channel_id, message):
     channel_id = int(channel_id)
     # Check if channel exists ...
     channel = get_channel(channel_id)
-    if channel == None:
+    if channel is None:
         raise ValueError("Channel doesn't exist!")
 
     u_id = get_user_from_token(token)
@@ -45,4 +45,4 @@ def standup_send(token, channel_id, message):
     standup_message += user['name_first']+": "+message
 
     channel['standup_queue'] = standup_message
-    return
+    return {}

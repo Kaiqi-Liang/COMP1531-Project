@@ -41,10 +41,10 @@ def auth_register(email, password, name_first, name_last):
     if len(password) < 6:
         raise ValueError("Password entered is less than 6 characters long")
     # Value error: name_first
-    if len(name_first) >= 50 or len(name_first) <= 1:
+    if len(name_first) >= 50 or len(name_first) < 1:
         raise ValueError("First name is not within the correct length range")
     # Value error: name_last
-    if len(name_last) >= 50 or len(name_last) <= 1:
+    if len(name_last) >= 50 or len(name_last) < 1:
         raise ValueError("Last name is not within the correct length range")
     # Value error: invalid email
     if not check_email(email):

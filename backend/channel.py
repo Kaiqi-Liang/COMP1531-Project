@@ -1,8 +1,8 @@
 """ Channel functions """
 from backend.database import get_data, get_user, get_channel
 from backend.helpers.token import get_user_from_token
-from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.helpers import check_permission, check_user_in_channel, is_owner
+from backend.helpers.exception import ValueError, AccessError
 
 def channel_invite(token, channel_id, u_id):
     try:
