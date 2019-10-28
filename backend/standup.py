@@ -1,10 +1,10 @@
 ''' Standup functions '''
+from datetime import datetime, timedelta
+
 from backend.database import get_data, get_channel, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel
 from backend.helpers.exception import ValueError, AccessError
-
-from datetime import datetime, timedelta
 
 def standup_start(token, channel_id):
     channel_id = int(channel_id)
