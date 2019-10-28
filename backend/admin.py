@@ -1,3 +1,4 @@
+""" Admin functions """
 from backend.database import get_data, get_channel, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError

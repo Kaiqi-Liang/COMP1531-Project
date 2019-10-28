@@ -1,11 +1,11 @@
-""" Local packages """
+""" Auth functions """
+import hashlib
+import random
+
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
 from backend.helpers.helpers import check_email
 from backend.helpers.exception import ValueError
-
-import hashlib
-import random
 
 def auth_login(email, password):
     if not check_email(email):

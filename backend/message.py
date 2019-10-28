@@ -1,12 +1,11 @@
-""" Local packages """
+""" Message functions """
+from time import time
+from threading import Timer
+
 from backend.database import get_data, get_channel, get_message, get_permission, get_message_channel
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel
 from backend.helpers.exception import ValueError, AccessError
-from backend.helpers.helpers import check_user_in_channel
-
-from time import time
-from threading import Timer
 
 def message_sendlater(token, channel_id, message, time_sent):
     time_sent = int(time_sent) / 1000
@@ -28,7 +27,7 @@ def message_send(token, channel_id, message):
     for channel in get_data()['channel']:
         message_id += len(channel['messages'])
 
-    if message_channel == None:
+    if message_channel is None:
         raise ValueError('Channel ID is not a valid channel')
 
     for member in message_channel['members']:
@@ -47,7 +46,7 @@ def message_remove(token, message_id):
     channel_list = get_data()['channel']
     user_id = get_user_from_token(token)
     # value error: message with message_id does not exist
-    if mess == None:
+    if mess is None:
         raise ValueError("Message no longer exists")
 
     for channel in channel_list:
@@ -79,7 +78,7 @@ def message_edit(token, message_id, message):
     channel_list = get_data()['channel']
     user_id = get_user_from_token(token)
     # value error: message with message_id does not exist
-    if mess == None:
+    if mess is None:
         raise ValueError("Message no longer exists")
 
     for channel in channel_list:
@@ -112,7 +111,7 @@ def message_react(token, message_id, react_id):
     mess = get_message(message_id)
 
     # value error: message_id is not valid
-    if mess == None:
+    if mess is None:
         raise ValueError("message_id is not valid")
     # value error: react_id is not a valid react id
     if react_id != 1:
@@ -120,13 +119,13 @@ def message_react(token, message_id, react_id):
     # value error: user has already reacted to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
-            if react['is_this_user_reacted'] == True:
+            if react['is_this_user_reacted']:
                 raise ValueError("Message already contains a react_id from user")
 
     # add the react to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
-            react['is_this_user_reacted'] = True
+            react['is_this_user_reacted']
             react['u_ids'].append(get_user_from_token(token))
     return {}
 
@@ -139,7 +138,7 @@ def message_unreact(token, message_id, react_id):
     print(mess)
 
     # value error: message_id is not valid
-    if mess == None:
+    if mess is None:
         raise ValueError("message_id is not valid")
     # value error: react_id is not a valid react id
     if react_id != 1:
@@ -147,7 +146,7 @@ def message_unreact(token, message_id, react_id):
     # value error: user has already reacted to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
-            if react['is_this_user_reacted'] == False:
+            if not react['is_this_user_reacted']:
                 raise ValueError("Message already contains a react_id from user")
 
     # remove the react to the message
@@ -167,10 +166,10 @@ def message_pin(token, message_id):
     user_id = get_user_from_token(token)
 
     # value error: message_id is not valid
-    if mess == None:
+    if mess is None:
         raise ValueError("message_id is not valid")
     # value error: message is already pinned
-    if mess['is_pinned'] == True:
+    if mess['is_pinned']:
         raise ValueError("Message is already pinned")
     # access error: authorised user is not apart of the channel
     channel = get_message_channel(message_id)
@@ -194,10 +193,10 @@ def message_unpin(token, message_id):
     user_id = get_user_from_token(token)
 
     # value error: message_id is not valid
-    if mess == None:
+    if mess is None:
         raise ValueError("message_id is not valid")
     # value error: message is already pinned
-    if mess['is_pinned'] == False:
+    if not mess['is_pinned']:
         raise ValueError("Message is already pinned")
     # access error: authorised user is not apart of the channel
     channel = get_message_channel(message_id)

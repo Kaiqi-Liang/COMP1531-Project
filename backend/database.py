@@ -6,7 +6,7 @@ DATA = {
                 'admin':[],
                 'owner':[],
                 'member':[]
-              }
+        }
 }
 
 '''
@@ -120,12 +120,13 @@ def get_message_channel(message_id):
     return None
 
 def clear():
+    """ Clear the database """
     global DATA
     DATA = {'user': [],
-    'channel': [],
-    'slackr': {
+            'channel': [],
+            'slackr': {
                 'admin':[],
                 'owner':[],
                 'member':[]
-              }
-     }
+                }
+            }
