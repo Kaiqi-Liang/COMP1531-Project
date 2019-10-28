@@ -2,11 +2,15 @@
 from backend.database import get_data, get_user, get_channel
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
-from backend.helpers.helpers import *
+from backend.helpers.helpers import check_permission, check_user_in_channel, is_owner
 
 def channel_invite(token, channel_id, u_id):
-    u_id = int(u_id)
-    user = get_user(get_user_from_token(token))
+    try:
+        u_id = int(u_id)
+    except:
+        raise ValueError("u_id does not refer to a valid user")
+    user_id = get_user_from_token(token)
+    user = get_user(u_id)
     if user == None:
         raise ValueError("u_id does not refer to a valid user")
 
@@ -16,9 +20,8 @@ def channel_invite(token, channel_id, u_id):
 
     members = channel['members']
     for member in members:
-        if user['u_id'] == member['u_id']:
-            invite = get_user(u_id)
-            channel['members'].append({'u_id': u_id, 'name_first': invite['name_first'], 'name_last': invite['name_last']})
+        if user_id == member['u_id']:
+            channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
             return {}
 
     raise AccessError("the authorised user is not already a member of the channel")
@@ -80,7 +83,6 @@ def channel_messages(token, channel_id, start):
         return {'messages': messages, 'start': start, 'end': end}
 
 
-
 def channel_leave(token, channel_id):
     channel = get_channel(channel_id)
     if channel == None:
@@ -115,7 +117,7 @@ def channel_join(token, channel_id):
     user = get_user(u_id)
 
     # If user is already in channel, ignore
-    if check_in_channel(token, user['u_id']):
+    if check_user_in_channel(user['u_id'], channel):
         return {}
 
     member_info = {
