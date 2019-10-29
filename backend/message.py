@@ -76,6 +76,8 @@ def message_edit(token, message_id, message):
         if not is_owner(u_id, channel) and get_permission(u_id) == 3:
             raise AccessError("Don't have permission to remove message")
 
+    if message == '':
+        message_remove(token, message_id)
     # edit the message
     mess['message'] = message
     # assumption: leave the time_created and u_id the same

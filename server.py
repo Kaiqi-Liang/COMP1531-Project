@@ -1,4 +1,5 @@
 """ Flask server """
+import os
 import sys
 import random
 from json import dumps
@@ -13,7 +14,7 @@ from backend import user
 from backend import admin
 from backend import standup
 from backend import search
-from backend.database import get_data
+from backend.database import get_data, clear, save, load
 from backend.helpers.exception import defaultHandler
 
 APP = Flask(__name__)
@@ -160,7 +161,7 @@ def remove():
 
 @APP.route('/message/edit', methods=['PUT'])
 def edit():
-    """ Given a message, update it's text with new text """
+    """ Given a message, update it's text with new text. If the new message is an empty string, the message is deleted """
     return dumps(message.message_edit(request.form.get('token'), request.form.get('message_id'), request.form.get('message')))
 
 
@@ -245,4 +246,9 @@ def userpermission_change():
 
 
 if __name__ == '__main__':
+    if os.path.exists('export.json'):
+        load()
+    else:
+        clear()
+    save()
     APP.run(host='0.0.0.0', port=(sys.argv[1] if len(sys.argv) > 1 else 5000), debug=True)

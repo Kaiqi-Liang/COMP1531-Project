@@ -45,6 +45,7 @@ def channel_details(token, channel_id):
     return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
+# pagination
 def channel_messages(token, channel_id, start):
     print(channel_id, token, start)
     start = int(start)

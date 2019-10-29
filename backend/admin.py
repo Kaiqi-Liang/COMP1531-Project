@@ -7,7 +7,10 @@ from backend.helpers.exception import ValueError, AccessError
 
 def admin_userpermission_change(token, u_id, permission_id):
     slackr = get_data()["slackr"]
-    u_id = int(u_id)
+    try:
+        u_id = int(u_id)
+    except:
+        raise ValueError("u_id does not refer to a valid user")
     permission_id = int(permission_id)
 
     user1 = get_user(get_user_from_token(token))

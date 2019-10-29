@@ -7,7 +7,7 @@ def search(token, query_st):
     #that the user has joined that match the query
     if query_st == "":
         raise ValueError("Invalid search")
-        
+
     u_id = get_user_from_token(token)
     return_messages = {}
     #get channels

@@ -1,4 +1,6 @@
 """ Global variable to store the database """
+import json
+from threading import Timer
 DATA = {
     'user': [],
     'channel': [],
@@ -130,3 +132,17 @@ def clear():
                 'member':[]
                 }
             }
+
+def save():
+    """ Export DATA to a json file every second """
+    timer = Timer(1, save)
+    timer.start()
+    global DATA
+    with open('export.json', 'w') as file:
+        json.dump(DATA, file)
+
+def load():
+    """ Load the json file to the database """
+    global DATA
+    with open('export.json', 'r') as file:
+        DATA = json.load(file)
