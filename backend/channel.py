@@ -9,7 +9,7 @@ def channel_invite(token, channel_id, u_id):
         u_id = int(u_id)
     except:
         raise ValueError("u_id does not refer to a valid user")
-    user_id = get_user_from_token(token)
+
     user = get_user(u_id)
     if user is None:
         raise ValueError("u_id does not refer to a valid user")
@@ -18,13 +18,15 @@ def channel_invite(token, channel_id, u_id):
     if channel is None:
         raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
 
-    members = channel['members']
-    for member in members:
-        if user_id == member['u_id']:
-            channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
-            return {}
+    if check_user_in_channel(u_id, channel):
+        return {}
 
-    raise AccessError("the authorised user is not already a member of the channel")
+    if not check_user_in_channel(get_user_from_token(token), channel):
+        raise AccessError("the authorised user is not already a member of the channel")
+
+    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+    return {}
+
 
 
 def channel_details(token, channel_id):
@@ -44,6 +46,7 @@ def channel_details(token, channel_id):
 
 
 def channel_messages(token, channel_id, start):
+    print(channel_id, token, start)
     start = int(start)
     channel_id = int(channel_id)
     channel = get_channel(channel_id)

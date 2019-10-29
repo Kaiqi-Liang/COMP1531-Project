@@ -30,3 +30,11 @@ def is_owner(u_id, channel):
         if int(u_id) == owner['u_id']:
             return True
     return False
+
+
+def get_message_channel(message_id):
+    for channel in get_data()['channel']:
+        for message in channel['messages']:
+            if int(message_id) == message['message_id']:
+                return channel
+    return None

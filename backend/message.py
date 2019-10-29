@@ -2,9 +2,9 @@
 from time import time
 from threading import Timer
 
-from backend.database import get_data, get_channel, get_message, get_permission, get_message_channel
+from backend.database import get_data, get_channel, get_message, get_permission
 from backend.helpers.token import get_user_from_token
-from backend.helpers.helpers import check_user_in_channel
+from backend.helpers.helpers import check_user_in_channel, get_message_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
 
 def message_sendlater(token, channel_id, message, time_sent):
@@ -41,69 +41,47 @@ def message_send(token, channel_id, message):
 
 def message_remove(token, message_id):
     message_id = int(message_id)
-    mess = get_message(message_id)
+    message = get_message(message_id)
+    u_id = get_user_from_token(token)
+    channel = get_message_channel(message_id)
+    if channel is None:
+        return {}
 
-    channel_list = get_data()['channel']
-    user_id = get_user_from_token(token)
-    # value error: message with message_id does not exist
-    if mess is None:
+    # message with message_id does not exist
+    if message is None:
         raise ValueError("Message no longer exists")
 
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                owners_channel = channel
-
-    # access error: authorised user did not send the message and are not an admin or owner of slackr
-    if mess['u_id'] != user_id:
-        if get_permission(user_id) == 3:
-            raise AccessError("Don't have permission to remove message")
-
-        for owner in owners_channel['owners']:
-            if owner['u_id'] == u_id:
-                remove = True
-
-        if not remove:
+    if message['u_id'] != u_id:
+        if not is_owner(u_id, channel) and get_permission(u_id) == 3:
             raise AccessError("Don't have permission to remove message")
 
     # remove the message
-    owners_channel['messages'].remove(mess)
+    channel['messages'].remove(message)
     return {}
 
 
 def message_edit(token, message_id, message):
     message_id = int(message_id)
     mess = get_message(message_id)
+    u_id = get_user_from_token(token)
+    channel = get_message_channel(message_id)
+    if channel is None:
+        return {}
 
-    channel_list = get_data()['channel']
-    user_id = get_user_from_token(token)
-    # value error: message with message_id does not exist
+    # message with message_id does not exist
     if mess is None:
         raise ValueError("Message no longer exists")
 
-    for channel in channel_list:
-        for mess in channel['messages']:
-            if message_id == mess['message_id']:
-                owners_channel = channel
-
-    # access error: authorised user did not send the message and are not an admin or owner of slackr
-    if mess['u_id'] != user_id:
-        if get_permission(user_id) == 3:
-            raise AccessError("Don't have permission to remove message")
-
-        for owner in owners_channel['owners']:
-            if owner['u_id'] == u_id:
-                remove = True
-
-        if not remove:
+    if mess['u_id'] != u_id:
+        if not is_owner(u_id, channel) and get_permission(u_id) == 3:
             raise AccessError("Don't have permission to remove message")
 
     # edit the message
     mess['message'] = message
-    # leave the time_created and u_id the same
+    # assumption: leave the time_created and u_id the same
     return {}
 
-
+# other users can't react
 def message_react(token, message_id, react_id):
     message_id = int(message_id)
     react_id = int(react_id)
@@ -125,7 +103,7 @@ def message_react(token, message_id, react_id):
     # add the react to the message
     for react in mess['reacts']:
         if react['react_id'] == react_id:
-            react['is_this_user_reacted']
+            react['is_this_user_reacted'] = True
             react['u_ids'].append(get_user_from_token(token))
     return {}
 
