@@ -6,27 +6,12 @@ A video describing this project and the background here can be found here.
 
 * To provide students with hands on experience testing, developing, and maintaining a backend server in python.
 * To develop students' problem solving skills in relation to the software development lifecycle.
-* Learn to work effectively as part of a team by managing your project, planning, and allocation of responsibilities among the members of your team<
+* Learn to work effectively as part of a team by managing your project, planning, and allocation of responsibilities among the members of your team.
 * Gain experience in collaborating through the use of a source control and other associated modern team-based tools.
 * Apply appropriate design practices and methodologies in the development of their solution
 * Develop an appreciation for product design and an intuition of how a typical customer will use a product.
 
-## Changelog (cleared 5th October in git hash "84cc5a9099")
-
-* 11/10/2019: Search function clarified that it searches over all channels a user is in
-* 13/10/2019: name_first and name_last length requirement inverted to make more sense
-* 14/10/2019: standup/send errors updated to make more sense. One ValueError modified, one AccessError modified
-* 15/10/2019: standup/start has error "An active standup is currently running in this channel" added to it
-* 16/10/2019: is_unread removed from the message structure
-* 17/10/2019: Rules for handle creation updated " If the concatenation is longer than 20 characters, it is cutoff at 20 characters. If the handle is already taken, you may modify the handle in any way you see fit to make it unique."
-* 17/10/2019: Clarification added to "permissions" by providing examples to explain the difference more between general permissions and channel permissions
-* 18/10/2019: "note: this is not requried to be completed until iteration 3" added to uploadphoto
-* 24/10/2019: "exactly members" in the data types updated to say "ends in members"
-* 24/10/2019: Helpful example of how to use python datetime numerically (i.e. unix timestamp)
-* 24/10/2019: Clarified that { channels } refers to a dictionary
-* 24/10/2019: "49" to "50" for the EXAMPLE for channel/messages. "or equal" to remove from the error check 
-* 24/10/2019: Clarified for iteration 2 that the only valid react ID is 1
-* 24/10/2019: Removed "working with frontend" as per notice on Oct 24th
+## Changelog (cleared 27th October in git hash "353c70c6e")
 
 ## Overview
 
@@ -66,16 +51,6 @@ Beside the information available in the interface that Sally and Bob provided, y
 
 To get further information about the requirements, Rayden Pty Ltd has provided a pre-recorded video briefing (with verbal and visual descriptions) of what UNSW would like to see in the Slackr product. This can be found [HERE](https://youtu.be/0_jaxpOSoj4). Hint: **This video should be the main source of information from which you derive your user stories**
 
-## Setup
-
-After your week 2 tutorial, you should know who your team members are. Follow the instructions on the tutorial sheet to ensure your team is registered. You need to do this by **Thursday 9PM in week 2**.
-
-If you registered your team on time, then on Sunday of week 2, you should have access to an individual repository at this URL:
-
-https://gitlab.cse.unsw.edu.au/COMP1531/19T3/team_name
-
-where *team-name* is the name of your group as registered on the course website.
-
 ## Progress check-in
 
 During your lab class, in weeks without demonstrations (see below), you and your team will conduct a short stand-up in the presence of your tutor. Each member of the team will briefly state what they have done in the past week, what they intend to do over the next week, and what issues they faced or are currently facing. This is so your tutor, who is acting as a representative of the client, is kept informed of your progress. They will make note of your presence and may ask you to elaborate on the work you've done.
@@ -86,83 +61,88 @@ During your lab class, in weeks without demonstrations (see below), you and your
 
 ## Iteration 2: Servers and Products
 
+**COMPLETED**
+
+## Iteration 3: Improvements from customer feedback
+
 ### Task
 
-In this iteration, you are expected to:
+1. **Adapt to changes in spec**
 
-1. Implement the backend interface functions, including storage of the data, and wrap them in a flask webserver
+	A number of changes have been made to the specification (i.e. interface) since iteration 2. Adjust your code to deal with these changes. A short summary of the key changes include:
+	  * added: GET users/all
+	  * profile_img_url added to user return objects
+	  * user/profiles/uploadphoto now had to be completed
+	  * standup/start takes in the standup length (in seconds) as a variable input
+	  * for message/edit, if the new message is an empty string, the message is deleted
 
-2. Provide assurances that your backend implementation is fit for purpose. Consider both verification and validation when doing this. This will, at a minimum, require acceptance criteria for your user stories.
+2. **Testing**
 
-    Briefly describe the strategies you followed and tools you used to achieve this in `assurance.md`.
+	Ensure that you have a suite of automated tests that test your backend to ensure it is functioning as you intend. Note, a couple of particular capabilities may be impossible to test with pytest.
 
-3. Track your progress via the task board on GitLab.
+3. **Analyse your system**
 
-4. Reflect on your use of agile practices and how you worked as a team.
+	Produce an ER diagram that accurately models the data layer of your backend.
+
+	Place these diagrams in a PDF `er.pdf`.
+
+4. **Demonstrate software engineering design understanding**
+
+	Refactor or add to your code from iteration 2 to utilise good software engineering design to make your code more maintainable. Use a range of principles discussed in lectures.
+
+	As you modify your code, maintain a up to a 2 page markdown file that lists the key changes you've made in your code and why they've been made. 
+
+	Write this in `seprinciples.md`.
+
+5. **Reflect on your use of agile practices and how you worked as a team.**
 
     Your reflection should, at a minimum, include:
       * How often you met, and why you met that often
       * What methods you used to ensure that meetings were successful
-      * What steps you took when things did not go to plan during iteration to
+      * What steps you took when things did not go to plan during iteration 3
       * Details on how you had multiple people working on the same code 
 
     Write this in `teamwork.md`.
 
+6. **Integrate with front end**
+ 
+	After you have tested your backend, try and run the frontend to ensure that your backend works with it. This will allow you to use a fully fledged slackr app that you will demo the capabilities of in week 10.
+
+	This also includes displaying the correct errors on the frontend when errors are raised.
+
+	Please note: You will be given 2 weeks with a fully functioning frontend, beginning at 8pm on Sunday 3rd November (end of week 7). In the interim, the frontend is still available and you are more than welcome to use it, however, there may be the occasional bug, and the following may not be complete on the frontend: admin permission change, search, and standup.
+
 ### Submission
 
-This iteration is due to be submitted at 8pm Sunday 27th October (**week 6**). You will then be demonstrating this in your week 7 lab (week 8 for monday tutes). All team members **must** attend this lab session.
+This iteration is due to be submitted at 8pm Sunday 17th November (**week 9**). You will then be demonstrating this in your week 10 lab. All team members **must** attend this lab session.
 
 To submit, one team member must run this command in the CSE environment:
 
 ```sh
-1531 submit iteration2
+1531 submit iteration3
 ```
 
 Only one team member is required to submit for the entire groups submission to be recorded. **Make sure that everything you intend to submit is included in your repo**.
-
-When you submit, the following commands will be executed in the root of your repo. It is up to you how you choose to use the results of these commands, but you will need to confirm your submission if any of them fail.
-
-* `python3-coverage run --branch --source=server -m pytest`
-
-    Runs pytest over all python files in `server` and collects coverage information.
-
-* `python3-coverage report`
-
-    Generates a simple report based on the above test run.
-
-* `pylint3 server/*`
-
-    Runs pylint over the all files in `server`.
-
-### Running the server
-
-Open a terminal, and in your project directory run:
-
-`python3 server.py`
-
-This will begin a very simple server. To play around with this server, in another terminal, you can run the following commands to make a GET request and get a response:
-
-`curl 'http://127.0.0.1:5000/echo/get?echo=helloworld`
-
-`curl -d "echo=helloworld" -X POST 'http://127.0.0.1:5000/echo/post'`
-
-More information about running this server will be provided in week 4.
-
-### Storage of data
-
-As you know, in this iteration you will have to store data to implement the backend. This will be discussed in week 5/6 lectures, but in the meantime, you can simply use a single global variable containing nested dictionaries/lists to store the data.
-
-### Connecting to the frontend
-
-Details concerning the front-end will be released in week 5.
 
 ### Marking Criteria
 
 |Section|Weighting|Criteria|
 |---|---|---|
-|Implementation|50%|<ul><li>All interface functions are implemented correctly based on the specification</li><li>Backend tested and working</li><li>Appropriate data structures are used to store application state.</li><li>The flask wrapper for the interface is complete and functional.</li></ul>|
-|Assurance|25%|<ul><li>Demonstration of an understanding of the need for software verification and validation</li><li>Development of appropriate acceptance criteria based on user stories and requirements.</li><li>Demonstration of appropriate tool usage for assurance (code coverage, linting, etc.)</li></ul>|
+|Quality of testing methods|15%|<ul><li>Demonstration of how your automated tests test your backend</li><li>Demonstration of use of good test design</li></ul>|
+|Documentation and Modelling|5%|<ul><li>Produce an ER diagram to model your backend data</li><li>ER diagram accurately reflects team's data layer</li></ul>
+|Demonstration of applying software engineering principles|35%|<ul><li>Explain methods used to refactor code to make it more maintable</li><li>Clear justification of the use of particular design methods</li><li>Submission of well-designed, thought out code that implements principles discussed in lectures</li></ul>|
 |Teamwork|25%|<ul><li>Consistent work towards the goal of a working backend.</li><li>Task board is always up to date and reflects ongoing work</li><li>Demonstration of appropriate use of agile practices to work effectively as a team.</li></ul>|
+|Correctness & Frontend Demonstration|20%|<ul><li>Correctly functioning backend</li><li>Demonstrate a functioning frontend with your correctly implemented backend</li></ul>|
+
+### Extending the frontend (Optional)
+
+There is no requirement or marks awarded for modifying or extending the frontend.
+
+However, we encourage the more eager teams to try and modify or extend the front end to improve the experience in some way. 
+
+We will prioritise non-frontend-extension questions and queries over your queries on the forum. Since this is a bonus aspect to the assignment we can't guarantee support.
+
+Checkout frontend/README.md or the video posted by Hayden on Webcms3 (ReactJS) for more information
 
 ### Demonstration
 
@@ -170,10 +150,6 @@ When you demonstrate this iteration, the breakdown will go approximately like th
 
 * 5 minutes of presenting your code, tests, and how it integrates with the provided front-end
 * 10 minutes of Q&A from the tutor(s), including questions about how your team worked as a group
-
-## Iteration 3: Improvements from customer feedback
-
-Details will be released in week 7
 
 ## Interface specifications from Sally and Bob
 
@@ -183,22 +159,30 @@ Details will be released in week 7
 |-------------|----|
 |named exactly **email**|string|
 |named exactly **id**|integer|
+|named exactly **length**|integer|
 |named exactly **password**|string|
 |named exactly **token**|string|
 |named exactly **message**|string|
 |contains substring **name**|string|
 |contains substring **code**|string|
 |has prefix **is_**|boolean|
-|has prefix **time_**|datetime (expect this to be something numerical, like a (unix timestamp)[https://www.tutorialspoint.com/How-to-convert-Python-date-to-Unix-timestamp]|
+|has prefix **time_**|integer (unix timestamp), [check this out](https://www.tutorialspoint.com/How-to-convert-Python-date-to-Unix-timestamp])
 |has suffix **_id**|integer|
 |has suffix **_url**|string|
 |has suffix **_str**|string|
 |has suffix **end**|integer|
 |has suffix **start**|integer|
+|(outputs only) named exactly **user**|Dictionary containing email, name_first, name_last, handle_str, profile_img_url|
+|(outputs only) named exactly **users**|List of dictionaries, where each dictionary contains types email, name_first, name_last, handle_str, profile_img_url|
 |(outputs only) named exactly **messages**|List of dictionaries, where each dictionary contains types { message_id, u_id, message, time_created, reacts, is_pinned,  }|
 |(outputs only) named exactly **reacts**|List of dictionaries, where each dictionary contains types { react_id, u_ids, is_this_user_reacted } where react_id is the id of a react, and u_ids is a list of user id's of people who've reacted for that react. is_this_user_reacted is whether or not the authorised user has been one of the reacts to this post |
 |(outputs only) named exactly **channels**|List of dictionaries, where each dictionary contains types { channel_id, name }|
 |(outputs only) name ends in **members**|List of dictionaries, where each dictionary contains types { u_id, name_first, name_last }|
+
+### profile_img_url & image uploads
+For outputs with data pertaining to a user, a profile_img_url is present. When images are uploaded for a user profile, after processing them you should store them on the server such that your server now locally has a copy of the cropped image of the original file linked. Then, the profile_img_url should be a URL to the server, such as http://localhost:5001/imgurl/adfnajnerkn23k4234 (a unique url you generate).
+
+Note: This is most likely the most challenging part of the project. Don't get lost in this, we would strongly recommend most teams complete this capability *last*.
 
 ### Token
 Many of these functions (nearly all of them) need to be called from the perspective of a user who is logged in already. When calling these "authorised" functions, we need to know:
@@ -209,27 +193,37 @@ We could solve this trivially by storing the user ID of the logged in user on th
 
 To solve this when a user logs in or registers the backend should return a "token" (an authorisation hash) that the front end will store and pass into most of your functions in future. When these "authorised" functions are called, you can check if a token is valid, and determine the user ID.
 
-The details of how to deal with this authroisation will be covered in week 5.
+### Error format for the frontend
+If you return the following from a route, the frontend will successfully display the error as intended.
+```python
+dumps({
+    "code": 400,
+    "name": "ValueError",
+    "message": "This is the text displayed",
+})
+```
 
-### Access Error
-The AccessError is not one of Python's built in types. For iteration one, you can either:
- * Just use another error as a placeholder for now
- * Make your own AccessError as per [instructions that we have provided](https://webcms3.cse.unsw.edu.au/COMP1531/19T3/resources/35860)
+You should create your own custom ValueError (differnet from the built in type) and AccessError and use the [sample code myexcept.py](https://gitlab.cse.unsw.edu.au/COMP1531/19T3-lectures/blob/master/helper/myexcept.py) to see how you can program flask to automatically handle and send back all ValueErrors and AccessErrors caught.
+
+Note: For this to work successfully, you'll need to import these errors in any file that throws errors, or any pytest file that catches these errors
+
+### Reacts
+
+The only React ID currently associated with the frontend is React ID 1, which is a thumbs up. You are welcome to add more (this will require some frontend work)
 
 ### Permissions:
  * Members in a channel have two permissions.
    1) Owner of the channel (the person who created it, and whoever else that creator adds)
    2) Members of the channel
  * Slackr user's have three permissions
-   1) Owners, which have the same privileges as an admin (permission_id 1).
-   2) Admins, who have special permissions that members don't (permission_id 2)
-     * Admins have the same capabilities as owners, except that admins cannot change owner's permissions
+   1) Owners, which have the same privileges as an admin (permission_id 1), except they can also modify other owners' permissions.
+   2) Admins, who have special permissions that members don't (permission_id 2), including modifying other admins' permissions.
    3) Members, who do not have any special permissions (permission_id 3)
  * All slackr members are by default members, except for the very first user who signs up, who is an owner
 
 A user's primary permissions are their "Slackr" permissions. Then the channel permissions are layered on top. For example:
-* An owner of slackr is an owner in every channel
-* An admin of slackr is an owner in every channel
+* An owner of slackr has owner privileges in every channel they've joined
+* An admin of slackr has owner privileges in every channel they've joined
 * A member of slackr is a member in channels they are not owners of
 * A member of slackr is an owner in channels they are owners of
 
@@ -238,55 +232,25 @@ A user's primary permissions are their "Slackr" permissions. Then the channel pe
 Once standups are finished, all of the messages sent to standup/send are packaged together in *one single message* posted by *the user who started the standup* and sent as a message to the channel the standup was started in, timestamped at the moment the standup finished.
 
 The structure of the packaged message is like this:
+
 [message_sender1_handle]: [message1]
+
 [message_sender2_handle]: [message2]
+
 [message_sender3_handle]: [message3]
+
 [message_sender4_handle]: [message4]
 
-For example
+For example:
+
+```txt
 hayden: I ate a catfish
 rob: I went to kmart
 michelle: I ate a toaster
 isaac: my catfish ate a toaster
+```
 
-### Interface
-
-|HTTP Request|Endpoint name|Parameters|Return type|Exception|Description|
-|------------|-------------|----------|-----------|---------|-----------|
-|POST|echo/post|(echo)|{echo}||Returns the input|
-|GET|echo/get|(echo)|{echo}||Returns the input|
-|POST|auth/login|(email, password)|{ u_id, token }|**ValueError** when:<ul><li>Email entered is not a valid email using the method provided [here](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/) (unless you feel you have a better method)</li><li>Email entered does not belong to a user</li><li>Password is not correct</li></ul> | Given a registered users' email and password and generates a valid token for the user to remain authenticated |
-|POST|auth/logout|(token)|{ is_success }|N/A|Given an active token, invalidates the taken to log the user out. If a valid token is given, and the user is successfully logged out, it returns true, otherwise false. |
-|POST|auth/register|(email, password, name_first, name_last)|{ u_id, token }|**ValueError** when:<ul><li>Email entered is not a valid email using the method provided [here](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/) (unless you feel you have a better method).</li><li>Email address is already being used by another user</li><li>Password entered is less than 6 characters long</li><li>name_first not is between 1 and 50 characters in length</li><li>name_last is not between 1 and 50 characters in length</ul>|Given a user's first and last name, email address, and password, create a new account for them and return a new token for authentication in their session. A handle is generated that is the concatentation of a lowercase-only first name and last name. If the concatenation is longer than 20 characters, it is cutoff at 20 characters. If the handle is already taken, you may modify the handle in any way you see fit to make it unique. |
-|POST|auth/passwordreset/request|(email)|{}|N/A|Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email.|
-|POST|auth/passwordreset/reset|(reset_code, new_password)|{}|**ValueError** when:<ul><li>reset_code is not a valid reset code</li><li>Password entered is not a valid password</li>|Given a reset code for a user, set that user's new password to the password provided|
-|POST|channel/invite|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>channel_id does not refer to a valid channel that the authorised user is part of.</li><li>u_id does not refer to a valid user</li></ul>**AccessError** when<ul><li>the authorised user is not already a member of the channel</li>|Invites a user (with user id u_id) to join a channel with ID channel_id. Once invited the user is added to the channel immediately|
-|GET|channel/details|(token, channel_id)|{ name, owner_members, all_members }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel|
-|GET|channel/messages|(token, channel_id, start)|{ messages, start, end }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>start is greater than the total number of messages in the channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 in "end" to indicate there are no more messages to load after this return.|
-|POST|channel/leave|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>|Given a channel ID, the user removed as a member of this channel|
-|POST|channel/join|(token, channel_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>channel_id refers to a channel that is private (when the authorised user is not an admin)</li></ul>|Given a channel_id of a channel that the authorised user can join, adds them to that channel|
-|POST|channel/addowner|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is already an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Make user with user id u_id an owner of this channel|
-|POST|channel/removeowner|(token, channel_id, u_id)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is not an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Remove user with user id u_id an owner of this channel|
-|GET|channels/list|(token)|{ channels: [] }|N/A|Provide a list of all channels (and their associated details) that the authorised user is part of|
-|GET|channels/listall|(token)|{ channels: [] }|N/A|Provide a list of all channels (and their associated details)|
-|POST|channels/create|(token, name, is_public)|{ channel_id }|**ValueError** when:<ul><li>Name is more than 20 characters long</li></ul>|Creates a new channel with that name that is either a public or private channel|
-|POST|message/sendlater|(token, channel_id, message, time_sent)|{ message_id }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>Message is more than 1000 characters</li><li>Time sent is a time in the past</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id automatically at a specified time in the future|
-|POST|message/send|(token, channel_id, message)|{ message_id }|**ValueError** when:<ul><li>Message is more than 1000 characters</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id|
-|DELETE|message/remove|(token, message_id)|{}|**ValueError** when:<ul><li>Message (based on ID) no longer exists</li></ul>**AccessError** when none of the following are true:<ul><li>Message with message_id was sent by the authorised user making this request</li><li>The authorised user is an admin or owner of this channel or the slackr</li></ul>|Given a message_id for a message, this message is removed from the channel|
-|PUT|message/edit|(token, message_id, message)|{}|**AccessError** when none of the following are true:<ul><li>Message with message_id was sent by the authorised user making this request</li><li>The authorised user is an admin or owner of this channel or the slackr</li></ul>|Given a message, update it's text with new text|
-|POST|message/react|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID. For iteration 2, the only valid react ID is 1</li><li>Message with ID message_id already contains an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, add a "react" to that particular message|
-|POST|message/unreact|(token, message_id, react_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID</li><li>Message with ID message_id does not contain an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, remove a "react" to that particular message|
-|POST|message/pin|(token, message_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already pinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend|
-|POST|message/unpin|(token, message_id)|{}|**ValueError** when:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already unpinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, remove it's mark as unpinned|
-|GET|user/profile|(token, u_id)|{ email, name_first, name_last, handle_str }|**ValueError** when:<ul><li>User with u_id is not a valid user</li></ul>|For a valid user, returns information about their email, first name, last name, and handle|
-|PUT|user/profile/setname|(token, name_first, name_last)|{}|**ValueError** when:<ul><li>name_first is not between 1 and 50 characters in length</li><li>name_last is not between 1 and 50 characters in length</ul></ul>|Update the authorised user's first and last name|
-|PUT|user/profile/setemail|(token, email)|{}|**ValueError** when:<ul><li>Email entered is not a valid email using the method provided [here](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/) (unless you feel you have a better method).</li><li>Email address is already being used by another user</li>|Update the authorised user's email address|
-|PUT|user/profile/sethandle|(token, handle_str)|{}|**ValueError** when:<ul><li>handle_str must be between 3 and 20 characters</li><li>handle is already used by another user</li></ul>|Update the authorised user's handle (i.e. display name)|
-|POST|user/profiles/uploadphoto (**note: this is not requried to be completed until iteration 3**)|(token, img_url, x_start, y_start, x_end, y_end)|{}|**ValueError** when:<ul><li>img_url is returns an HTTP status other than 200.</li><li>any of x_start, y_start, x_end, y_end are not within the dimensions of the image at the URL.</li></ul>|Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.|
-|POST|standup/start|(token, channel_id)|{ time_finish }|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>An active standup is currently running in this channel</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|For a given channel, start the standup period whereby for the next 15 minutes if someone calls "standup_send" with a message, it is buffered during the 15 minute window then at the end of the 15 minute window a message will be added to the message queue in the channel from the user who started the standup. |
-|POST|standup/send|(token, channel_id, message)|{}|**ValueError** when:<ul><li>Channel ID is not a valid channel</li><li>Message is more than 1000 characters</li><li>An active standup is not currently running in this channel</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Sending a message to get buffered in the standup queue, assuming a standup is currently active|
-|GET|search|(token, query_str)|{ messages: [] }|N/A|Given a query string, return a collection of messages in all of the channels that the user has joined that match the query|
-|POST|admin/userpermission/change|(token, u_id, permission_id)|{}|**ValueError** when:<ul><li>u_id does not refer to a valid user<li>permission_id does not refer to a value permission</li></ul>**AccessError** when<ul><li>The authorised user is not an admin or owner</li></ul>|Given a User by their user ID, set their permissions to new permissions described by permission_id|
+Standups can be started on the frontend by typing "/standup X", where X is the number of seconds that the standup lasts for, into the message input and clicking send.
 
 ### Errors for all functions
 
@@ -301,6 +265,45 @@ For example, if we imagine a user with token "12345" is trying to read messages 
  * channel_messages("12345", 6, 0) => { [messages], 0, 50 }
  * channel_messages("12345", 6, 50) => { [messages], 50, 100 }
  * channel_messages("12345", 6, 100) => { [messages], 100, -1 }
+
+### Interface
+
+|HTTP Request|Endpoint name|Parameters|Return type|Exception|Description|
+|------------|-------------|----------|-----------|---------|-----------|
+|POST|auth/login|(email, password)|{ u_id, token }|**ValueError** when any of:<ul><li>Email entered is not a valid email using the method provided [here](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/) (unless you feel you have a better method)</li><li>Email entered does not belong to a user</li><li>Password is not correct</li></ul> | Given a registered users' email and password and generates a valid token for the user to remain authenticated |
+|POST|auth/logout|(token)|{ is_success }|N/A|Given an active token, invalidates the taken to log the user out. If a valid token is given, and the user is successfully logged out, it returns true, otherwise false. |
+|POST|auth/register|(email, password, name_first, name_last)|{ u_id, token }|**ValueError** when any of:<ul><li>Email entered is not a valid email using the method provided [here](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/) (unless you feel you have a better method).</li><li>Email address is already being used by another user</li><li>Password entered is less than 6 characters long</li><li>name_first not is between 1 and 50 characters in length</li><li>name_last is not between 1 and 50 characters in length</ul>|Given a user's first and last name, email address, and password, create a new account for them and return a new token for authentication in their session. A handle is generated that is the concatentation of a lowercase-only first name and last name. If the concatenation is longer than 20 characters, it is cutoff at 20 characters. If the handle is already taken, you may modify the handle in any way you see fit to make it unique. |
+|POST|auth/passwordreset/request|(email)|{}|N/A|Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email.|
+|POST|auth/passwordreset/reset|(reset_code, new_password)|{}|**ValueError** when any of:<ul><li>reset_code is not a valid reset code</li><li>Password entered is not a valid password</li>|Given a reset code for a user, set that user's new password to the password provided|
+|POST|channel/invite|(token, channel_id, u_id)|{}|**ValueError** when any of:<ul><li>channel_id does not refer to a valid channel that the authorised user is part of.</li><li>u_id does not refer to a valid user</li></ul>**AccessError** when<ul><li>the authorised user is not already a member of the channel</li>|Invites a user (with user id u_id) to join a channel with ID channel_id. Once invited the user is added to the channel immediately|
+|GET|channel/details|(token, channel_id)|{ name, owner_members, all_members }|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, provide basic details about the channel|
+|GET|channel/messages|(token, channel_id, start)|{ messages, start, end }|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li><li>start is greater than the total number of messages in the channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a Channel with ID channel_id that the authorised user is part of, return up to 50 messages between index "start" and "start + 50". Message with index 0 is the most recent message in the channel. This function returns a new index "end" which is the value of "start + 50", or, if this function has returned the least recent messages in the channel, returns -1 in "end" to indicate there are no more messages to load after this return.|
+|POST|channel/leave|(token, channel_id)|{}|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>Authorised user is not a member of channel with channel_id</li></ul>|Given a channel ID, the user removed as a member of this channel|
+|POST|channel/join|(token, channel_id)|{}|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li></ul>**AccessError** when<ul><li>channel_id refers to a channel that is private (when the authorised user is not an admin)</li></ul>|Given a channel_id of a channel that the authorised user can join, adds them to that channel|
+|POST|channel/addowner|(token, channel_id, u_id)|{}|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is already an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Make user with user id u_id an owner of this channel|
+|POST|channel/removeowner|(token, channel_id, u_id)|{}|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li><li>When user with user id u_id is not an owner of the channel</li></ul>**AccessError** when the authorised user is not an owner of the slackr, or an owner of this channel</li></ul>|Remove user with user id u_id an owner of this channel|
+|GET|channels/list|(token)|{ channels: [] }|N/A|Provide a list of all channels (and their associated details) that the authorised user is part of|
+|GET|channels/listall|(token)|{ channels: [] }|N/A|Provide a list of all channels (and their associated details)|
+|POST|channels/create|(token, name, is_public)|{ channel_id }|**ValueError** when any of:<ul><li>Name is more than 20 characters long</li></ul>|Creates a new channel with that name that is either a public or private channel|
+|POST|message/sendlater|(token, channel_id, message, time_sent)|{ message_id }|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li><li>Message is more than 1000 characters</li><li>Time sent is a time in the past</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id automatically at a specified time in the future|
+|POST|message/send|(token, channel_id, message)|{ message_id }|**ValueError** when any of:<ul><li>Message is more than 1000 characters</li></ul>**AccessError** when: <li> the authorised user has not joined the channel they are trying to post to</li></ul>|Send a message from authorised_user to the channel specified by channel_id|
+|DELETE|message/remove|(token, message_id)|{}|**ValueError** when any of:<ul><li>Message (based on ID) no longer exists</li></ul>**AccessError** when none of the following are true:<ul><li>Message with message_id was sent by the authorised user making this request</li><li>The authorised user is an admin or owner of this channel or the slackr</li></ul>|Given a message_id for a message, this message is removed from the channel|
+|PUT|message/edit|(token, message_id, message)|{}|**AccessError** when none of the following are true:<ul><li>Message with message_id was sent by the authorised user making this request</li><li>The authorised user is an admin or owner of this channel or the slackr</li></ul>|Given a message, update it's text with new text. If the new message is an empty string, the message is deleted.|
+|POST|message/react|(token, message_id, react_id)|{}|**ValueError** when any of:<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID. The only valid react ID the frontend has is 1</li><li>Message with ID message_id already contains an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, add a "react" to that particular message|
+|POST|message/unreact|(token, message_id, react_id)|{}|**ValueError** 	<ul><li>message_id is not a valid message within a channel that the authorised user has joined</li><li>react_id is not a valid React ID</li><li>Message with ID message_id does not contain an active React with ID react_id</li></ul>|Given a message within a channel the authorised user is part of, remove a "react" to that particular message|
+|POST|message/pin|(token, message_id)|{}|**ValueError** when any of:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already pinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, mark it as "pinned" to be given special display treatment by the frontend|
+|POST|message/unpin|(token, message_id)|{}|**ValueError** when any of:<ul><li>message_id is not a valid message</li><li>The authorised user is not an admin</li><li>Message with ID message_id is already unpinned</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Given a message within a channel, remove it's mark as unpinned|
+|GET|user/profile|(token, u_id)|{ user }|**ValueError** when any of:<ul><li>User with u_id is not a valid user</li></ul>|For a valid user, returns information about their email, first name, last name, and handle|
+|PUT|user/profile/setname|(token, name_first, name_last)|{}|**ValueError** when any of:<ul><li>name_first is not between 1 and 50 characters in length</li><li>name_last is not between 1 and 50 characters in length</ul></ul>|Update the authorised user's first and last name|
+|PUT|user/profile/setemail|(token, email)|{}|**ValueError** when any of:<ul><li>Email entered is not a valid email using the method provided [here](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/) (unless you feel you have a better method).</li><li>Email address is already being used by another user</li>|Update the authorised user's email address|
+|PUT|user/profile/sethandle|(token, handle_str)|{}|**ValueError** when any of:<ul><li>handle_str must be between 3 and 20 characters</li><li>handle is already used by another user</li></ul>|Update the authorised user's handle (i.e. display name)|
+|POST|user/profiles/uploadphoto|(token, img_url, x_start, y_start, x_end, y_end)|{}|**ValueError** when any of:<ul><li>img_url is returns an HTTP status other than 200.</li><li>any of x_start, y_start, x_end, y_end are not within the dimensions of the image at the URL.</li></ul>|Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left.|
+|GET|users/all|(token)|{ users: []}||
+|POST|standup/start|(token, channel_id, length)|{ time_finish }|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li><li>An active standup is currently running in this channel</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|For a given channel, start the standup period whereby for the next "length" seconds if someone calls "standup_send" with a message, it is buffered during the X second window then at the end of the X second window a message will be added to the message queue in the channel from the user who started the standup. X is an integer that denotes the number of seconds that the standup occurs for|
+|POST|standup/send|(token, channel_id, message)|{}|**ValueError** when any of:<ul><li>Channel ID is not a valid channel</li><li>Message is more than 1000 characters</li><li>An active standup is not currently running in this channel</li></ul>**AccessError** when<ul><li>The authorised user is not a member of the channel that the message is within</li></ul>|Sending a message to get buffered in the standup queue, assuming a standup is currently active|
+|GET|search|(token, query_str)|{ messages: [] }|N/A|Given a query string, return a collection of messages in all of the channels that the user has joined that match the query|
+|POST|admin/userpermission/change|(token, u_id, permission_id)|{}|**ValueError** when any of:<ul><li>u_id does not refer to a valid user<li>permission_id does not refer to a value permission</li></ul>**AccessError** when<ul><li>The authorised user is not an admin or owner</li></ul>|Given a User by their user ID, set their permissions to new permissions described by permission_id|
+
 
 ## Due Dates and Weightings
 
