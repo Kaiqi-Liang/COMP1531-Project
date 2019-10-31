@@ -47,7 +47,6 @@ def channel_details(token, channel_id):
 
 # pagination
 def channel_messages(token, channel_id, start):
-    print(channel_id, token, start)
     start = int(start)
     channel_id = int(channel_id)
     channel = get_channel(channel_id)
