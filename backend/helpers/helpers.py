@@ -5,6 +5,14 @@ from backend.database import get_data
 def check_permission(u_id, p_id):
     """ Check user with u_id to see if they have permission p_id """
     slackr = get_data()['slackr']
+    if p_id == 1:
+        p_id = 'owner'
+    elif p_id == 2:
+        p_id = 'admin'
+    elif p_id == 3:
+        p_id = 'member'
+    else:
+        return False
     return True if u_id in slackr[p_id] else False
 
 

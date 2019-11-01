@@ -128,7 +128,9 @@ def channel_join(token, channel_id):
 
     # If channel is public
     if channel['is_public']:
-        channel['members'].append(member_info)
+        if check_permission(u_id, 1) or check_permission(u_id, 2):
+            channel['members'].append(member_info)
+            channel['owners'].append(member_info)
     else:
         # If user is not an admin/owner (assumptions)
         if not check_permission(u_id, 3) and not check_permission(u_id, 1):
