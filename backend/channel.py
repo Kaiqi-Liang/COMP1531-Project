@@ -45,7 +45,6 @@ def channel_details(token, channel_id):
     return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
-# pagination
 def channel_messages(token, channel_id, start):
     start = int(start)
     channel_id = int(channel_id)
@@ -69,19 +68,20 @@ def channel_messages(token, channel_id, start):
             raise AccessError("Authorised user is not a member of channel with channel_id")
 
     messages = []
-    for message in channel['messages']:
-        if message['message_id'] < start:
+    for message in reversed(channel['messages']):
+        message_id = len(channel['messages']) - message['message_id'] - 1
+        if message_id < start:
             continue
 
         messages.append(message)
 
-        if len(messages) == 50:
+        if len(messages) == 3:
             break
 
-    if len(messages) == 0:
-        return {'messages': messages, 'start': start, 'end': -1}
-
-    end = messages[-1]['message_id']
+    if len(messages) < 3 or messages[-1]['message_id'] == 0:
+        end = -1
+    else:
+        end = len(channel['messages']) - messages[-1]['message_id']
     return {'messages': messages, 'start': start, 'end': end}
 
 
