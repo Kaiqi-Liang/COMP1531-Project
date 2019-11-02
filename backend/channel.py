@@ -75,10 +75,10 @@ def channel_messages(token, channel_id, start):
 
         messages.append(message)
 
-        if len(messages) == 3:
+        if len(messages) == 50:
             break
 
-    if len(messages) < 3 or messages[-1]['message_id'] == 0:
+    if len(messages) < 50 or messages[-1]['message_id'] == 0:
         end = -1
     else:
         end = len(channel['messages']) - messages[-1]['message_id']

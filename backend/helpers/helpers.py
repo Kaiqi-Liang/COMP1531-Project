@@ -41,6 +41,7 @@ def is_owner(u_id, channel):
 
 
 def get_message_channel(message_id):
+    """ Get the channel that the given message is in """
     for channel in get_data()['channel']:
         for message in channel['messages']:
             if int(message_id) == message['message_id']:
