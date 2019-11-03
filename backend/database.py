@@ -24,7 +24,8 @@ DATA = {
                 'handle_str': 'firstlast',
                 'permission_id': p_id,
                 'tokens': ['token'],
-                'reset': ''
+                'reset': '',
+                'profile_img_url': 'profile_img_url'
             }
         ],
     'channel':
@@ -44,7 +45,8 @@ DATA = {
                                 {
                                     'u_id': u_id,
                                     'name_first': 'first',
-                                    'name_last': 'last'
+                                    'name_last': 'last',
+                                    'profile_img_url': 'profile_img_url'
                                 }
                           ],
                 'messages': [

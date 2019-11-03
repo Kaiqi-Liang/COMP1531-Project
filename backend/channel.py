@@ -24,7 +24,7 @@ def channel_invite(token, channel_id, u_id):
     if not check_user_in_channel(get_user_from_token(token), channel):
         raise AccessError("the authorised user is not already a member of the channel")
 
-    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
 
 

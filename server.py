@@ -189,7 +189,13 @@ def unpin():
     return dumps(message.message_unpin(request.form.get('token'), request.form.get('message_id')))
 
 
-# PROFILE
+# USER
+
+@APP.route('/users/all', methods=['GET'])
+def users():
+    """ Get all the users information """
+    return dumps(user.users_all(request.args.get('token')))
+
 
 @APP.route('/user/profile', methods=['GET'])
 def profile():
