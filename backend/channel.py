@@ -25,6 +25,9 @@ def channel_invite(token, channel_id, u_id):
         raise AccessError("the authorised user is not already a member of the channel")
 
     channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+
+    if get_permission(u_id) == 1 or get_permission(u_id) == 2:
+        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
     return {}
 
 
@@ -140,8 +143,8 @@ def channel_join(token, channel_id):
     # If channel is public
     if channel['is_public']:
         if p_id in admin_or_owner:
-            channel['members'].append(member_info)
             channel['owners'].append(owner_info)
+        channel['members'].append(member_info)
     else:
         # If user is not an admin
         if not p_id in admin_or_owner:
@@ -149,8 +152,8 @@ def channel_join(token, channel_id):
             raise AccessError("channel_id refers to a channel that is private")
 
         # User is an admin/owner and can join channel
-        channel['owners'].append(member_info)
-        channel['members'].append(owner_info)
+        channel['members'].append(member_info)
+        channel['owners'].append(owner_info)
 
     return {}
 
@@ -231,9 +234,4 @@ def channels_create(token, name, is_public):
         channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
         channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
 
-    for admin_id in get_data()['slackr']['admin']:
-        admin = get_user(admin_id)
-        if not check_user_in_channel(u_id, channel):
-            channel['owners'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
-            channel['members'].append({'u_id': admin_id, 'name_first': admin['name_first'], 'name_last': admin['name_last']})
     return {'channel_id': channel_id}

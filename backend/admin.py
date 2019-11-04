@@ -3,8 +3,6 @@ from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
 from backend.helpers.exception import ValueError, AccessError
 
-# after permission change to admin or owner they need to be added to every single channel as an owner
-
 def admin_userpermission_change(token, u_id, permission_id):
     slackr = get_data()["slackr"]
     try:
