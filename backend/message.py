@@ -87,9 +87,14 @@ def message_edit(token, message_id, message):
 def message_react(token, message_id, react_id):
     message_id = int(message_id)
     react_id = int(react_id)
-    channel_list = get_data()['channel']
-    msg = get_message(message_id)
 
+    u_id = get_user_from_token(token)
+    channel = get_message_channel(message_id)
+    # value error: message_id is not a valid message within a channel that the authorised user has joined
+    if not check_user_in_channel(u_id, channel):
+        raise ValueError("the authorised user is not in the channel")
+
+    msg = get_message(message_id)
     # value error: message_id is not valid
     if msg is None:
         raise ValueError("message_id is not valid")
@@ -113,10 +118,14 @@ def message_react(token, message_id, react_id):
 def message_unreact(token, message_id, react_id):
     message_id = int(message_id)
     react_id = int(react_id)
-    channel_list = get_data()['channel']
-    msg = get_message(message_id)
-    print(msg)
 
+    u_id = get_user_from_token(token)
+    channel = get_message_channel(message_id)
+    # value error: message_id is not a valid message within a channel that the authorised user has joined
+    if not check_user_in_channel(u_id, channel):
+        raise ValueError("the authorised user is not in the channel")
+
+    msg = get_message(message_id)
     # value error: message_id is not valid
     if msg is None:
         raise ValueError("message_id is not valid")
@@ -133,7 +142,7 @@ def message_unreact(token, message_id, react_id):
     for react in msg['reacts']:
         if react['react_id'] == react_id:
             react['is_this_user_reacted'] = False
-            react['u_ids'].remove(get_user_from_token(token))
+            react['u_ids'].remove(u_id)
     return {}
 
 
