@@ -29,10 +29,12 @@ function Message({
 
   const [name, setName] = React.useState();
   const [initials, setInitials] = React.useState();
+  const [imgUrl, setImgUrl] = React.useState();
   const token = React.useContext(AuthContext);
   React.useEffect(() => {
     setName();
     setInitials();
+    setImgUrl()
     axios
       .get(`/user/profile`, {
         params: {
@@ -46,9 +48,11 @@ function Message({
           name_first = '',
           name_last = '',
           handle_str = '',
+          profile_img_url = '',
         } = data;
         setName(`${name_first} ${name_last}`);
         setInitials(`${name_first[0]}${name_last[0]}`);
+        setImgUrl(`${profile_img_url}`)
       })
       .catch((err) => {
         console.error(err);
@@ -60,7 +64,7 @@ function Message({
       {name && initials && message && (
         <>
           <ListItemIcon>
-            <Avatar>{initials}</Avatar>
+            <img className="avatar-small" src={imgUrl} />
           </ListItemIcon>
           <div
             style={{

@@ -122,13 +122,10 @@ function Channel({ channel_id, ...props }) {
     <>
       <Typography variant="h4">{name.toUpperCase()}</Typography>
       <List subheader={<ListSubheader>Members</ListSubheader>}>
-        {members.map(({ u_id, name_first, name_last }) => (
+        {members.map(({ u_id, name_first, name_last, profile_img_url }) => (
           <ListItem key={u_id}>
             <ListItemIcon>
-              <Avatar>
-                {name_first[0]}
-                {name_last[0]}
-              </Avatar>
+              <img className="avatar-small" src={profile_img_url} />
             </ListItemIcon>
             <ListItemText
               primary={

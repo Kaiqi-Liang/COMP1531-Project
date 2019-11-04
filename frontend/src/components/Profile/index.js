@@ -51,6 +51,24 @@ function Profile({ profile }) {
       });
   }
 
+  function updateProfileImgUrl(raw_text, x_start, y_start, x_end, y_end) {
+    const items = raw_text.split(',');
+    axios
+      .post(`/user/profiles/uploadphoto`, { token,
+        img_url: items[0],
+        x_start: items[1],
+        y_start: items[2],
+        x_end: items[3],
+        y_end: items[4],
+      })
+      .then(() => {
+        console.log('all good');
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   function updateHandle(handle_str) {
     axios
       .put(`/user/profile/sethandle`, { token, handle_str })
@@ -66,7 +84,7 @@ function Profile({ profile }) {
 
   return (
     <>
-      <Typography variant="h4">Profile</Typography>
+      <Typography variant="h4">Profile</Typography>     
       <List subheader={<ListSubheader>Profile Details</ListSubheader>}>
         <ListItem key={'name'}>
           <EditableFields
@@ -104,6 +122,18 @@ function Profile({ profile }) {
             onSave={updateHandle}
           />
         </ListItem>
+        <ListItem key={'img_url'}>
+          <EditableFields
+            editable={editable}
+            masterValue={profileDetails.img_url}
+            master={(passed_props) => (
+              <TextField label={'img_url,x1,y1,x2,y2'} {...passed_props} />
+            )}
+            onSave={updateProfileImgUrl}
+          />
+        </ListItem>
+        <br />
+        <div>NOTE: The final field input is to set a profile image. Please enter the 5 components (image url, x_start, y_start, x_end, y_end) separated by commas</div>
       </List>
     </>
   );
