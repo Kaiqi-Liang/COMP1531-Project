@@ -24,12 +24,11 @@ def channel_invite(token, channel_id, u_id):
     if not check_user_in_channel(get_user_from_token(token), channel):
         raise AccessError("the authorised user is not already a member of the channel")
 
-    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
-
     if get_permission(u_id) == 1 or get_permission(u_id) == 2:
         channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
-    return {}
 
+    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+    return {}
 
 
 def channel_details(token, channel_id):
@@ -201,7 +200,6 @@ def channels_list(token):
 
 
 def channels_listall(token):
-    u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
         if channel['is_public']:
