@@ -8,8 +8,8 @@ from backend.helpers.helpers import check_user_in_channel, get_message_channel, 
 from backend.helpers.exception import ValueError, AccessError
 
 def message_sendlater(token, channel_id, message, time_sent):
-    time_sent = int(time_sent) / 1000
-    timeout = int(time_sent) - int(time())
+    time_sent = float(time_sent)
+    timeout = time_sent - time()
     if timeout < 0:
         raise ValueError("Time sent is a time in the past")
     send = Timer(timeout, message_send, (token, channel_id, message))
