@@ -6,6 +6,10 @@ from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel
 from backend.helpers.exception import ValueError, AccessError
 
+def standup_active(is_active, time_finish):
+    return {'time_finish': None}
+
+
 def standup_start(token, channel_id):
     channel_id = int(channel_id)
     # Check if channel exists ...

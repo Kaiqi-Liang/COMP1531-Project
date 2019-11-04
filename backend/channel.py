@@ -1,7 +1,7 @@
 """ Channel functions """
-from backend.database import get_data, get_user, get_channel
+from backend.database import get_data, get_user, get_channel, get_permission
 from backend.helpers.token import get_user_from_token
-from backend.helpers.helpers import check_permission, check_user_in_channel, is_owner
+from backend.helpers.helpers import check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
 
 def channel_invite(token, channel_id, u_id):
@@ -48,6 +48,7 @@ def channel_details(token, channel_id):
 def channel_messages(token, channel_id, start):
     start = int(start)
     channel_id = int(channel_id)
+    u_id = get_user_from_token(token)
     channel = get_channel(channel_id)
     if channel is None:
         raise ValueError("Channel ID is not a valid channel")
@@ -57,7 +58,6 @@ def channel_messages(token, channel_id, start):
 
     if not channel['is_public']:
         exception = True
-        u_id = get_user_from_token(token)
         members = channel['members']
         for user in members:
             if u_id == user['u_id']:
@@ -70,6 +70,7 @@ def channel_messages(token, channel_id, start):
     messages = []
     for message in reversed(channel['messages']):
         message_id = len(channel['messages']) - message['message_id'] - 1
+        message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids'];
         if message_id < start:
             continue
 
@@ -94,6 +95,7 @@ def channel_leave(token, channel_id):
     members = channel['members']
     owners = channel['owners']
     if is_owner(u_id, channel):
+        # assumption: cannot leave the channel if user is the only owner of the channel
         if len(owners) == 1 and len(members) > 1:
             return {}
 
@@ -120,25 +122,35 @@ def channel_join(token, channel_id):
     if check_user_in_channel(user['u_id'], channel):
         return {}
 
-    member_info = {
+    owner_info = {
         'u_id': user['u_id'],
         'name_first': user['name_first'],
         'name_last': user['name_last']
     }
 
+    member_info = {
+        'u_id': user['u_id'],
+        'name_first': user['name_first'],
+        'name_last': user['name_last'],
+        'profile_img_url': user['profile_img_url']
+    }
+
+    p_id = get_permission(u_id)
+    admin_or_owner = [1, 2]
     # If channel is public
     if channel['is_public']:
-        if check_permission(u_id, 1) or check_permission(u_id, 2):
+        if p_id in admin_or_owner:
             channel['members'].append(member_info)
-            channel['owners'].append(member_info)
+            channel['owners'].append(owner_info)
     else:
-        # If user is not an admin/owner (assumptions)
-        if not check_permission(u_id, 3) and not check_permission(u_id, 1):
-            raise AccessError("User is not admin: unable to join private channel")
+        # If user is not an admin
+        if not p_id in admin_or_owner:
+            # assumptions: if user is not an owner
+            raise AccessError("channel_id refers to a channel that is private")
 
         # User is an admin/owner and can join channel
         channel['owners'].append(member_info)
-        channel['members'].append(member_info)
+        channel['members'].append(owner_info)
 
     return {}
 

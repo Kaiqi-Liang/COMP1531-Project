@@ -221,8 +221,13 @@ def sethandle():
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
 
-
 # STANDUP
+
+@APP.route('/standup/active', methods=['GET'])
+def active():
+    """ For a given channel, return whether a standup is active in it, and what time the standup finishes. If no standup is active, then time_finish returns None """
+    return dumps(standup.standup_active(request.args.get('is_active'), request.args.get('time_finish')))
+
 
 @APP.route('/standup/start', methods=['POST'])
 def start():

@@ -109,7 +109,7 @@ def message_react(token, message_id, react_id):
             react['u_ids'].append(get_user_from_token(token))
     return {}
 
-# fix bug
+
 def message_unreact(token, message_id, react_id):
     message_id = int(message_id)
     react_id = int(react_id)
@@ -155,7 +155,8 @@ def message_pin(token, message_id):
     if not check_user_in_channel(u_id, channel):
         raise AccessError("User is not a member of the channel")
     # value error: authorised user is not an admin
-    if get_permission(u_id) == 3 and not is_owner(u_id, channel): #(assumption: owner of the slackr has permission)
+    if get_permission(u_id) == 3 and not is_owner(u_id, channel):
+        # assumption: owner of the slackr has permission
         raise ValueError("User is neither an admin nor an owner of the channel")
 
     # pin the message
@@ -181,8 +182,8 @@ def message_unpin(token, message_id):
     if not check_user_in_channel(u_id, channel):
         raise AccessError("User is not a member of the channel")
     # value error: authorised user is not an admin
-    # (assumption: owner of the slackr has permission)
     if get_permission(u_id) == 3 and not is_owner(u_id, channel):
+        # assumption: owner of the slackr has permission
         raise ValueError("User is neither an admin nor an owner of the channel")
 
     # unpin the message
