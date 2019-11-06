@@ -1,6 +1,7 @@
 """ Helper functions """
 import re
 from backend.database import get_data
+from PIL import Image
 
 def check_email(email):
     """ Check if an email is valid """
@@ -33,3 +34,14 @@ def get_message_channel(message_id):
             if int(message_id) == message['message_id']:
                 return channel
     return None
+
+
+def get_image(img_url, photo):
+    """ Download an image from a given URL to the file system """
+
+
+def crop_image(photo, x_start, y_start, x_end, y_end):
+    """ crop a given image in the file system with given dimensions """
+    image = Image.open(photo)
+    cropped = image.crop((x_start, y_start, x_end, y_end))
+    cropped.save('cropped.jpg')

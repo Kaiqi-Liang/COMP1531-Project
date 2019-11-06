@@ -221,6 +221,12 @@ def sethandle():
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
 
+@APP.route('user/profiles/uploadphoto', methods=['POST'])
+def uploadphoto():
+    """ Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left. """
+    return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end')))
+
+
 # STANDUP
 
 @APP.route('/standup/active', methods=['GET'])

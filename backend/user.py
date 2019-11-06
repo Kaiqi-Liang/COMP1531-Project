@@ -1,9 +1,10 @@
 """ User functions """
-import random
+from random import randint
+from urllib import request
 
 from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
-from backend.helpers.helpers import check_email, check_user_in_channel, is_owner
+from backend.helpers.helpers import check_email, check_user_in_channel, is_owner, crop_image
 from backend.helpers.exception import ValueError
 
 def users_all(token):
@@ -81,16 +82,15 @@ def user_profile_sethandle(token, handle_str):
                 # cut some out
                 handle_str = handle_str[:18]
             # then add number
-            handle_str = handle_str + str(random.randint(10, 100))
+            handle_str = handle_str + str(randint(10, 100))
     user['handle_str'] = handle_str
     return {}
 
 
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    response = requests.get(img_url)
-    urllib.urlretrieve(img_url, "tmp/new_photo.jpg")
-    download = Image.open("tmp/new_photo.jpg")
-    width, height = download.size
+    request.urlretrieve(img_url, photo)
+    get_image(img_url, 'photo.jpg')
+    crop_image('photo.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
 
     if response.status_code != 200:
         raise ValueError("HTTP response unsuccessful!")
