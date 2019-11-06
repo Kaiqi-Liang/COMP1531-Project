@@ -88,8 +88,7 @@ def user_profile_sethandle(token, handle_str):
 
 
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    request.urlretrieve(img_url, photo)
-    get_image(img_url, 'photo.jpg')
+    request.urlretrieve(img_url, 'photo.jpg')
     crop_image('photo.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
 
     if response.status_code != 200:
