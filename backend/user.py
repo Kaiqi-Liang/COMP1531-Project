@@ -85,7 +85,7 @@ def user_profile_sethandle(token, handle_str):
     user['handle_str'] = handle_str
     return {}
 
-'''
+
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     response = requests.get(img_url)
     urllib.urlretrieve(img_url, "tmp/new_photo.jpg")
@@ -101,4 +101,3 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     elif y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
         raise ValueError("Invalid height crop!")
     return
-'''
