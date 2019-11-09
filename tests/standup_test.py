@@ -1,3 +1,4 @@
+''' Local packages '''
 from backend.helpers.exception import ValueError, AccessError
 from backend.database import *
 from backend.standup import *

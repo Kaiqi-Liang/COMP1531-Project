@@ -10,6 +10,8 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProfilePage from './pages/ProfilePage';
+import SearchPage from './pages/SearchPage';
+
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 
 import { AuthProvider } from './AuthContext';
@@ -48,6 +50,8 @@ function App() {
           <ProtectedRoute exact path="/" component={HomePage} />
           <ProtectedRoute path="/profile/:profile" component={ProfilePage} />
           <ProtectedRoute path="/channel/:channel_id" component={ChannelPage} />
+          <ProtectedRoute path="/search/:query_str" component={SearchPage} />
+          <ProtectedRoute path="/search" component={SearchPage} />
         </Switch>
       </Router>
     </AuthProvider>

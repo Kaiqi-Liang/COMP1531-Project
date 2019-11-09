@@ -10,6 +10,7 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
 
 import AuthContext from '../../AuthContext';
+import {StepContext} from '../Channel/ChannelMessages';
 
 function MessageReact({
   message_id,
@@ -17,6 +18,8 @@ function MessageReact({
 }) {
 
   const token = React.useContext(AuthContext);
+  let step = React.useContext(StepContext);
+  step = step ? step : () => {}; // sanity check
 
   const messageReact = (is_reacted) => {
     if (is_reacted) {
@@ -24,12 +27,18 @@ function MessageReact({
         token,
         message_id,
         react_id: 1 /* FIXME */,
+      })
+      .then(() => {
+        step();
       });
     } else {
       axios.post(`/message/react`, {
         token,
         message_id,
         react_id: 1 /* FIXME */,
+      })
+      .then(() => {
+        step();
       });
     }
   };

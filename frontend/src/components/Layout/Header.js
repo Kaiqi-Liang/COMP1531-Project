@@ -15,6 +15,7 @@ import AuthContext from '../../AuthContext';
 import { drawerWidth } from '../../utils/constants';
 import PollToggle from '../PollToggle';
 import Admin from '../Admin';
+import SearchBar from '../Search/SearchBar';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -77,6 +78,7 @@ function Header({ handleMenuToggle = () => {} }) {
 
         </div>
         <div style={{display:'flex'}}>
+          <SearchBar />
           <PollToggle />
           <Admin />
           <Button

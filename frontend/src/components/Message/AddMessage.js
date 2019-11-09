@@ -4,13 +4,16 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Typography,
 } from '@material-ui/core';
 import React from 'react';
 import SendIcon from '@material-ui/icons/Send';
 import TimerIcon from '@material-ui/icons/Timer';
 import { makeStyles } from '@material-ui/styles';
 import AuthContext from '../../AuthContext';
+import {StepContext} from '../Channel/ChannelMessages';
 import AddMessageTimerDialog from './AddMessageTimerDialog';
+import { useInterval } from '../../utils';
 
 const useStyles = makeStyles((theme) => ({
   flex: {
@@ -30,42 +33,40 @@ const useStyles = makeStyles((theme) => ({
   rightIcon: {
     marginLeft: theme.spacing(1),
   },
+  standupTimer: {
+    margin: theme.spacing(2),
+  }
 }));
 
 const TIMER_INACTIVE_VALUE = -1;
 
-function AddMessage({ channel_id = '', onAdd = () => {} }) {
+function AddMessage({ channel_id = '' }) {
+
   const classes = useStyles();
   const [currentMessage, setCurrentMessage] = React.useState('');
   const [currentTimer, setCurrentTimer] = React.useState(TIMER_INACTIVE_VALUE);
   const [timerDialogOpen, setTimerDialogOpen] = React.useState(false);
   const token = React.useContext(AuthContext);
+  let onAdd = React.useContext(StepContext);
+  onAdd = onAdd ? onAdd : () => {}; // sanity check
 
   const isTimerSet = currentTimer !== TIMER_INACTIVE_VALUE;
+
+  const [standupRemaining, setStandupRemaining] = React.useState();
+  const [standupEndTime, setStandupEndTime] = React.useState();
 
   const submitMessage = () => {
     const message = currentMessage.trim();
     if (!message) return;
     setCurrentMessage('');
 
-    // Depending on if timer active
-    if (isTimerSet) {
-      axios.post(`/message/sendlater`, {
-        token,
-        channel_id,
-        message,
-        time_sent: currentTimer.getTime(),
-      })
-        .then(({ data }) => {
-          console.log(data);
-        })
-        .catch((err) => {});
-      setCurrentTimer(TIMER_INACTIVE_VALUE);
-    } else {
-      if (message == '/standup') {
-        alert('Hello. This feature isn\'t finished yet. We won\'t be expecting you to demonstrate this on the frontend in iteration 2'); // TODO
-      }
-      axios.post(`/message/send`, {
+    /**
+     * Sending a message when a standup is active
+     * note: probably makes sense that this takes precedence over
+     *       starting a standup.
+     */
+    if (standupRemaining && standupRemaining > 0) {
+      axios.post(`/standup/send`, {
         token,
         channel_id,
         message,
@@ -75,8 +76,87 @@ function AddMessage({ channel_id = '', onAdd = () => {} }) {
           onAdd();
         })
         .catch((err) => {});
+      return;
     }
+
+    /**
+     * Sending a message when the sendlater timer has been set
+     */
+    if (isTimerSet) {
+      axios.post(`/message/sendlater`, {
+        token,
+        channel_id,
+        message,
+        time_sent: (currentTimer.getTime() / 1000), // ms to s conversion
+      })
+        .then(({ data }) => {
+          console.log(data);
+        })
+        .catch((err) => {});
+      setCurrentTimer(TIMER_INACTIVE_VALUE);
+      return;
+    }
+
+    /**
+     * Starting a standup (any message which starts with /standup)
+     */
+    if (message.startsWith('/standup')) {
+      const re = /\/standup\s+([1-9][0-9]*)/;
+      const found = message.match(re);
+      if (!found || found.length < 2) {
+        alert('Usage: /standup <duration in seconds>');
+      } else {
+        var length = parseInt(found[1], 10);
+        if (isNaN(length) || !Number.isInteger(length)) {
+          alert('Usage: /standup <duration in seconds>');
+        } else {
+          axios.post(`/standup/start`, { token, channel_id, length })
+            .then(({ data }) => {
+              const { time_finish } = data;
+              setStandupEndTime(time_finish);
+              alert(`You've started a standup for ${length} seconds`);
+            })
+            .catch((err) => {});
+        }
+      }
+      return;
+    }
+
+    /**
+     * Default message sending behaviour
+     */
+    axios.post(`/message/send`, {
+      token,
+      channel_id,
+      message,
+    })
+      .then(({ data }) => {
+        console.log(data);
+        onAdd();
+      })
+      .catch((err) => {});
   };
+
+  useInterval(() => {
+    if (standupEndTime > Date.now()/1000) {
+      setStandupRemaining(() => Math.round(standupEndTime - Math.round(Date.now()/1000)));
+    } else {
+      setStandupRemaining()
+    }
+  }, 1000);
+
+  useInterval(() => {
+    if (standupRemaining > 0) return;
+    axios
+    .get('/standup/active', { params: { token, channel_id } })
+      .then(({ data }) => {
+        const { is_active = false, time_finish } = data;
+        if (is_active && time_finish) {
+          setStandupEndTime(time_finish);
+        }
+      })
+      .catch((err) => {});
+  }, 2000);
 
   const keyDown = (e) => {
     if (e.key === 'Enter' && !e.getModifierState('Shift')) {
@@ -87,6 +167,9 @@ function AddMessage({ channel_id = '', onAdd = () => {} }) {
 
   return (
     <>
+      {standupRemaining > 0 && <Typography variant="caption" className={classes.standupTimer}>
+        {`STANDUP ACTIVE: ${standupRemaining} seconds remaining`}
+      </Typography>}
       <div className={classes.flex}>
         <TextField
           className={classes.input}
@@ -105,6 +188,7 @@ function AddMessage({ channel_id = '', onAdd = () => {} }) {
               <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle visibility"
+                  disabled={standupRemaining > 0}
                   onClick={() =>
                     isTimerSet ? setCurrentTimer(-1) : setTimerDialogOpen(true)
                   }

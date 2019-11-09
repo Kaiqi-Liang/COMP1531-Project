@@ -1,51 +1,72 @@
-""" Local packages """
+""" User functions """
+from random import randint
+from urllib import request
+
 from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
-from backend.helpers.helpers import * # helpers/*.py
+from backend.helpers.helpers import check_email, check_user_in_channel, is_owner, crop_image
 from backend.helpers.exception import ValueError
 
-''' pip3 packages '''
-from PIL import Image # pip3 name is "Pillow"
-import requests
-import random
+def users_all(token):
+    users = []
+    if get_user(get_user_from_token(token)) is not None:
+        for user in get_data()['user']:
+            users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': 'profile_img_url'})
+        return {'users': users}
+    return {}
 
-''' Std lib packages '''
-import urllib
 
 def user_profile(token, u_id):
     u_id = int(u_id)
     users = get_data()['user']
-    if get_user(get_user_from_token(token)) != None:
-        for user in users:
-            if u_id == user['u_id']:
-                return {'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str']}
-        raise ValueError("User with u_id is not a valid user")
+    if get_user(get_user_from_token(token)) is not None:
+        user = get_user(u_id)
+        if user is None:
+            raise ValueError("User with u_id is not a valid user")
+        return {'u_id': u_id, 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']}
+    return {}
 
 
 def user_profile_setname(token, name_first, name_last):
-    if (len(name_first) > 50 or len(name_last) > 50):
-         raise ValueError("Name too long!")
+    if len(name_first) > 50 or len(name_first) < 1:
+        raise ValueError("name_first is not between 1 and 50 characters in length")
+    if len(name_last) > 50 or len(name_last) < 1:
+        raise ValueError("name_last is not between 1 and 50 characters in length")
 
-    user = get_user(get_user_from_token(token))
-    if user != None:
+    u_id = get_user_from_token(token)
+    user = get_user(u_id)
+    if user is not None:
         user['name_first'] = name_first
         user['name_last'] = name_last
-        return {}
+
+        # change the name of the user in all the channels the user appears in
+        for channel in get_data()['channel']:
+            if check_user_in_channel(u_id, channel):
+                for member in channel['members']:
+                    if member['u_id'] == u_id:
+                        member['name_first'] = name_first
+                        member['name_last'] = name_last
+            if is_owner(u_id, channel):
+                for owner in channel['owners']:
+                    if owner['u_id'] == u_id:
+                        owner['name_first'] = name_first
+                        owner['name_last'] = name_last
+    return {}
 
 
 def user_profile_setemail(token, email):
     if not check_email(email):
         raise ValueError("Invalid email address!")
 
-    users = get_data()['user']
     user = get_user(get_user_from_token(token))
-    if user != None:
-        for u in users:
-            if u['email'] == email:
+    if user is not None:
+        for users in get_data()['user']:
+            if users['email'] == email:
                 raise ValueError('Email address is already being used by another user')
 
         user['email'] = email
-        return {}
+    return {}
+
 
 def user_profile_sethandle(token, handle_str):
     u_id = get_user_from_token(token)
@@ -61,15 +82,14 @@ def user_profile_sethandle(token, handle_str):
                 # cut some out
                 handle_str = handle_str[:18]
             # then add number
-            handle_str = handle_str + str(random.randint(10, 100))
+            handle_str = handle_str + str(randint(10, 100))
     user['handle_str'] = handle_str
     return {}
 
+
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    response = requests.get(img_url)
-    urllib.urlretrieve(img_url, "tmp/new_photo.jpg")
-    download = Image.open("tmp/new_photo.jpg")
-    width, height = download.size
+    request.urlretrieve(img_url, 'photo.jpg')
+    crop_image('photo.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
 
     if response.status_code != 200:
         raise ValueError("HTTP response unsuccessful!")

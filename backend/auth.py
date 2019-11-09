@@ -1,13 +1,11 @@
-""" Local packages """
+""" Auth functions """
+import hashlib
+import random
+
 from backend.database import get_data
 from backend.helpers.token import generate_token, get_user_from_token
 from backend.helpers.helpers import check_email
 from backend.helpers.exception import ValueError
-
-""" System imports """
-import hashlib
-import random
-
 
 def auth_login(email, password):
     if not check_email(email):
@@ -19,8 +17,8 @@ def auth_login(email, password):
                 token = generate_token(user['u_id'])
                 user['tokens'].append(token)
                 return {'u_id': user['u_id'], 'token': token}
-            else:
-                raise ValueError("Invalid password")
+
+            raise ValueError("Invalid password")
 
     raise ValueError('Email entered does not belong to a user')
 
@@ -43,10 +41,10 @@ def auth_register(email, password, name_first, name_last):
     if len(password) < 6:
         raise ValueError("Password entered is less than 6 characters long")
     # Value error: name_first
-    if len(name_first) >= 50 or len(name_first) <= 1:
+    if len(name_first) >= 50 or len(name_first) < 1:
         raise ValueError("First name is not within the correct length range")
     # Value error: name_last
-    if len(name_last) >= 50 or len(name_last) <= 1:
+    if len(name_last) >= 50 or len(name_last) < 1:
         raise ValueError("Last name is not within the correct length range")
     # Value error: invalid email
     if not check_email(email):
@@ -97,7 +95,8 @@ def auth_register(email, password, name_first, name_last):
         'handle_str': handle_str,
         'tokens': [token],
         'password': hashlib.sha256(password.encode()).hexdigest(),
-        'reset': None
+        'reset': None,
+        'profile_img_url': None
     })
 
     return {
@@ -118,6 +117,6 @@ def auth_passwordreset_reset(reset_code, new_password):
         if user['reset'] == reset_code:
             user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
             user['reset'] = None
-            return ({})
+            return {}
 
     raise ValueError("Invalid reset code")

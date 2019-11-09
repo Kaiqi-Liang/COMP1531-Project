@@ -1,21 +1,21 @@
 """ Flask server """
+import os
 import sys
 import random
 from json import dumps
+from flask import Flask, request
 from flask_cors import CORS
 from flask_mail import Mail, Message
-from flask import Flask, request
 
-import backend.search
 from backend import auth
 from backend import channel
 from backend import message
 from backend import user
 from backend import admin
 from backend import standup
-from backend.database import get_data
+from backend import search
+from backend.database import get_data, clear, save, load
 from backend.helpers.exception import defaultHandler
-
 
 APP = Flask(__name__)
 CORS(APP)
@@ -31,13 +31,14 @@ APP.register_error_handler(Exception, defaultHandler)
 
 
 def send_mail(email, reset_code):
+    """ Send an email """
     mail = Mail(APP)
     msg = Message("Authentication", sender="kaiqi.liang9989@gmail.com", recipients=[email])
     msg.body = reset_code
     mail.send(msg)
 
 
-''' AUTH '''
+# AUTH
 
 @APP.route('/auth/login', methods=['POST'])
 def login():
@@ -61,11 +62,10 @@ def register():
 def passwordreset_request():
     """ Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email. """
     email = request.form.get('email')
-    users = get_data()['user']
-    for user in users:
-        if user['email'] == email:
+    for users in get_data()['user']:
+        if users['email'] == email:
             reset_code = str(random.randint(100000, 999999))
-            user['reset'] = reset_code
+            users['reset'] = reset_code
             send_mail(email, reset_code)
     return dumps({})
 
@@ -77,7 +77,7 @@ def passwordreset_reset():
 
 
 
-''' CHANNEL '''
+# CHANNEL
 
 @APP.route('/channel/invite', methods=['POST'])
 def invite():
@@ -140,7 +140,7 @@ def removeowner():
 
 
 
-''' MESSAGE '''
+# MESSAGE
 
 @APP.route('/message/sendlater', methods=['POST'])
 def sendlater():
@@ -148,7 +148,7 @@ def sendlater():
     return dumps(message.message_sendlater(request.form.get('token'), request.form.get('channel_id'), request.form.get('message'), request.form.get('time_sent')))
 
 @APP.route('/message/send', methods=['POST'])
-def dm():
+def send_message():
     """ Send a message from authorised_user to the channel specified by channel_id """
     return dumps(message.message_send(request.form.get('token'), request.form.get('channel_id'), request.form.get('message')))
 
@@ -161,7 +161,7 @@ def remove():
 
 @APP.route('/message/edit', methods=['PUT'])
 def edit():
-    """ Given a message, update it's text with new text """
+    """ Given a message, update it's text with new text. If the new message is an empty string, the message is deleted """
     return dumps(message.message_edit(request.form.get('token'), request.form.get('message_id'), request.form.get('message')))
 
 
@@ -189,7 +189,13 @@ def unpin():
     return dumps(message.message_unpin(request.form.get('token'), request.form.get('message_id')))
 
 
-''' PROFILE '''
+# USER
+
+@APP.route('/users/all', methods=['GET'])
+def users():
+    """ Get all the users information """
+    return dumps(user.users_all(request.args.get('token')))
+
 
 @APP.route('/user/profile', methods=['GET'])
 def profile():
@@ -215,8 +221,19 @@ def sethandle():
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
 
+@APP.route('user/profiles/uploadphoto', methods=['POST'])
+def uploadphoto():
+    """ Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left. """
+    return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end')))
 
-''' STANDUP '''
+
+# STANDUP
+
+@APP.route('/standup/active', methods=['GET'])
+def active():
+    """ For a given channel, return whether a standup is active in it, and what time the standup finishes. If no standup is active, then time_finish returns None """
+    return dumps(standup.standup_active(request.args.get('is_active'), request.args.get('time_finish')))
+
 
 @APP.route('/standup/start', methods=['POST'])
 def start():
@@ -231,12 +248,12 @@ def send():
 
 
 
-''' OTHER '''
+# OTHER
 
 @APP.route('/search', methods=['GET'])
-def search():
+def search_messages():
     """ Given a query string, return a collection of messages in all of the channels that the user has joined that match the query """
-    return dumps(search(request.args.get('token'), request.args.get('query_string')))
+    return dumps(search.search(request.args.get('token'), request.args.get('query_string')))
 
 
 @APP.route('/admin/userpermission/change', methods=['POST'])
@@ -246,4 +263,9 @@ def userpermission_change():
 
 
 if __name__ == '__main__':
-    APP.run(host='0.0.0.0',port=(sys.argv[1] if len(sys.argv) > 1 else 5000), debug=True)
+    if os.path.exists('export.json'):
+        load()
+    else:
+        clear()
+    save()
+    APP.run(host='0.0.0.0', port=(sys.argv[1] if len(sys.argv) > 1 else 5000))

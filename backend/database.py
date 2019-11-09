@@ -1,4 +1,6 @@
 """ Global variable to store the database """
+import json
+from threading import Timer
 DATA = {
     'user': [],
     'channel': [],
@@ -6,7 +8,7 @@ DATA = {
                 'admin':[],
                 'owner':[],
                 'member':[]
-              }
+        }
 }
 
 '''
@@ -22,7 +24,8 @@ DATA = {
                 'handle_str': 'firstlast',
                 'permission_id': p_id,
                 'tokens': ['token'],
-                'reset': ''
+                'reset': '',
+                'profile_img_url': 'profile_img_url'
             }
         ],
     'channel':
@@ -42,7 +45,8 @@ DATA = {
                                 {
                                     'u_id': u_id,
                                     'name_first': 'first',
-                                    'name_last': 'last'
+                                    'name_last': 'last',
+                                    'profile_img_url': 'profile_img_url'
                                 }
                           ],
                 'messages': [
@@ -120,12 +124,27 @@ def get_message_channel(message_id):
     return None
 
 def clear():
+    """ Clear the database """
     global DATA
     DATA = {'user': [],
-    'channel': [],
-    'slackr': {
+            'channel': [],
+            'slackr': {
                 'admin':[],
                 'owner':[],
                 'member':[]
-              }
-     }
+                }
+            }
+
+def save():
+    """ Export DATA to a json file every second """
+    timer = Timer(1, save)
+    timer.start()
+    global DATA
+    with open('export.json', 'w') as file:
+        json.dump(DATA, file)
+
+def load():
+    """ Load the json file to the database """
+    global DATA
+    with open('export.json', 'r') as file:
+        DATA = json.load(file)

@@ -8,6 +8,11 @@ import AuthContext from '../../AuthContext';
 import AddMessage from '../Message/AddMessage';
 import { useInterval } from '../../utils';
 
+
+export const StepContext = React.createContext();
+export const StepProvider = StepContext.Provider;
+export const StepConsumer = StepContext.Consumer;
+
 function ChannelMessages({ channel_id = '' }) {
   const [messages, setMessages] = React.useState([]);
   const [currentStart, setCurrentStart] = React.useState(0);
@@ -50,7 +55,7 @@ function ChannelMessages({ channel_id = '' }) {
   }, [channel_id])
 
   return (
-    <>
+    <StepProvider value={resetChannelMessages}>
       <hr />
       {
         (currentStart != -1 &&
@@ -71,8 +76,8 @@ function ChannelMessages({ channel_id = '' }) {
           <Message key={message.message_id} {...message} />
         ))}
       </List>
-      <AddMessage onAdd={resetChannelMessages} channel_id={channel_id} />
-    </>
+      <AddMessage channel_id={channel_id} />
+    </StepProvider>
   );
 }
 

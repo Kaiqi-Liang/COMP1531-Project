@@ -6,6 +6,8 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
+  MenuItem,
+  Select,
   DialogContentText,
   Button,
   TextField,
@@ -14,7 +16,34 @@ import AuthContext from '../../AuthContext';
 
 function AddMemberDialog({ channel_id, ...props }) {
   const [open, setOpen] = React.useState(false);
+  const [selectedUser, setSelectedUser] = React.useState('');
+  const [users, setUsers] = React.useState([]);
+
   const token = React.useContext(AuthContext);
+
+
+  function fetchUserData() {
+    axios
+    .get('/users/all', {
+      params: {
+        token,
+      },
+    })
+    .then(({ data }) => {
+      setUsers(data['users']);
+    })
+    .catch((err) => {});
+  }
+
+  React.useEffect(() => {
+      fetchUserData();
+  }, []);
+  
+  const handleUserSelect = event => {
+      const newUserId = parseInt(event.target.value,10);
+      setSelectedUser(newUserId);
+  };
+
   function handleClickOpen() {
     setOpen(true);
   }
@@ -23,7 +52,7 @@ function AddMemberDialog({ channel_id, ...props }) {
   }
   function handleSubmit(event) {
     event.preventDefault();
-    const u_id = event.target[0].value;
+    const u_id = selectedUser;
 
     if (!u_id) return;
 
@@ -49,14 +78,11 @@ function AddMemberDialog({ channel_id, ...props }) {
             <DialogContentText>
               Enter a user id below to invite a user to this channel
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="u_id"
-              label="User ID"
-              name="u_id"
-              fullWidth
-            />
+            <Select style={{width:"100%"}} id="u_id" onChange={handleUserSelect} value={selectedUser}>
+              {users.map((d, idx) => {
+                return <MenuItem value={d.u_id}>{d.name_first} {d.name_last}</MenuItem>
+              })}
+            </Select>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
