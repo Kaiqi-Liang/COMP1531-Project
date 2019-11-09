@@ -9,11 +9,12 @@ from backend.helpers.exception import ValueError
 
 def users_all(token):
     users = []
-    if get_user(get_user_from_token(token)) is not None:
-        for user in get_data()['user']:
-            users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': 'profile_img_url'})
-        return {'users': users}
-    return {}
+    if get_user(get_user_from_token(token)) is None:
+        return {}
+
+    for user in get_data()['user']:
+            users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']})
+    return {'users': users}
 
 
 def user_profile(token, u_id):
@@ -88,16 +89,17 @@ def user_profile_sethandle(token, handle_str):
 
 
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    request.urlretrieve(img_url, photo)
-    get_image(img_url, 'photo.jpg')
-    crop_image('photo.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
+    u_id = get_user_from_token(token)
+    user = get_user(u_id)
+    if user is None:
+        return {}
 
-    if response.status_code != 200:
-        raise ValueError("HTTP response unsuccessful!")
-    elif x_start == x_end or y_start == y_end:
-        raise ValueError("Invalid crop size!")
-    elif x_start >= width or x_start < 0 or x_end >= width or x_end < 0:
-        raise ValueError("Invalid width crop!")
-    elif y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
-        raise ValueError("Invalid height crop!")
-    return
+    try:
+        request.urlopen(img_url)
+    except:
+        raise ValueError("img_url is returns an HTTP status other than 200.")
+
+    request.urlretrieve(img_url, 'photo.jpg')
+    crop_image('photo.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
+    user['profile_img_url'] = img_url
+    return {}
