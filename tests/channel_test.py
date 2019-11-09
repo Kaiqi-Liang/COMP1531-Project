@@ -24,7 +24,21 @@ def channel_create(owner_token):
     return channels_create(owner_token, 'name', True)['channel_id']
 
 # working
+# TESTING FOR CHANNEL_INVITE
+# normal functioning
 def test_invite():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    user_dict = register_user()
+
+    channel_invite(owner_token, channel_id, user_dict['u_id'])
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}]}
+    
+# not a valid channel
+def test_invite1():
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
@@ -35,13 +49,30 @@ def test_invite():
     with pytest.raises(ValueError):
         # invalid channel id
         channel_invite(owner_token, -1, user_dict['u_id'])
+
+#u_id does not refer to a valid user 
+# currently not working as the code is not set up properly 
+def test_invite2():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    with pytest.raises(ValueError):
         # invalid user id
-        channel_invite(owner_token, channel_id, 'user_id')
+        channel_invite(owner_token, channel_id, 123)
 
-    # invite user to the channel
-    channel_invite(owner_token, channel_id, user_dict['u_id'])
-    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}]}
-
+# access error: authorised user is not already a member of the channel
+def test_invite3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    user_dict = register_user()
+    with pytest.raises(AccessError):
+        channel_invite(user_dict['token'], channel_id, user_dict['u_id'])
+    
 def test_details():
     clear()
     owner_dict = register_owner()
