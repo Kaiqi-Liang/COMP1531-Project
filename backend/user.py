@@ -88,7 +88,12 @@ def user_profile_sethandle(token, handle_str):
     return {}
 
 
-def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, base_url):
+    base_url = '/'.join(base_url.split('/')[:3])
+    # assumption: jpeg is not jpg
+    if img_url[-3:] != 'jpg':
+        raise ValueError("Image uploaded is not a JPG")
+
     u_id = get_user_from_token(token)
     user = get_user(u_id)
     if user is None:
@@ -99,7 +104,10 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     except:
         raise ValueError("img_url is returns an HTTP status other than 200.")
 
-    request.urlretrieve(img_url, f'{u_id}.jpg')
-    crop_image(f'{u_id}.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
+    request.urlretrieve(img_url, f'pictures/{u_id}.jpg')
+    crop_image(f'pictures/{u_id}.jpg', int(x_start), int(y_start), int(x_end), int(y_end)).save(f'pictures/cropped_{u_id}.jpg')
+    img_url = base_url + f'/pictures/cropped_{u_id}.jpg'
     user['profile_img_url'] = img_url
+    print()
+    print(img_url)
     return {}

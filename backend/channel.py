@@ -94,6 +94,9 @@ def channel_leave(token, channel_id):
         raise ValueError("Channel ID is not a valid channel")
 
     u_id = get_user_from_token(token)
+    if not check_user_in_channel(u_id, channel):
+        raise AccessorError("Authorised user is not a member of channel with channel_id")
+
     members = channel['members']
     owners = channel['owners']
     if is_owner(u_id, channel):
