@@ -25,7 +25,7 @@ def channel_invite(token, channel_id, u_id):
         raise AccessError("the authorised user is not already a member of the channel")
 
     if get_permission(u_id) == 1 or get_permission(u_id) == 2:
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
 
     channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
@@ -168,7 +168,7 @@ def channel_addowner(token, channel_id, u_id):
         raise AccessError("User is not an owner of the slackr or of this channel")
 
     user = get_user(u_id)
-    channel['owners'].append({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+    channel['owners'].append({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
 
 

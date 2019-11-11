@@ -200,6 +200,7 @@ def users():
 @APP.route('/user/profile', methods=['GET'])
 def profile():
     """ For a valid user, returns information about their email, first name, last name, and handle """
+    print(request.args.get('u_id'))
     return dumps(user.user_profile(request.args.get('token'), request.args.get('u_id')))
 
 
@@ -221,7 +222,7 @@ def sethandle():
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
 
-@APP.route('user/profiles/uploadphoto', methods=['POST'])
+@APP.route('/user/profiles/uploadphoto', methods=['POST'])
 def uploadphoto():
     """ Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left. """
     return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end')))
@@ -253,7 +254,7 @@ def send():
 @APP.route('/search', methods=['GET'])
 def search_messages():
     """ Given a query string, return a collection of messages in all of the channels that the user has joined that match the query """
-    return dumps(search.search(request.args.get('token'), request.args.get('query_string')))
+    return dumps(search.search(request.args.get('token'), request.args.get('query_str')))
 
 
 @APP.route('/admin/userpermission/change', methods=['POST'])
