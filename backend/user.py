@@ -110,4 +110,13 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, ba
     base_url = 'http://' + base_url
     img_url = base_url + f'/static/cropped_{u_id}.jpg'
     user['profile_img_url'] = img_url
+
+    # update the profile photo in every channel that the user is in
+    for channel in get_data()['channel']:
+        for member in channel['members']:
+            if u_id == member['u_id']:
+                member['profile_img_url'] = user['profile_img_url']
+        for owner in channel['owners']:
+            if u_id == owner['u_id']:
+                owner['profile_img_url'] = user['profile_img_url']
     return {}

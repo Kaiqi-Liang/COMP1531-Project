@@ -1,7 +1,8 @@
 """ Helper functions """
 import re
-from backend.database import get_data
 from PIL import Image
+from backend.database import get_data
+from backend.helpers.exception import ValueError
 
 def check_email(email):
     """ Check if an email is valid """

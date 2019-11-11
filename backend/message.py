@@ -29,7 +29,6 @@ def message_send(token, channel_id, message):
 
     if message_channel is None:
         raise ValueError('Channel ID is not a valid channel')
-
     for member in message_channel['members']:
         if member['u_id'] == u_id:
             message_channel['messages'].append({'message_id': message_id, 'u_id': u_id, 'message': message, 'time_created': time(), 'reacts': [], 'is_pinned': False})
