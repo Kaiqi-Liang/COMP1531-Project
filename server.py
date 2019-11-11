@@ -3,7 +3,7 @@ import os
 import sys
 import random
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from flask_mail import Mail, Message
 
@@ -17,7 +17,7 @@ from backend import search
 from backend.database import get_data, clear, save, load
 from backend.helpers.exception import defaultHandler
 
-APP = Flask(__name__)
+APP = Flask(__name__, static_url_path='/static/')
 CORS(APP)
 APP.config.update(
     MAIL_SERVER='smtp.gmail.com',
@@ -38,6 +38,12 @@ def send_mail(email, reset_code):
     mail.send(msg)
 
 
+@APP.route('/static/<path:path>')
+def send_img(path):
+    return send_from_directory('', path)
+
+
+
 # AUTH
 
 @APP.route('/auth/login', methods=['POST'])
@@ -55,7 +61,6 @@ def logout():
 @APP.route('/auth/register', methods=['POST'])
 def register():
     """ Given a user's first and last name, email address, and password, create a new account for them and return a new token for authentication in their session. A handle is generated that is the concatentation of a lowercase-only first name and last name. If the handle is already taken, a number is added to the end of the handle to make it unique. """
-    print(request.host)
     return dumps(auth.auth_register(request.form.get('email'), request.form.get('password'), request.form.get('name_first'), request.form.get('name_last')))
 
 
@@ -201,7 +206,6 @@ def users():
 @APP.route('/user/profile', methods=['GET'])
 def profile():
     """ For a valid user, returns information about their email, first name, last name, and handle """
-    print(request.args.get('u_id'))
     return dumps(user.user_profile(request.args.get('token'), request.args.get('u_id')))
 
 
@@ -226,7 +230,7 @@ def sethandle():
 @APP.route('/user/profiles/uploadphoto', methods=['POST'])
 def uploadphoto():
     """ Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left. """
-    return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end'), request.url))
+    return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end'), request.host))
 
 
 # STANDUP

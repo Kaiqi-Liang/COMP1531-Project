@@ -43,7 +43,6 @@ def channel_details(token, channel_id):
             if u_id == member['u_id']:
                 return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
         raise AccessError("channel_details authorisation error")
-
     return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
@@ -232,7 +231,7 @@ def channels_create(token, name, is_public):
     u_id = get_user_from_token(token)
     user = get_user(u_id)
     if channel and user:
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
-        channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+        channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
 
     return {'channel_id': channel_id}

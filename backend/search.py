@@ -10,5 +10,5 @@ def search(token, query_str):
             # search channel messages that match query string
             for message in channel['messages']:
                 if query_str in message['message']:
-                    messages.append(message['message'])
+                    messages.append(message)
     return {'messages': messages}
