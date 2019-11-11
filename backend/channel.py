@@ -184,7 +184,7 @@ def channel_removeowner(token, channel_id, u_id):
 
     if len(channel['owners']) != 1 and int(u_id) not in get_data()['slackr']['admin']:
         user = get_user(u_id)
-        channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
 
 
