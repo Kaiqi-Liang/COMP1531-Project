@@ -33,7 +33,7 @@ def test_invite():
     channel_id = channel_create(owner_token)
     user_dict = register_user()
     channel_invite(owner_token, channel_id, user_dict['u_id'])
-    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}]}
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
     
 # not a valid channel
 def test_invite1():
@@ -78,7 +78,7 @@ def test_details():
     channel_id = channel_create(owner_token)
     user_dict = register_user()
     # check if the owner is in the channel after the channel is first created
-    assert channel_details(owner_token, channel_id) == {'name':'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}]}
+    assert channel_details(owner_token, channel_id) == {'name':'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}], 'all_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}]}
 # channel ID is not a valid channel
 def test_details1():
     clear()
@@ -155,7 +155,7 @@ def test_leave():
     user_dict = register_user()
     channel_invite(owner_token, channel_id, user_dict['u_id'])
     channel_leave(user_dict['token'], channel_id)
-    assert channel_details(owner_token, channel_id) == {'name':'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}]}
+    assert channel_details(owner_token, channel_id) == {'name':'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}], 'all_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}]}
 # channel_id is not a valid channel
 def test_leave1():
     clear()
@@ -190,7 +190,7 @@ def test_join():
     channel_id = channel_create(owner_token)
     user_dict = register_user()
     channel_join(user_dict['token'], channel_id)
-    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members':[{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}]}
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}], 'all_members':[{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
 # channel id is not a valid channel
 def test_join1():
     clear()
@@ -224,7 +224,7 @@ def test_addowner():
     # make user the owner of the channel
     channel_invite(owner_token, channel_id, user_dict['u_id'])
     channel_addowner(owner_token, channel_id, user_dict['u_id'])  
-    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}], 'all_members':[{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}]}
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}], 'all_members':[{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
 # channel_id is not a valid channel
 def test_addowner1():
     clear()
@@ -272,7 +272,7 @@ def test_removeowner():
     channel_invite(owner_token, channel_id, user_dict['u_id'])
     channel_addowner(owner_token, channel_id, user_dict['u_id'])
     channel_removeowner(owner_token, channel_id, user_dict['u_id'])
-    assert channel_details(user_dict['token'], channel_id) == { 'name':'name','owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang'}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang'}] }
+    assert channel_details(user_dict['token'], channel_id) == { 'name':'name','owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}] }
 #channel id is not valid
 def test_removeowner1():
     clear()

@@ -94,7 +94,7 @@ def channel_leave(token, channel_id):
 
     u_id = get_user_from_token(token)
     if not check_user_in_channel(u_id, channel):
-        raise AccessorError("Authorised user is not a member of channel with channel_id")
+        raise AccessError("Authorised user is not a member of channel with channel_id")
 
     members = channel['members']
     owners = channel['owners']
