@@ -15,7 +15,7 @@ def test_user_profile1():
 	ret = auth_register("someemail@gmail.com","securepassword","John","Doe")
 	user_profile(ret['token'],ret['u_id'])
 
-	assert user_profile(ret['token'], ret['u_id'])=={'email':"someemail@gmail.com",'name_first':"John",'name_last':"Doe",'handle_str':"johndoe"}
+	assert user_profile(ret['token'], ret['u_id'])=={'email':"someemail@gmail.com",'name_first':"John",'name_last':"Doe",'handle_str':"johndoe", 'profile_img_url': None, 'u_id' : ret['u_id']}
 
 def test_user_profile2():
 	clear()
