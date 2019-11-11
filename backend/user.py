@@ -99,7 +99,7 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     except:
         raise ValueError("img_url is returns an HTTP status other than 200.")
 
-   request.urlretrieve(img_url, f'{u_id}.jpg')
+    request.urlretrieve(img_url, f'{u_id}.jpg')
     crop_image(f'{u_id}.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
     user['profile_img_url'] = img_url
     return {}
