@@ -118,7 +118,14 @@ venv.bak/
 # mypy
 .mypy_cache/
 .dmypy.json
-dmypy.json
+*.json*
 
 # Pyre type checker
 .pyre/
+
+# Other
+*.py~
+.*swp
+
+# Mac
+.DS_Store
