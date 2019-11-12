@@ -12,7 +12,7 @@ def message_sendlater(token, channel_id, message, time_sent):
     timeout = time_sent - time()
     if timeout < 0:
         raise ValueError("Time sent is a time in the past")
-    send = Timer(timeout, message_send(token, channel_id, message))
+    send = Timer(timeout, message_send, (token, channel_id, message))
     send.start()
 
 
