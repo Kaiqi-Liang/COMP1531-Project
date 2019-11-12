@@ -99,8 +99,7 @@ def get_channel(channel_id):
 
 def get_message(message_id):
     """ Return message dict """
-    channel_list = get_data()['channel']
-    for channel in channel_list:
+    for channel in get_data()['channel']:
         for message in channel['messages']:
             if int(message_id) == message['message_id']:
                 return message
@@ -108,16 +107,14 @@ def get_message(message_id):
 
 def get_permission(user_id):
     """ Get user permission_id """
-    users = get_data()['user']
-    for user in users:
+    for user in get_data()['user']:
         if int(user_id) == user['u_id']:
             return user['permission_id']
     return None
 
 def get_message_channel(message_id):
     """ Return the channel dict that the message is in """
-    channels = get_data()['channel']
-    for channel in channels:
+    for channel in get_data()['channel']:
         for message in channel['messages']:
             if int(message_id) == message['message_id']:
                 return channel

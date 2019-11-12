@@ -45,7 +45,7 @@ def message_remove(token, message_id):
     channel = get_message_channel(message_id)
 
     # message with message_id does not exist
-    if message is None:
+    if message is None or channel is None:
         raise ValueError("Message no longer exists")
 
     if message['u_id'] != u_id:
@@ -153,7 +153,7 @@ def message_pin(token, message_id):
     channel = get_message_channel(message_id)
 
     # value error: message_id is not valid
-    if msg is None:
+    if msg is None or channel is None:
         raise ValueError("message_id is not valid")
     # value error: message is already pinned
     if msg['is_pinned']:
@@ -178,7 +178,7 @@ def message_unpin(token, message_id):
     channel = get_message_channel(message_id)
 
     # value error: message_id is not valid
-    if msg is None:
+    if msg is None or channel is None:
         raise ValueError("message_id is not valid")
     # value error: message is already unpinned
     if not msg['is_pinned']:
