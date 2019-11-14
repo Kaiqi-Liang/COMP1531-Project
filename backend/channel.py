@@ -48,7 +48,7 @@ def channel_details(token, channel_id):
 
 def channel_messages(token, channel_id, start):
     start = int(start)
-    pg_threshold = 3
+    pg_threshold = 50
     channel_id = int(channel_id)
     u_id = get_user_from_token(token)
     channel = get_channel(channel_id)
