@@ -9,16 +9,16 @@ from backend.helpers.exception import ValueError
 
 def users_all(token):
     users = []
-    if get_user(get_user_from_token(token)) is not None:
-        for user in get_data()['user']:
-            users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': 'profile_img_url'})
-        return {'users': users}
-    return {}
+    if get_user(get_user_from_token(token)) is None:
+        return {}
+
+    for user in get_data()['user']:
+        users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']})
+    return {'users': users}
 
 
 def user_profile(token, u_id):
     u_id = int(u_id)
-    users = get_data()['user']
     if get_user(get_user_from_token(token)) is not None:
         user = get_user(u_id)
         if user is None:
@@ -87,16 +87,34 @@ def user_profile_sethandle(token, handle_str):
     return {}
 
 
-def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    request.urlretrieve(img_url, 'photo.jpg')
-    crop_image('photo.jpg', int(x_start), int(y_start), int(x_end), int(y_end))
+def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, base_url):
+    '''
+    # assumption: jpeg is not jpg
+    if img_url[-3:] != 'jpg':
+        raise ValueError("Image uploaded is not a JPG")
+    '''
 
-    if response.status_code != 200:
-        raise ValueError("HTTP response unsuccessful!")
-    elif x_start == x_end or y_start == y_end:
-        raise ValueError("Invalid crop size!")
-    elif x_start >= width or x_start < 0 or x_end >= width or x_end < 0:
-        raise ValueError("Invalid width crop!")
-    elif y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
-        raise ValueError("Invalid height crop!")
-    return
+    u_id = get_user_from_token(token)
+    user = get_user(u_id)
+    if user is None:
+        return {}
+
+    try:
+        request.urlretrieve(img_url, f'static/{u_id}.jpg')
+    except:
+        raise ValueError("img_url is returns an HTTP status other than 200.")
+
+    crop_image(f'static/{u_id}.jpg', int(x_start), int(y_start), int(x_end), int(y_end)).save(f'static/cropped_{u_id}.jpg')
+    base_url = 'http://' + base_url
+    img_url = base_url + f'/static/cropped_{u_id}.jpg'
+    user['profile_img_url'] = img_url
+
+    # update the profile photo in every channel that the user is in
+    for channel in get_data()['channel']:
+        for member in channel['members']:
+            if u_id == member['u_id']:
+                member['profile_img_url'] = user['profile_img_url']
+        for owner in channel['owners']:
+            if u_id == owner['u_id']:
+                owner['profile_img_url'] = user['profile_img_url']
+    return {}

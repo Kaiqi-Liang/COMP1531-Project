@@ -3,7 +3,7 @@ import os
 import sys
 import random
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from flask_mail import Mail, Message
 
@@ -17,7 +17,7 @@ from backend import search
 from backend.database import get_data, clear, save, load
 from backend.helpers.exception import defaultHandler
 
-APP = Flask(__name__)
+APP = Flask(__name__, static_url_path='/static/')
 CORS(APP)
 APP.config.update(
     MAIL_SERVER='smtp.gmail.com',
@@ -36,6 +36,13 @@ def send_mail(email, reset_code):
     msg = Message("Authentication", sender="kaiqi.liang9989@gmail.com", recipients=[email])
     msg.body = reset_code
     mail.send(msg)
+
+
+@APP.route('/static/<path:path>')
+def send_img(path):
+    """ Send an image """
+    return send_from_directory('', path)
+
 
 
 # AUTH
@@ -62,10 +69,10 @@ def register():
 def passwordreset_request():
     """ Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email. """
     email = request.form.get('email')
-    for users in get_data()['user']:
-        if users['email'] == email:
+    for usr in get_data()['user']:
+        if usr['email'] == email:
             reset_code = str(random.randint(100000, 999999))
-            users['reset'] = reset_code
+            usr['reset'] = reset_code
             send_mail(email, reset_code)
     return dumps({})
 
@@ -221,10 +228,10 @@ def sethandle():
     return dumps(user.user_profile_sethandle(request.form.get('token'), request.form.get('handle_str')))
 
 
-@APP.route('user/profiles/uploadphoto', methods=['POST'])
+@APP.route('/user/profiles/uploadphoto', methods=['POST'])
 def uploadphoto():
     """ Given a URL of an image on the internet, crops the image within bounds (x_start, y_start) and (x_end, y_end). Position (0,0) is the top left. """
-    return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end')))
+    return dumps(user.user_profiles_uploadphoto(request.form.get('token'), request.form.get('img_url'), request.form.get('x_start'), request.form.get('y_start'), request.form.get('x_end'), request.form.get('y_end'), request.host))
 
 
 # STANDUP
@@ -253,7 +260,7 @@ def send():
 @APP.route('/search', methods=['GET'])
 def search_messages():
     """ Given a query string, return a collection of messages in all of the channels that the user has joined that match the query """
-    return dumps(search.search(request.args.get('token'), request.args.get('query_string')))
+    return dumps(search.search(request.args.get('token'), request.args.get('query_str')))
 
 
 @APP.route('/admin/userpermission/change', methods=['POST'])

@@ -5,11 +5,6 @@ from backend.helpers.helpers import check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
 
 def channel_invite(token, channel_id, u_id):
-    try:
-        u_id = int(u_id)
-    except:
-        raise ValueError("u_id does not refer to a valid user")
-
     user = get_user(u_id)
     if user is None:
         raise ValueError("u_id does not refer to a valid user")
@@ -25,7 +20,7 @@ def channel_invite(token, channel_id, u_id):
         raise AccessError("the authorised user is not already a member of the channel")
 
     if get_permission(u_id) == 1 or get_permission(u_id) == 2:
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
 
     channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
@@ -36,19 +31,17 @@ def channel_details(token, channel_id):
     if channel is None:
         raise ValueError("Channel ID is not a valid channel")
 
+    u_id = get_user_from_token(token)
     if not channel['is_public']:
-        u_id = get_user_from_token(token)
-        members = channel['members']
-        for member in members:
-            if u_id == member['u_id']:
-                return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-        raise AccessError("channel_details authorisation error")
-
+        if check_user_in_channel(u_id, channel) or get_permission(u_id) in [1, 2]:
+            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+        raise AccessError("Authorised user is not a member of channel with channel_id")
     return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
 def channel_messages(token, channel_id, start):
     start = int(start)
+    pg_threshold = 50
     channel_id = int(channel_id)
     u_id = get_user_from_token(token)
     channel = get_channel(channel_id)
@@ -58,33 +51,19 @@ def channel_messages(token, channel_id, start):
     if start > len(channel['messages']):
         raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
-    if not channel['is_public']:
-        exception = True
-        members = channel['members']
-        for user in members:
-            if u_id == user['u_id']:
-                exception = False
-                break
-
-        if exception:
-            raise AccessError("Authorised user is not a member of channel with channel_id")
+    # if channel is private and the user is neither in the channel nor an owner or admin of slackr
+    if not channel['is_public'] and not check_user_in_channel(u_id, channel) and get_permission(u_id) == 3:
+        raise AccessError("Authorised user is not a member of channel with channel_id")
 
     messages = []
-    for message in reversed(channel['messages']):
-        message_id = len(channel['messages']) - message['message_id'] - 1
-        message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids'];
-        if message_id < start:
-            continue
+    for message in channel['messages']:
+        message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids']
 
-        messages.append(message)
+    not_displayed = list(reversed(channel['messages']))[start:]
+    messages.extend(not_displayed[:min(pg_threshold, len(not_displayed))])
 
-        if len(messages) == 50:
-            break
+    end = -1 if len(messages) == len(not_displayed) else start + pg_threshold
 
-    if len(messages) < 50 or messages[-1]['message_id'] == 0:
-        end = -1
-    else:
-        end = len(channel['messages']) - messages[-1]['message_id']
     return {'messages': messages, 'start': start, 'end': end}
 
 
@@ -94,6 +73,9 @@ def channel_leave(token, channel_id):
         raise ValueError("Channel ID is not a valid channel")
 
     u_id = get_user_from_token(token)
+    if not check_user_in_channel(u_id, channel):
+        raise AccessError("Authorised user is not a member of channel with channel_id")
+
     members = channel['members']
     owners = channel['owners']
     if is_owner(u_id, channel):
@@ -168,11 +150,12 @@ def channel_addowner(token, channel_id, u_id):
         raise AccessError("User is not an owner of the slackr or of this channel")
 
     user = get_user(u_id)
-    channel['owners'].append({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+    channel['owners'].append({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
 
 
 def channel_removeowner(token, channel_id, u_id):
+    u_id = int(u_id)
     user_id = get_user_from_token(token)
     channel = get_channel(channel_id)
     if channel is None:
@@ -182,9 +165,10 @@ def channel_removeowner(token, channel_id, u_id):
     if not is_owner(user_id, channel) and user_id not in get_data()['slackr']['owner']:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    if len(channel['owners']) != 1 and int(u_id) not in get_data()['slackr']['admin']:
+    permissions = get_data()['slackr']
+    if len(channel['owners']) != 1 and u_id not in permissions['admin'] and u_id not in permissions['owner']:
         user = get_user(u_id)
-        channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
 
 
@@ -202,8 +186,9 @@ def channels_list(token):
 def channels_listall(token):
     channels = []
     for channel in get_data()['channel']:
-        if channel['is_public']:
-            channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
+        if not channel['is_public'] and get_permission(get_user_from_token(token)) == 3:
+            continue
+        channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
 
 
@@ -229,7 +214,7 @@ def channels_create(token, name, is_public):
     u_id = get_user_from_token(token)
     user = get_user(u_id)
     if channel and user:
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
-        channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last']})
+        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+        channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
 
     return {'channel_id': channel_id}

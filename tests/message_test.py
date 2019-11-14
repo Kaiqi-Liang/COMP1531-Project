@@ -7,8 +7,7 @@ from backend.message import *
 from backend.auth import auth_register
 from backend.channel import channel_join, channels_create, channel_invite
 from backend.database import clear
-from backend.helpers import *
-from backend.admin import *
+from backend.helpers.exception import ValueError, AccessError
 
 # FUNCTION SETUP
 
@@ -55,15 +54,13 @@ def invalid_reactid():
 
 #TESTING FOR SEND LATER 
 #time is invalid
-def test_message_sendlater1():
+def test_message_sendlater():
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
-    time_sent = int(0) / 1000
-    timeout = int(time_sent) - int(time())
-    with pytest.raises(ValueError, match=r"*"):
-        message_sendlater(owner_token, channel_id, "Test send later", timeout)
+    with pytest.raises(ValueError):
+        message_sendlater(owner_token, channel_id, "Test send later",-1)
 
 # TEST FOR MESSAGE_SEND
 # normal functioning

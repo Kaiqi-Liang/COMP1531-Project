@@ -1,7 +1,8 @@
 """ Helper functions """
 import re
-from backend.database import get_data
 from PIL import Image
+from backend.database import get_data
+from backend.helpers.exception import ValueError
 
 def check_email(email):
     """ Check if an email is valid """
@@ -36,12 +37,15 @@ def get_message_channel(message_id):
     return None
 
 
-def get_image(img_url, photo):
-    """ Download an image from a given URL to the file system """
-
-
 def crop_image(photo, x_start, y_start, x_end, y_end):
     """ crop a given image in the file system with given dimensions """
     image = Image.open(photo)
-    cropped = image.crop((x_start, y_start, x_end, y_end))
-    cropped.save('cropped.jpg')
+    width, height = image.size
+    if x_start == x_end or y_start == y_end:
+        raise ValueError("Invalid crop size!")
+    if x_start >= width or x_start < 0 or x_end >= width or x_end < 0:
+        raise ValueError("Invalid width crop!")
+    if y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
+        raise ValueError("Invalid height crop!")
+
+    return image.crop((x_start, y_start, x_end, y_end))
