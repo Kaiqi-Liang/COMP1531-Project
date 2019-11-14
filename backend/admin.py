@@ -14,7 +14,6 @@ def admin_userpermission_change(token, u_id, permission_id):
         raise ValueError("permission_id not valid")
     if user2 is None:
         raise ValueError("u_id does not refer to a valid user")
-    print(permission_id)
 
     # if user2's permission is the same as permission_id
     if user2['permission_id'] == permission_id:
