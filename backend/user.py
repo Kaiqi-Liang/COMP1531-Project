@@ -100,11 +100,10 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, ba
         return {}
 
     try:
-        request.urlopen(img_url)
+        request.urlretrieve(img_url, f'static/{u_id}.jpg')
     except:
         raise ValueError("img_url is returns an HTTP status other than 200.")
 
-    request.urlretrieve(img_url, f'static/{u_id}.jpg')
     crop_image(f'static/{u_id}.jpg', int(x_start), int(y_start), int(x_end), int(y_end)).save(f'static/cropped_{u_id}.jpg')
     base_url = 'http://' + base_url
     img_url = base_url + f'/static/cropped_{u_id}.jpg'
