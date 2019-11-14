@@ -5,11 +5,6 @@ from backend.helpers.helpers import check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
 
 def channel_invite(token, channel_id, u_id):
-    try:
-        u_id = int(u_id)
-    except:
-        raise ValueError("u_id does not refer to a valid user")
-
     user = get_user(u_id)
     if user is None:
         raise ValueError("u_id does not refer to a valid user")
