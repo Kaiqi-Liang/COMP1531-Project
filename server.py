@@ -275,4 +275,4 @@ if __name__ == '__main__':
     else:
         clear()
     save()
-    APP.run(host='0.0.0.0', port=(sys.argv[1] if len(sys.argv) > 1 else 5000))
+    APP.run(debug=True,host='0.0.0.0', port=(sys.argv[1] if len(sys.argv) > 1 else 5000))
