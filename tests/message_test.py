@@ -54,41 +54,13 @@ def invalid_reactid():
 
 #TESTING FOR SEND LATER 
 #time is invalid
-def test_message_sendlater1():
+def test_message_sendlater():
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
     channel_id = create_channel(owner_token)['channel_id']
     with pytest.raises(ValueError):
         message_sendlater(owner_token, channel_id, "Test send later",-1)
-
-# channel id is not valid
-def test_message_sendlater2():
-    clear()
-    owner_dict = register_owner()
-    owner_token = owner_dict['token']  
-    with pytest.raises(ValueError):
-        message_sendlater(owner_token, -1, "Test send later", 1608858060)
-        
-# message is greater than 1000 characters
-def test_message_sendlater3():
-    clear()
-    owner_dict = register_owner()
-    owner_token = owner_dict['token']
-    channel_id = create_channel(owner_token)['channel_id']
-    message = message_invalid()
-    with pytest.raises(ValueError):
-        message_sendlater(owner_token, channel_id, message, 1608858060) 
-         
-# user trying to send message is not part of the channel  
-def test_message_sendlater4():
-    clear()
-    owner_dict = register_owner()
-    owner_token = owner_dict['token']
-    channel_id = create_channel(owner_token)['channel_id']
-    user_dict = register_user()
-    with pytest.raises(AccessError):
-        message_sendlater(user_dict['token'], channel_id, "Testing", 1608858060)  
 
 # TEST FOR MESSAGE_SEND
 # normal functioning
