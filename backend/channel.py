@@ -73,8 +73,6 @@ def channel_messages(token, channel_id, start):
     for message in channel['messages']:
         message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids'];
 
-    #    map(channel['messages'], lambda msg: msg['reacts'][0]['is_this_user_reacted'] = ]
-
     not_displayed = list(reversed(channel['messages']))[start:]
     messages.extend(not_displayed[:min(pg_threshold, len(not_displayed))])
 
@@ -171,6 +169,7 @@ def channel_addowner(token, channel_id, u_id):
 
 
 def channel_removeowner(token, channel_id, u_id):
+    u_id = int(u_id)
     user_id = get_user_from_token(token)
     channel = get_channel(channel_id)
     if channel is None:
@@ -180,7 +179,8 @@ def channel_removeowner(token, channel_id, u_id):
     if not is_owner(user_id, channel) and user_id not in get_data()['slackr']['owner']:
         raise AccessError("User is not an owner of the slackr or of this channel")
 
-    if len(channel['owners']) != 1 and int(u_id) not in get_data()['slackr']['admin']:
+    permissions = get_data()['slackr']
+    if len(channel['owners']) != 1 and u_id not in permissions['admin'] and u_id not in permissions['owner']:
         user = get_user(u_id)
         channel['owners'].remove({'u_id': user['u_id'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
     return {}
