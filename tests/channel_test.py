@@ -336,7 +336,7 @@ def test_listall():
     # owner creates a private channel
     channel_id_priv = channel_create_private(owner_token)
     # owner can see this private channel
-    assert channels_listall(owner_token) == {'channels':[{'channel_id': channel_id, 'name': 'name'}]}
+    assert channels_listall(owner_token) == {'channels':[{'channel_id': channel_id, 'name': 'name'}, {'channel_id': channel_id_priv, 'name': 'name2'}]}
     # user can not see the private channel
     assert channels_listall(user_dict['token']) == {'channels':[{'channel_id': channel_id, 'name': 'name'}]}
        
