@@ -105,10 +105,10 @@ def get_message(message_id):
                 return message
     return None
 
-def get_permission(user_id):
+def get_permission(u_id):
     """ Get user permission_id """
     for user in get_data()['user']:
-        if int(user_id) == user['u_id']:
+        if int(u_id) == user['u_id']:
             return user['permission_id']
     return None
 

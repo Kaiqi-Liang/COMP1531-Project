@@ -31,13 +31,11 @@ def channel_details(token, channel_id):
     if channel is None:
         raise ValueError("Channel ID is not a valid channel")
 
+    u_id = get_user_from_token(token)
     if not channel['is_public']:
-        u_id = get_user_from_token(token)
-        members = channel['members']
-        for member in members:
-            if u_id == member['u_id']:
-                return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
-        raise AccessError("channel_details authorisation error")
+        if check_user_in_channel(u_id, channel) or get_permission(u_id) in [1, 2]:
+            return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
+        raise AccessError("Authorised user is not a member of channel with channel_id")
     return {'name': channel['name'], 'owner_members': channel['owners'], 'all_members': channel['members']}
 
 
@@ -53,20 +51,13 @@ def channel_messages(token, channel_id, start):
     if start > len(channel['messages']):
         raise ValueError("start is greater than or equal to the total number of messages in the channel")
 
-    if not channel['is_public']:
-        exception = True
-        members = channel['members']
-        for user in members:
-            if u_id == user['u_id']:
-                exception = False
-                break
-
-        if exception:
-            raise AccessError("Authorised user is not a member of channel with channel_id")
+    # if channel is private and the user is neither in the channel nor an owner or admin of slackr
+    if not channel['is_public'] and not check_user_in_channel(u_id, channel) and get_permission(u_id) == 3:
+        raise AccessError("Authorised user is not a member of channel with channel_id")
 
     messages = []
     for message in channel['messages']:
-        message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids'];
+        message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids']
 
     not_displayed = list(reversed(channel['messages']))[start:]
     messages.extend(not_displayed[:min(pg_threshold, len(not_displayed))])
@@ -195,8 +186,9 @@ def channels_list(token):
 def channels_listall(token):
     channels = []
     for channel in get_data()['channel']:
-        if channel['is_public']:
-            channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
+        if not channel['is_public'] and get_permission(get_user_from_token(token)) == 3:
+            continue
+        channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
 
 

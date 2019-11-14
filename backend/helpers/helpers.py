@@ -43,9 +43,9 @@ def crop_image(photo, x_start, y_start, x_end, y_end):
     width, height = image.size
     if x_start == x_end or y_start == y_end:
         raise ValueError("Invalid crop size!")
-    elif x_start >= width or x_start < 0 or x_end >= width or x_end < 0:
+    if x_start >= width or x_start < 0 or x_end >= width or x_end < 0:
         raise ValueError("Invalid width crop!")
-    elif y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
+    if y_start >= height or y_start < 0 or y_end >= height or y_end < 0:
         raise ValueError("Invalid height crop!")
 
     return image.crop((x_start, y_start, x_end, y_end))

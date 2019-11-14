@@ -105,7 +105,7 @@ def message_react(token, message_id, react_id):
      # value error: message_id is not a valid message within a channel that the authorised user has joined
     if not check_user_in_channel(u_id, channel):
         raise ValueError("the authorised user is not in the channel")
- 
+
     # add the react to the message
     for react in msg['reacts']:
         if react['react_id'] == react_id:
