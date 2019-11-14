@@ -5,6 +5,7 @@ from backend.channel import *
 from backend.auth import auth_register
 from backend.database import clear
 from backend.helpers.exception import AccessError, ValueError
+
 @pytest.fixture
 def register_owner():
     # return { u_id, token }
@@ -15,10 +16,12 @@ def register_owner():
 def register_user():
     # return { u_id, token }
     return auth_register('kaiqi.liang9989@gmail.com', '123456', 'kaiqi', 'liang')
+
 @pytest.fixture
 def channel_create(owner_token):
     # return channel_id
     return channels_create(owner_token, 'name', True)['channel_id']
+
 @pytest.fixture
 def channel_create_private(owner_token):
     return channels_create(owner_token, 'name2', False)['channel_id']
