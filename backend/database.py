@@ -137,8 +137,8 @@ def save():
     timer = Timer(1, save)
     timer.start()
     global DATA
-    with open('export.json', 'w') as file:
-        json.dump(DATA, file)
+    with open('export.json', 'w') as export:
+        json.dump(DATA, export, indent=4, sort_keys=True)
 
 def load():
     """ Load the json file to the database """

@@ -48,6 +48,7 @@ def channel_details(token, channel_id):
 
 def channel_messages(token, channel_id, start):
     start = int(start)
+    pg_threshold = 3
     channel_id = int(channel_id)
     u_id = get_user_from_token(token)
     channel = get_channel(channel_id)
@@ -69,21 +70,16 @@ def channel_messages(token, channel_id, start):
             raise AccessError("Authorised user is not a member of channel with channel_id")
 
     messages = []
-    for message in reversed(channel['messages']):
-        message_id = len(channel['messages']) - message['message_id'] - 1
+    for message in channel['messages']:
         message['reacts'][0]['is_this_user_reacted'] = u_id in message['reacts'][0]['u_ids'];
-        if message_id < start:
-            continue
 
-        messages.append(message)
+    #    map(channel['messages'], lambda msg: msg['reacts'][0]['is_this_user_reacted'] = ]
 
-        if len(messages) == 3:
-            break
+    not_displayed = list(reversed(channel['messages']))[start:]
+    messages.extend(not_displayed[:min(pg_threshold, len(not_displayed))])
 
-    if len(messages) < 3 or messages[-1]['message_id'] == 0:
-        end = -1
-    else:
-        end = len(channel['messages']) - messages[-1]['message_id']
+    end = -1 if len(messages) == len(not_displayed) else start + pg_threshold
+
     return {'messages': messages, 'start': start, 'end': end}
 
 
