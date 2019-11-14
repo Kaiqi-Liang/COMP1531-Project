@@ -40,6 +40,7 @@ def send_mail(email, reset_code):
 
 @APP.route('/static/<path:path>')
 def send_img(path):
+    """ Send an image """
     return send_from_directory('', path)
 
 
@@ -68,10 +69,10 @@ def register():
 def passwordreset_request():
     """ Given an email address, if the user is a registered user, send's them a an email containing a specific secret code, that when entered in auth_passwordreset_reset, shows that the user trying to reset the password is the one who got sent this email. """
     email = request.form.get('email')
-    for users in get_data()['user']:
-        if users['email'] == email:
+    for usr in get_data()['user']:
+        if usr['email'] == email:
             reset_code = str(random.randint(100000, 999999))
-            users['reset'] = reset_code
+            usr['reset'] = reset_code
             send_mail(email, reset_code)
     return dumps({})
 

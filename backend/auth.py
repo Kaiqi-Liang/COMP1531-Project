@@ -96,7 +96,7 @@ def auth_register(email, password, name_first, name_last):
         'tokens': [token],
         'password': hashlib.sha256(password.encode()).hexdigest(),
         'reset': None,
-        'profile_img_url': None
+        'profile_img_url': 'https://i.pinimg.com/originals/90/fe/48/90fe48f1f1372f4caeea712c3c486399.jpg'
     })
 
     return {

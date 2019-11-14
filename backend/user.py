@@ -13,13 +13,12 @@ def users_all(token):
         return {}
 
     for user in get_data()['user']:
-            users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']})
+        users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']})
     return {'users': users}
 
 
 def user_profile(token, u_id):
     u_id = int(u_id)
-    users = get_data()['user']
     if get_user(get_user_from_token(token)) is not None:
         user = get_user(u_id)
         if user is None:
