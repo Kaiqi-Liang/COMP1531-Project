@@ -9,8 +9,7 @@ from backend.helpers.exception import AccessError, ValueError
 @pytest.fixture
 def register_owner():
     # return { u_id, token }
-    owner_dict = auth_register('z5210932@unsw.edu.au', '123456', 'Kaiqi', 'Liang')
-    return owner_dict
+    return auth_register('z5210932@unsw.edu.au', '123456', 'Kaiqi', 'Liang')
     
 @pytest.fixture
 def register_user():
