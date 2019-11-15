@@ -10,6 +10,13 @@ from backend.auth import auth_register
 from backend.database import clear
 from backend.helpers.exception import ValueError, AccessError
 
+def test_user_all():
+    clear()
+    user = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+    result = users_all(user['token'])
+    assert result['users'] == [{'u_id': 1, 'email': 'someemail1@gmail.com', 'name_first': 'John', 'name_last': 'Doe', 'handle_str': 'johndoe', 'profile_img_url': None}]
+    
+
 def test_user_profile1():
 	clear()
 	ret = auth_register("someemail@gmail.com","securepassword","John","Doe")

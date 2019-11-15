@@ -36,8 +36,8 @@ def test_success():
     message_id = message_send(token, channel_id, 'hi')
 
     result = search(token, 'hi')['messages'][0]
-    assert result['message_id'] == message_id['message_id']
-    assert result['u_id'] == user['u_id']
+    assert result['message_id'] == 0
+    assert result['u_id'] == 1
     assert result['message'] == 'hi'
     assert result['reacts'] == [{'react_id': 1, 'u_ids': [], 'is_this_user_reacted': False}]
     assert result['is_pinned'] == False
@@ -50,8 +50,8 @@ def test_substring():
     message_id = message_send(token, channel_id, 'hi')
 
     result = search(token, 'i')['messages'][0]
-    assert result['message_id'] == message_id['message_id']
-    assert result['u_id'] == user['u_id']
+    assert result['message_id'] == 0
+    assert result['u_id'] == 1
     assert result['message'] == 'hi'
     assert result['reacts'] == [{'react_id': 1, 'u_ids': [], 'is_this_user_reacted': False}]
     assert result['is_pinned'] == False
@@ -78,8 +78,8 @@ def test_not_in_channel():
     channel_leave(token, channel_id1)
     result = search(token, 'hi')['messages'][0]
 
-    assert result['message_id'] == message_id2['message_id']
-    assert result['u_id'] == user['u_id']
+    assert result['message_id'] == 1
+    assert result['u_id'] == 1
     assert result['message'] == 'hi'
     assert result['reacts'] == [{'react_id': 1, 'u_ids': [], 'is_this_user_reacted': False}]
     assert result['is_pinned'] == False
