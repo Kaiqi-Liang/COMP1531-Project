@@ -5,6 +5,7 @@ from backend.channel import *
 from backend.auth import auth_register
 from backend.database import clear
 from backend.helpers.exception import AccessError, ValueError
+from backend.admin import admin_userpermission_change
 
 @pytest.fixture
 def register_owner():
@@ -19,11 +20,11 @@ def register_user():
 @pytest.fixture
 def channel_create(owner_token):
     # return channel_id
-    return channels_create(owner_token, 'name', True)['channel_id']
+    return channels_create(owner_token, 'name', 'true')['channel_id']
 
 @pytest.fixture
 def channel_create_private(owner_token):
-    return channels_create(owner_token, 'name2', False)['channel_id']
+    return channels_create(owner_token, 'name2', 'false')['channel_id']
 # working
 # TESTING FOR CHANNEL_INVITE
 # normal functioning
@@ -70,6 +71,29 @@ def test_invite3():
     user_dict = register_user()
     with pytest.raises(AccessError):
         channel_invite(user_dict['token'], channel_id, user_dict['u_id'])
+# user is already in the channel
+def test_invite4():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)   
+    user_dict = register_user()
+    channel_invite(owner_token, channel_id, user_dict['u_id'])
+    assert channel_invite(owner_token, channel_id, user_dict['u_id']) == {}
+
+# add a user to the owners list when inviting
+def test_invite5():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)   
+    user_dict = register_user()
+    admin_userpermission_change(owner_token, user_dict['u_id'], 1)
+    channel_invite(owner_token, channel_id, user_dict['u_id'])
+
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
 # TESTING FOR CHANNEL_DETAILS
 # normal functioning
 def test_details():
@@ -103,6 +127,18 @@ def test_details2():
     with pytest.raises(AccessError):
         # user is not a member of channel
         channel_details(user_dict['token'], channel_id)
+
+# user is a member of the channel and the channel is private
+def test_details3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create_private(owner_token)
+    user_dict = register_user()
+    channel_invite(owner_token, channel_id, user_dict['u_id'])
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name2', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
+    
 # TESTING FOR CHANNEL_MESSAGES
 # normal functioning
 def test_message():
@@ -182,6 +218,31 @@ def test_leave2():
     
     with pytest.raises(AccessError):
         channel_leave(user_dict['token'], channel_id)
+
+# if the owner wanting to leave is the only owner then they cannot leave
+def test_leave3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    assert channel_leave(owner_token, channel_id) == {}
+
+# remove an owner (no issues)
+def test_leave4():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token) 
+    user_dict = register_user()
+    
+    admin_userpermission_change(owner_token, user_dict['u_id'], 1)
+    channel_invite(owner_token, channel_id, user_dict['u_id'])
+    channel_leave(owner_token, channel_id)
+    
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}], 'all_members' : [{'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
+        
 # TESTING FOR CHANNEL_JOIN
 # normal functioning
 def test_join():
@@ -212,8 +273,41 @@ def test_join2():
     user_dict = register_user()
     with pytest.raises(AccessError):
         channel_join(user_dict['token'], channel_id)
-  
-      
+        
+# if the user is already in the channel 
+def test_join3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token'] 
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    assert channel_join(owner_token, channel_id) == {}  
+
+
+# if the channel is public, and user is admin/owner, add them as a channel owner
+def test_join4():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token'] 
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    user_dict = register_user()
+    admin_userpermission_change(owner_token, user_dict['u_id'], 1)    
+    channel_join(user_dict['token'], channel_id)
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
+    
+# if the channel is private, and user is admin/owner, add them as a channel owner
+def test_join5():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token'] 
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create_private(owner_token)
+    user_dict = register_user()
+    admin_userpermission_change(owner_token, user_dict['u_id'], 1)    
+    channel_join(user_dict['token'], channel_id)
+    assert channel_details(user_dict['token'], channel_id) == {'name': 'name2', 'owner_members': [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}], 'all_members' : [{'u_id': owner_user, 'name_first': 'Kaiqi', 'name_last': 'Liang', 'profile_img_url': None}, {'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
+
 # TESTING FOR CHANNEL_ADDOWNER
 # normal functioning
 def test_addowner():
