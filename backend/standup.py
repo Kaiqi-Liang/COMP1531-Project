@@ -10,7 +10,8 @@ def standup_active(is_active, time_finish):
     return {'time_finish': None}
 
 
-def standup_start(token, channel_id):
+def standup_start(token, channel_id, length):
+    length = int(length)
     channel_id = int(channel_id)
     # Check if channel exists ...
     channel = get_channel(channel_id)
@@ -23,7 +24,7 @@ def standup_start(token, channel_id):
     if not check_user_in_channel(u_id, channel):
         raise AccessError("User is not a member of channel!")
 
-    datetime_finish = (datetime.now()+timedelta(minutes=15)).timestamp()
+    datetime_finish = (datetime.now()+timedelta(seconds=length)).timestamp()
     return {'time_finish': datetime_finish}
 
 
