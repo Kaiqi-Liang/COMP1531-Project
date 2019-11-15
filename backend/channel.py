@@ -5,6 +5,7 @@ from backend.helpers.helpers import check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
 
 def channel_invite(token, channel_id, u_id):
+    u_id = int(u_id)
     user = get_user(u_id)
     if user is None:
         raise ValueError("u_id does not refer to a valid user")
@@ -19,11 +20,19 @@ def channel_invite(token, channel_id, u_id):
     if not check_user_in_channel(get_user_from_token(token), channel):
         raise AccessError("the authorised user is not already a member of the channel")
 
-    if get_permission(u_id) in [1, 2]:
-        print(u_id)
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+    user_info = {
+        'u_id': u_id,
+        'name_first': user['name_first'],
+        'name_last': user['name_last'],
+        'profile_img_url': user['profile_img_url']
+    }
 
-    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+    p_id = get_permission(u_id)
+    admin_or_owner = [1, 2]
+    if get_permission(u_id) in admin_or_owner:
+        channel['owners'].append(user_info)
+
+    channel['members'].append(user_info)
     return {}
 
 
@@ -107,14 +116,8 @@ def channel_join(token, channel_id):
     if check_user_in_channel(user['u_id'], channel):
         return {}
 
-    owner_info = {
-        'u_id': user['u_id'],
-        'name_first': user['name_first'],
-        'name_last': user['name_last']
-    }
-
-    member_info = {
-        'u_id': user['u_id'],
+    user_info = {
+        'u_id': u_id,
         'name_first': user['name_first'],
         'name_last': user['name_last'],
         'profile_img_url': user['profile_img_url']
@@ -125,8 +128,8 @@ def channel_join(token, channel_id):
     # If channel is public
     if channel['is_public']:
         if p_id in admin_or_owner:
-            channel['owners'].append(owner_info)
-        channel['members'].append(member_info)
+            channel['owners'].append(user_info)
+        channel['members'].append(user_info)
     else:
         # If user is not an admin
         if not p_id in admin_or_owner:
@@ -134,8 +137,8 @@ def channel_join(token, channel_id):
             raise AccessError("channel_id refers to a channel that is private")
 
         # User is an admin/owner and can join channel
-        channel['members'].append(member_info)
-        channel['owners'].append(owner_info)
+        channel['members'].append(user_info)
+        channel['owners'].append(user_info)
 
     return {}
 
@@ -177,10 +180,8 @@ def channels_list(token):
     u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
-        members = channel['members']
-        for member in members:
-            if u_id == member['u_id']:
-                channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
+        if check_user_in_channel(u_id, channel):
+            channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
 
 
