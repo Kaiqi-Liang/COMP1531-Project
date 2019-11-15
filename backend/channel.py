@@ -19,7 +19,8 @@ def channel_invite(token, channel_id, u_id):
     if not check_user_in_channel(get_user_from_token(token), channel):
         raise AccessError("the authorised user is not already a member of the channel")
 
-    if get_permission(u_id) == 1 or get_permission(u_id) == 2:
+    if get_permission(u_id) in [1, 2]:
+        print(u_id)
         channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
 
     channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
