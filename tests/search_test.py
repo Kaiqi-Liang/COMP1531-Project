@@ -4,7 +4,7 @@ import pytest
 ''' Local packages '''
 from backend.search import search
 from backend.auth import auth_register, auth_login
-from backend.channel import channels_create
+from backend.channel import channels_create, channel_leave
 from backend.message import message_send
 from backend.database import clear
 
@@ -54,3 +54,17 @@ def test_fail():
     message_id = message_send(token, channel_id, 'hi')
 
     assert search(token, 'hello') == {'messages': []}
+
+def test_not_in_channel():
+    clear()
+    user = register_user()
+    token = user['token']
+    channel_id1 = channel_create(token)
+    channel_id2 = channels_create(token, 'private', False)['channel_id']
+    message_id1 = message_send(token, channel_id1, 'hi')
+    message_id2 = message_send(token, channel_id2, 'hi')
+
+    # leave the channel after sending a message
+    channel_leave(token, channel_id1)
+    channel_leave(token, channel_id2)
+    assert search(token, 'hi') == {'messages': []}
