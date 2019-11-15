@@ -97,7 +97,7 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, ba
     try:
         request.urlretrieve(img_url, f'static/{u_id}.jpg')
     except:
-        raise ValueError("img_url is returns an HTTP status other than 200.")
+        raise ValueError("img_url returns an HTTP status other than 200.")
 
     if what(f'static/{u_id}.jpg') != 'jpeg':
         raise ValueError('Image uploaded is not a JPG')
