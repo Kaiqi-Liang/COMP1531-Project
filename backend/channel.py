@@ -27,7 +27,6 @@ def channel_invite(token, channel_id, u_id):
         'profile_img_url': user['profile_img_url']
     }
 
-    p_id = get_permission(u_id)
     admin_or_owner = [1, 2]
     if get_permission(u_id) in admin_or_owner:
         channel['owners'].append(user_info)

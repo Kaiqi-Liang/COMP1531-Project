@@ -140,9 +140,11 @@ disable=print-statement,
         exception-escape,
         comprehension-escape,
         line-too-long,
-        wildcard-import,
+        too-many-arguments,
+        too-many-branches,
         global-statement,
-        redefined-builtin
+        redefined-builtin,
+        missing-function-docstring
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
