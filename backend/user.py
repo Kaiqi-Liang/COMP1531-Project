@@ -10,9 +10,6 @@ from backend.helpers.exception import ValueError
 
 def users_all(token):
     users = []
-    if get_user(get_user_from_token(token)) is None:
-        return {}
-
     for user in get_data()['user']:
         users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']})
     return {'users': users}
