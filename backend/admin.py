@@ -22,7 +22,7 @@ def admin_userpermission_change(token, u_id, permission_id):
     # if user1 is the owner of the slackr
     if user1["permission_id"] == 1:
         # user1 cannot remove themselves if they are the only owner
-        if len(slackr['admin']) == 1 and user2 == user1:
+        if len(slackr['owner']) == 1 and user2 == user1:
             return {}
 
         # since user1 can change permissions of everyone
@@ -36,7 +36,7 @@ def admin_userpermission_change(token, u_id, permission_id):
         if permission_id <= 2:
             # if user2 is changed to either admin or owner
             slackr['admin'].append(user2['u_id'])
-            if user2["permission_id"] == 1:
+            if permission_id == 1:
                 # if user2 is changed to owner
                 slackr['owner'].append(user2['u_id'])
         user2["permission_id"] = permission_id
