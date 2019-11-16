@@ -10,7 +10,7 @@ from backend.auth import auth_register
 from backend.database import clear, get_user
 from backend.channel import channels_create, channel_details
 from backend.helpers.exception import ValueError, AccessError
-from backend.helpers.token import generate_token
+from backend.helpers.token import generate_token, get_user_from_token
 
 @pytest.fixture
 def register_owner():
@@ -159,6 +159,8 @@ def test_user_profile_sethandle3():
     with pytest.raises(ValueError):
         user_profile_sethandle(user_dict['token'], "BestCoder")
 
+# tests for upload photo, testing the invalid cases
+# test with the call done with value outside of the image boundary 
 def test_user_profile_uploadphoto():
     clear()
     user = auth_register("someemail1@gmail.com","securepassword","John","Doe")
@@ -168,16 +170,7 @@ def test_user_profile_uploadphoto():
     base_url = "localhost:5000"
     png_url = "https://www.fnordware.com/superpng/pnggrad16rgb.png"
 
-   # Valid case ...
-   # Assume error is thrown when given x,y coords OUTSIDE the boundary of the img and not inside
-    user_profiles_uploadphoto(user['token'], img_url, 0, 0, 800, 800, base_url)
-
-    # Invalid cases ...
     with pytest.raises(ValueError, match=r"*"):
-        # This call is done with an invalid url that will return a status code NOT 200
-        user_profiles_uploadphoto(user['token'], invalid_url, 0, 0, 800, 800, base_url)
-        user_profiles_uploadphoto(user['token'], png_url, 0, 0, 800, 800, base_url)
-
         # Theses calls are done with crop x,y coords outside the img boundary ...
         # Assume you can crop any X x Y image to x,y->x+1,y+1 and 0,0->X,Y ...
         user_profiles_uploadphoto(user['token'], img_url, -1, 0, 800, 800, base_url)
@@ -185,8 +178,21 @@ def test_user_profile_uploadphoto():
         user_profiles_uploadphoto(user['token'], img_url, 0, 0, 1000, 800, base_url)
         user_profiles_uploadphoto(user['token'], img_url, 0, 0, 800, 1000, base_url)
 
-        # Valid crop but invalid url ...
+
+# call done with an invalid of status not 200 
+def test_user_profile_uploadphoto1():
+    clear()
+    user = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+
+    img_url = "https://yt3.ggpht.com/a/AGF-l7_fK0Hy4B4JO8ST-uGqSU69OTLHduk4Kri_fQ=s900-c-k-c0xffffffff-no-rj-mo"
+    invalid_url = "https://google.com/404"
+    base_url = "localhost:5000"
+    png_url = "https://www.fnordware.com/superpng/pnggrad16rgb.png"
+    with pytest.raises(ValueError, match=r"*"):
+        # This call is done with an invalid url that will return a status code NOT 200
         user_profiles_uploadphoto(user['token'], invalid_url, 0, 0, 800, 800, base_url)
+        user_profiles_uploadphoto(user['token'], png_url, 0, 0, 800, 800, base_url)
+
 
 # user w token doesn't exist
 def test_user_profile_uploadphoto2():
@@ -196,5 +202,13 @@ def test_user_profile_uploadphoto2():
     base_url = "localhost:5000"
     png_url = "https://www.fnordware.com/superpng/pnggrad16rgb.png"
     assert user_profiles_uploadphoto(generate_token(100), img_url, 0, 0, 800, 800, base_url) == {}
-          
-
+      
+# call done with an invalid url
+def test_user_profile_uploadphoto3():
+    clear()
+    user = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+    invalid_url = "https://google.com/404"
+    base_url = "localhost:5000"
+    with pytest.raises(ValueError):
+        # Valid crop but invalid url ...
+        user_profiles_uploadphoto(user['token'], invalid_url, 0, 0, 800, 800, base_url)
