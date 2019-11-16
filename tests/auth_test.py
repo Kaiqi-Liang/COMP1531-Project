@@ -2,7 +2,7 @@
 import pytest
 
 ''' Local packages '''
-from backend.auth import auth_login, auth_logout, auth_register, auth_passwordreset_reset(
+from backend.auth import auth_login, auth_logout, auth_register, auth_passwordreset_reset
 from backend.database import clear
 
 def test_login1():

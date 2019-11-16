@@ -6,7 +6,7 @@ import datetime
 from backend.message import message_sendlater, message_send, message_remove, message_edit, message_react, message_unreact, message_pin, message_unpin
 from backend.auth import auth_register
 from backend.channel import channel_join, channels_create, channel_invite
-from backend.database import clear
+from backend.database import clear, get_message
 from backend.helpers.exception import ValueError, AccessError
 
 # FUNCTION SETUP

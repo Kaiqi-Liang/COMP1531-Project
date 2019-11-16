@@ -5,9 +5,9 @@ import urllib
 from PIL import Image
 
 ''' Local packages'''
-from backend.user import users_all, user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profile_uploadphoto
+from backend.user import users_all, user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profiles_uploadphoto
 from backend.auth import auth_register
-from backend.database import clear
+from backend.database import clear, get_user
 from backend.channel import channels_create, channel_details
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.token import generate_token
