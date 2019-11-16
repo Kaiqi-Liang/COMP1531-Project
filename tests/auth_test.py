@@ -4,6 +4,7 @@ import pytest
 ''' Local packages '''
 from backend.auth import auth_login, auth_logout, auth_register, auth_passwordreset_reset
 from backend.database import clear
+from backend.helpers.exception import ValueError, AccessError
 
 def test_login1():
     clear()
