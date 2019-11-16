@@ -5,7 +5,7 @@ import urllib
 from PIL import Image
 
 ''' Local packages'''
-from backend.user import *
+from backend.user import users_all, user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profile_uploadphoto
 from backend.auth import auth_register
 from backend.database import clear
 from backend.channel import channels_create, channel_details

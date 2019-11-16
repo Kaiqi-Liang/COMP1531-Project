@@ -1,7 +1,7 @@
 ''' pip3 packages '''
 import pytest
 ''' Local packages '''
-from backend.channel import *
+from backend.channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner, channels_list, channels_listall, channels_create
 from backend.auth import auth_register
 from backend.database import clear, get_channel
 from backend.helpers.exception import AccessError, ValueError
