@@ -3,7 +3,7 @@ import pytest
 ''' Local packages '''
 from backend.channel import *
 from backend.auth import auth_register
-from backend.database import clear
+from backend.database import clear, get_channel
 from backend.helpers.exception import AccessError, ValueError
 from backend.admin import admin_userpermission_change
 
@@ -242,6 +242,16 @@ def test_leave4():
     channel_leave(owner_token, channel_id)
     
     assert channel_details(user_dict['token'], channel_id) == {'name': 'name', 'owner_members': [{'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}], 'all_members' : [{'u_id': user_dict['u_id'], 'name_first': 'kaiqi', 'name_last': 'liang', 'profile_img_url': None}]}
+
+# no one left in the channel after a remove to the channel is removed
+def test_leave5():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    owner_user = owner_dict['u_id']
+    channel_id = channel_create(owner_token)
+    channel_leave(owner_token, channel_id)
+    assert get_channel(channel_id) == None
         
 # TESTING FOR CHANNEL_JOIN
 # normal functioning
