@@ -17,6 +17,7 @@ def register_admin():
 @pytest.fixture
 def register_user():
     return auth_register("emma@gmail.com", "123456", "Emma", "Mayall")
+
 @pytest.fixture
 def register_user2():
     return auth_register("sarahwilliams@gmail.com", "1234455", "sara", "william")
@@ -96,6 +97,7 @@ def test_admin_userpermission_change7():
     
     # admin changes an admin to member
     admin_userpermission_change(user_dict['token'], user_dict2['u_id'], 3)
+
 # admin changes a member to an admin
 def test_admin_userpermission_change8():
     clear()
@@ -111,3 +113,14 @@ def test_admin_userpermission_change9():
     clear()
     admin_dict = register_admin()  
     assert admin_userpermission_change(admin_dict['token'], admin_dict['u_id'], 3) == {} 
+
+# 
+def test_admin_userpermission_change10():
+    clear()
+    admin_dict = register_admin()  
+    user_dict = register_user()
+    # change user to an admin
+    admin_userpermission_change(admin_dict['token'], user_dict['u_id'], 1)
+
+    # user change original owner to member
+    admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 1)
