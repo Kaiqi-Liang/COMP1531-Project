@@ -4,6 +4,7 @@ import pytest
 ''' Local packages '''
 from backend.auth import auth_login, auth_logout, auth_register, auth_passwordreset_reset
 from backend.database import clear
+from backend.helpers.token import generate_token
 from backend.helpers.exception import ValueError, AccessError
 
 def test_login1():
@@ -29,12 +30,22 @@ def test_login3():
     # test for invalid password
     with pytest.raises(ValueError, match=r"*"):
         loginDict = auth_login("emmarosemayall@gmail.com", "wrong password")
+
+def test_login4():
+    clear()
+    with pytest.raises(ValueError):
+        # email does not belong to any user
+        auth_login("sarahilwil@gmail.com", 1234456)
         
 def test_logout1():
     clear()
     user_dict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayall")
     assert auth_logout(user_dict['token'])['is_success'] == True
 
+def test_logout2():
+    clear()
+    assert auth_logout(generate_token(100)) == {'is_success': False}
+    
 def test_register1():
     # test for when everything is valid
     clear()
@@ -80,7 +91,7 @@ def test_passwordreset_reset2():
     #test for invalid reset code
     with pytest.raises(ValueError, match=r"*"):
         loginDict = {}
-        loginDict = auth_passwordreset_reset ("Invalid reset code", "123456")
+        loginDict = auth_passwordreset_reset (1234, "123456")
 
 def test_passwordreset_reset3():
     #test for invalid password
