@@ -123,4 +123,4 @@ def test_admin_userpermission_change10():
     admin_userpermission_change(admin_dict['token'], user_dict['u_id'], 1)
 
     # user change original owner to member
-    admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 1)
+    admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 2)
