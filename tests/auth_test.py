@@ -75,11 +75,6 @@ def test_register6():
     with pytest.raises(ValueError, match=r"*"):
         loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayallllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll")
 
-def test_passwordreset_reset1():
-    clear()
-    loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayalllonglastname")
-    #test for valid
-    auth_passwordreset_reset("xyz","123456")
 
 def test_passwordreset_reset2():
     #test for invalid reset code
