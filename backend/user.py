@@ -76,11 +76,14 @@ def user_profile_sethandle(token, handle_str):
 
     for user in users:
         if handle_str == user['handle_str']:
-            if len(handle_str) >= 19:
-                # cut some out
-                handle_str = handle_str[:18]
-            # then add number
-            handle_str = handle_str + str(randint(10, 100))
+            raise ValueError("handle is already used by another user")
+
+    if len(handle_str) >= 19:
+        # cut some out
+        handle_str = handle_str[:18]
+        # then add number
+        handle_str = handle_str + str(randint(10, 100))
+
     user['handle_str'] = handle_str
     return {}
 
