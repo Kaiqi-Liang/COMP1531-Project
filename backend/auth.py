@@ -119,4 +119,3 @@ def auth_passwordreset_reset(reset_code, new_password):
             user['reset'] = None
             return {}
 
-    raise ValueError("Invalid reset code")
