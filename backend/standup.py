@@ -17,7 +17,7 @@ def standup_active(token, channel_id):
 
     # If standup is finished
     if standup['finish'] < time_current:
-        if standup['is_active'] == True:
+        if standup['is_active']:
             standup['is_active'] = False
             message_send(generate_token(standup['user']), channel_id, standup['queue'])
         return {'is_active' : False, 'time_finish' : None}
@@ -33,10 +33,10 @@ def standup_start(token, channel_id, length):
 
     if channel is None:
         raise ValueError("Channel doesn't exist!")
-    
+
     standup = channel['standup']
 
-    if standup['is_active'] == True:
+    if standup['is_active']:
         raise ValueError("Standup already running!")
 
     u_id = get_user_from_token(token)
@@ -64,9 +64,9 @@ def standup_send(token, channel_id, message):
     standup_message = standup['queue']
     u_id = get_user_from_token(token)
     user = get_user(u_id)
-    
+
     # Check if standup is running
-    if standup['is_active'] == False:
+    if not standup['is_active']:
         raise ValueError("Standup not active!")
 
     # Check if user is a member of the channel ...

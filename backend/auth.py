@@ -117,5 +117,4 @@ def auth_passwordreset_reset(reset_code, new_password):
         if user['reset'] == reset_code:
             user['password'] = hashlib.sha256(new_password.encode()).hexdigest()
             user['reset'] = None
-            return {}
-
+    return {}

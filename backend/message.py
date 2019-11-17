@@ -61,11 +61,11 @@ def message_edit(token, message_id, message):
     message_id = int(message_id)
     msg = get_message(message_id)
     u_id = get_user_from_token(token)
-    
+
     # message with message_id does not exist
     if msg is None:
         return {}
-    
+
     channel = get_message_channel(message_id)
 
     if msg['u_id'] != u_id:

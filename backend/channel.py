@@ -1,10 +1,10 @@
 """ Channel functions """
+from datetime import datetime, timedelta
+
 from backend.database import get_data, get_user, get_channel, get_permission
 from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
-
-from datetime import datetime, timedelta
 
 def channel_invite(token, channel_id, u_id):
     u_id = int(u_id)
@@ -100,10 +100,10 @@ def channel_leave(token, channel_id):
     for owner in owners:
         if u_id == owner['u_id']:
             owners.remove(owner)
-    
+
     if len(owners) == 0 and len(members) == 0:
         get_data()['channel'].remove(channel)
-    
+
     return {}
 
 
