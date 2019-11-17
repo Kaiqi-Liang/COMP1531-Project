@@ -5,7 +5,7 @@ import pytest
 from backend.auth import auth_register
 from backend.auth import auth_login
 from backend.admin import admin_userpermission_change
-from backend.database import clear
+from backend.database import clear, get_user
 from backend.helpers.exception import ValueError, AccessError
 
 @pytest.fixture
@@ -23,7 +23,7 @@ def register_user2():
     return auth_register("sarahwilliams@gmail.com", "1234455", "sara", "william")
 
 # user w id does not refer to a valid user
-def test_admin_userpermission_change():
+def test_admin_userpermission_change1():
     clear()
     admin_dict = register_admin()
     with pytest.raises(ValueError):
@@ -120,7 +120,10 @@ def test_admin_userpermission_change10():
     admin_dict = register_admin()  
     user_dict = register_user()
     # change user to an admin
-    admin_userpermission_change(admin_dict['token'], user_dict['u_id'], 1)
+    admin_userpermission_change(admin_dict['token'], user_dict['u_id'], 2)
 
+    print(get_user(admin_dict['u_id']))
+    print(get_user(user_dict['u_id']))
     # user change original owner to member
-    admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 1)
+    with pytest.raises(AccessError):
+        admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 1)

@@ -43,6 +43,7 @@ def admin_userpermission_change(token, u_id, permission_id):
 
     # if user1 is an admin of the slackr
     elif user1["permission_id"] == 2:
+        print('hi')
         # assumption: if user2 is an owner of the slackr, user1 cannot change its permission
         # assumption: an admin can not promote someone to an owner
         if user2["permission_id"] == 1 or permission_id == 1:
