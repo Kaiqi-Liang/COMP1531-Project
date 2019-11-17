@@ -4,6 +4,8 @@ from backend.helpers.token import get_user_from_token
 from backend.helpers.helpers import check_user_in_channel, is_owner
 from backend.helpers.exception import ValueError, AccessError
 
+from datetime import datetime, timedelta
+
 def channel_invite(token, channel_id, u_id):
     user = get_user(u_id)
     if user is None:
@@ -207,7 +209,13 @@ def channels_create(token, name, is_public):
         'is_public': is_public,
         'owners': [],
         'members': [],
-        'messages': []
+        'messages': [],
+        'standup': {
+            'queue': '',
+            'is_active' : False,
+            'finish': (datetime.now()+timedelta(seconds=-10)).timestamp(),
+            'user': -1
+        }
     })
 
     channel = get_channel(channel_id)
