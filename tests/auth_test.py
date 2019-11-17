@@ -26,7 +26,7 @@ def test_login3():
     with pytest.raises(ValueError, match=r"*"):
         loginDict = {}
         loginDict = auth_login("emmarosemayall@gmail.com", "wrong password")
-
+        
 def test_logout1():
     clear()
     user_dict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayall")
