@@ -149,7 +149,7 @@ def test_user_profile_sethandle2():
 		user_profile_sethandle(ret['token'], "johndoe12345678910111213")
 
 def test_user_profile_sethandle3():
-	# Test that the same handle cannot be used again
+    # Test that the same handle cannot be used again
     clear()
     owner_dict = register_owner()
     owner_token = owner_dict['token']
