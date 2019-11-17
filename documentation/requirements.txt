@@ -1,5 +1,5 @@
-flask
-flask_cors
-flask_mail
-pillow
-pyjwt
+Flask==1.1.1
+Flask-Cors==3.0.8
+Flask-Mail==0.9.1
+Pillow==6.2.1
+PyJWT==1.7.1
