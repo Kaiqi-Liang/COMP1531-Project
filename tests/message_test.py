@@ -3,10 +3,10 @@ import pytest
 import datetime
 
 ''' Local packages '''
-from backend.message import *
+from backend.message import message_sendlater, message_send, message_remove, message_edit, message_react, message_unreact, message_pin, message_unpin
 from backend.auth import auth_register
 from backend.channel import channel_join, channels_create, channel_invite
-from backend.database import clear
+from backend.database import clear, get_message
 from backend.helpers.exception import ValueError, AccessError
 
 # FUNCTION SETUP
@@ -91,7 +91,14 @@ def test_message_send2():
     user_dict = register_user()
     with pytest.raises(AccessError, match=r"*"):
         message_send(user_dict['token'], channel_id, "Hello world")
-       
+        
+# if channel is not valid
+def test_message_send3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']   
+    with pytest.raises(ValueError):
+        message_send(owner_token, 100, "Hello World")
 # TESTS FOR MESSAGE_REMOVE
 # functioning properly
 def test_message_remove():
@@ -153,7 +160,24 @@ def test_message_edit1():
     
     m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
     with pytest.raises(AccessError, match=r"*"):
-        message_edit(user_token, m_id, "Can not edit")   
+        message_edit(user_token, m_id, "Can not edit") 
+          
+# if the msg w id doesnt exist
+def test_message_edit2():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    assert message_edit(owner_token, 100, "Can not edit") == {}
+
+# if the message is to be edited to '' then just remove the message 
+def test_message_edit3():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    m_id = message_send(owner_token, channel_id, "Hello World")['message_id']
+    message_edit(owner_token, m_id, '')
+    assert get_message(m_id) == None 
         
 # TESTS FOR MESSAGE_REACT
 # normal functioning
@@ -205,6 +229,17 @@ def test_message_react3():
     with pytest.raises(ValueError, match=r"*"):
         message_react(owner_token, m_id, 1)
 
+# authorised user is not a member of the channel
+def test_message_react4():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    user_dict = register_user()
+    m_id = message_send(owner_token, channel_id, "Test react")['message_id']
+    with pytest.raises(ValueError):
+        message_react(user_dict['token'], m_id, 1)
+
 # TESTS FOR MESSAGE_UNREACT
 # normal functioning 
 def test_message_unreact():
@@ -254,6 +289,18 @@ def test_message_unreact3():
     m_id = message_send(owner_token, channel_id, "Test unreact")['message_id']
     with pytest.raises(ValueError, match=r"*"):
         message_unreact(owner_token, m_id, 1)
+
+# authorised user is not a member of the channel
+def test_message_unreact4():
+    clear()
+    owner_dict = register_owner()
+    owner_token = owner_dict['token']
+    channel_id = create_channel(owner_token)['channel_id']
+    user_dict = register_user()
+    m_id = message_send(owner_token, channel_id, "Test react")['message_id']
+    message_react(owner_token, m_id, 1)
+    with pytest.raises(ValueError):
+        message_unreact(user_dict['token'], m_id, 1)
 
 # TESTS FOR MESSAGE_PIN
 # normal functioning

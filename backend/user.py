@@ -1,6 +1,7 @@
 """ User functions """
 from random import randint
 from urllib import request
+from imghdr import what
 
 from backend.database import get_data, get_user
 from backend.helpers.token import get_user_from_token
@@ -9,9 +10,6 @@ from backend.helpers.exception import ValueError
 
 def users_all(token):
     users = []
-    if get_user(get_user_from_token(token)) is None:
-        return {}
-
     for user in get_data()['user']:
         users.append({'u_id': user['u_id'], 'email': user['email'], 'name_first': user['name_first'], 'name_last': user['name_last'], 'handle_str':user['handle_str'], 'profile_img_url': user['profile_img_url']})
     return {'users': users}
@@ -88,12 +86,6 @@ def user_profile_sethandle(token, handle_str):
 
 
 def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, base_url):
-    '''
-    # assumption: jpeg is not jpg
-    if img_url[-3:] != 'jpg':
-        raise ValueError("Image uploaded is not a JPG")
-    '''
-
     u_id = get_user_from_token(token)
     user = get_user(u_id)
     if user is None:
@@ -102,7 +94,10 @@ def user_profiles_uploadphoto(token, img_url, x_start, y_start, x_end, y_end, ba
     try:
         request.urlretrieve(img_url, f'static/{u_id}.jpg')
     except:
-        raise ValueError("img_url is returns an HTTP status other than 200.")
+        raise ValueError("img_url returns an HTTP status other than 200.")
+
+    if what(f'static/{u_id}.jpg') != 'jpeg':
+        raise ValueError('Image uploaded is not a JPG')
 
     crop_image(f'static/{u_id}.jpg', int(x_start), int(y_start), int(x_end), int(y_end)).save(f'static/cropped_{u_id}.jpg')
     base_url = 'http://' + base_url

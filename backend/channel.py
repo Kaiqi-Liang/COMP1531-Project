@@ -7,6 +7,7 @@ from backend.helpers.exception import ValueError, AccessError
 from datetime import datetime, timedelta
 
 def channel_invite(token, channel_id, u_id):
+    u_id = int(u_id)
     user = get_user(u_id)
     if user is None:
         raise ValueError("u_id does not refer to a valid user")
@@ -21,10 +22,18 @@ def channel_invite(token, channel_id, u_id):
     if not check_user_in_channel(get_user_from_token(token), channel):
         raise AccessError("the authorised user is not already a member of the channel")
 
-    if get_permission(u_id) == 1 or get_permission(u_id) == 2:
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+    user_info = {
+        'u_id': u_id,
+        'name_first': user['name_first'],
+        'name_last': user['name_last'],
+        'profile_img_url': user['profile_img_url']
+    }
 
-    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+    admin_or_owner = [1, 2]
+    if get_permission(u_id) in admin_or_owner:
+        channel['owners'].append(user_info)
+
+    channel['members'].append(user_info)
     return {}
 
 
@@ -91,9 +100,10 @@ def channel_leave(token, channel_id):
     for owner in owners:
         if u_id == owner['u_id']:
             owners.remove(owner)
-
+    
     if len(owners) == 0 and len(members) == 0:
         get_data()['channel'].remove(channel)
+    
     return {}
 
 
@@ -108,14 +118,8 @@ def channel_join(token, channel_id):
     if check_user_in_channel(user['u_id'], channel):
         return {}
 
-    owner_info = {
-        'u_id': user['u_id'],
-        'name_first': user['name_first'],
-        'name_last': user['name_last']
-    }
-
-    member_info = {
-        'u_id': user['u_id'],
+    user_info = {
+        'u_id': u_id,
         'name_first': user['name_first'],
         'name_last': user['name_last'],
         'profile_img_url': user['profile_img_url']
@@ -126,8 +130,8 @@ def channel_join(token, channel_id):
     # If channel is public
     if channel['is_public']:
         if p_id in admin_or_owner:
-            channel['owners'].append(owner_info)
-        channel['members'].append(member_info)
+            channel['owners'].append(user_info)
+        channel['members'].append(user_info)
     else:
         # If user is not an admin
         if not p_id in admin_or_owner:
@@ -135,8 +139,8 @@ def channel_join(token, channel_id):
             raise AccessError("channel_id refers to a channel that is private")
 
         # User is an admin/owner and can join channel
-        channel['members'].append(member_info)
-        channel['owners'].append(owner_info)
+        channel['members'].append(user_info)
+        channel['owners'].append(user_info)
 
     return {}
 
@@ -178,10 +182,8 @@ def channels_list(token):
     u_id = get_user_from_token(token)
     channels = []
     for channel in get_data()['channel']:
-        members = channel['members']
-        for member in members:
-            if u_id == member['u_id']:
-                channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
+        if check_user_in_channel(u_id, channel):
+            channels.append({'channel_id': channel['channel_id'], 'name': channel['name']})
     return {'channels': channels}
 
 
@@ -221,8 +223,8 @@ def channels_create(token, name, is_public):
     channel = get_channel(channel_id)
     u_id = get_user_from_token(token)
     user = get_user(u_id)
-    if channel and user:
-        channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
-        channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+
+    channel['owners'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
+    channel['members'].append({'u_id': u_id, 'name_first': user['name_first'], 'name_last': user['name_last'], 'profile_img_url': user['profile_img_url']})
 
     return {'channel_id': channel_id}
