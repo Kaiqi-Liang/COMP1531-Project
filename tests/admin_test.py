@@ -114,7 +114,7 @@ def test_admin_userpermission_change9():
     admin_dict = register_admin()  
     assert admin_userpermission_change(admin_dict['token'], admin_dict['u_id'], 3) == {} 
 
-# 
+# change permission twice
 def test_admin_userpermission_change10():
     clear()
     admin_dict = register_admin()  
@@ -122,5 +122,8 @@ def test_admin_userpermission_change10():
     # change user to an admin
     admin_userpermission_change(admin_dict['token'], user_dict['u_id'], 1)
 
-    # user change original owner to member
+    # user change original owner to admin
     admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 2)
+
+    # user change original owner's permission again to owner
+    admin_userpermission_change(user_dict['token'], admin_dict['u_id'], 3)
