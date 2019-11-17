@@ -30,9 +30,15 @@ def standup_start(token, channel_id, length):
     channel_id = int(channel_id)
     # Check if channel exists ...
     channel = get_channel(channel_id)
+
     if channel is None:
         raise ValueError("Channel doesn't exist!")
+    
     standup = channel['standup']
+
+    if standup['is_active'] == True:
+        raise ValueError("Standup already running!")
+
     u_id = get_user_from_token(token)
 
     # Check if user is a member of the channel ...
@@ -50,12 +56,15 @@ def standup_send(token, channel_id, message):
     channel_id = int(channel_id)
     # Check if channel exists ...
     channel = get_channel(channel_id)
+
     if channel is None:
         raise ValueError("Channel doesn't exist!")
+
     standup = channel['standup']
     standup_message = standup['queue']
     u_id = get_user_from_token(token)
     user = get_user(u_id)
+    
     # Check if user is a member of the channel ...
     if not check_user_in_channel(u_id, channel):
         raise AccessError("User is not a member of channel!")
