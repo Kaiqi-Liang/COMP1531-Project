@@ -36,7 +36,8 @@ def test_register1():
     # test for when everything is valid
     clear()
     loginDict = {}
-    loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayall")
+    loginDict = auth_register("emmarosemayall@gmail.com", "123456", "Emma", "Mayalllonglastname")
+    loginDict2 = auth_register("emmarosemayal@gmail.com", "123456", "Emma", "Mayalllonglastnamememe")
     uid = loginDict['u_id']
     token = loginDict['token']
     assert uid != "" and token != ""
@@ -84,13 +85,13 @@ def test_passwordreset_reset1():
         auth_passwordreset_reset("xyz", "123456")
 '''
 
-def test_passwordreset_reset2():
+def test_passwordreset_reset1():
     #test for invalid reset code
     with pytest.raises(ValueError, match=r"*"):
         loginDict = {}
         loginDict = auth_passwordreset_reset ("Invalid reset code", "123456")
 
-def test_passwordreset_reset3():
+def test_passwordreset_reset2():
     #test for invalid password
     with pytest.raises(ValueError, match=r"*"):
         loginDict = {}
