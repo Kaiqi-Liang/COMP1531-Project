@@ -65,7 +65,13 @@ DATA = {
                                     'is_pinned': True
                                 }
                             ],
-                'standup_queue': standup_message
+                'standup' : {
+                                'queue': standup_message,
+                                'is_active' : is_active,
+                                'finish': time_finish,
+                                'user': u_id
+                            }
+
             }
         ],
     'slackr':
