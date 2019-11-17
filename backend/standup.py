@@ -65,6 +65,10 @@ def standup_send(token, channel_id, message):
     u_id = get_user_from_token(token)
     user = get_user(u_id)
     
+    # Check if standup is running
+    if standup['is_active'] == False:
+        raise ValueError("Standup not active!")
+
     # Check if user is a member of the channel ...
     if not check_user_in_channel(u_id, channel):
         raise AccessError("User is not a member of channel!")
