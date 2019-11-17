@@ -8,7 +8,7 @@ from PIL import Image
 from backend.user import users_all, user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profiles_uploadphoto
 from backend.auth import auth_register
 from backend.database import clear, get_user
-from backend.channel import channels_create, channel_details
+from backend.channel import channels_create, channel_details, channel_invite
 from backend.helpers.exception import ValueError, AccessError
 from backend.helpers.token import generate_token, get_user_from_token
 
@@ -177,19 +177,22 @@ def test_user_profile_uploadphoto():
         user_profiles_uploadphoto(user['token'], img_url, 0, -1, 800, 800, base_url)
         user_profiles_uploadphoto(user['token'], img_url, 0, 0, 1000, 800, base_url)
         user_profiles_uploadphoto(user['token'], img_url, 0, 0, 800, 1000, base_url)
+        user_profiles_uploadphoto(user['token'], img_url, 800, 800, 10, 10, base_url)
 
 
 # call done with an invalid of status not 200 
 def test_user_profile_uploadphoto1():
     clear()
     user = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+    base_url = "localhost:5000"
 
     invalid_url = "https://google.com/404"
-    png_url = "https://www.fnordware.com/superpng/pnggrad16rgb.png"
-    base_url = "localhost:5000"
     with pytest.raises(ValueError, match=r"*"):
         # This call is done with an invalid url that will return a status code NOT 200
         user_profiles_uploadphoto(user['token'], invalid_url, 0, 0, 800, 800, base_url)
+
+    png_url = "https://www.fnordware.com/superpng/pnggrad16rgb.png"
+    with pytest.raises(ValueError):
         user_profiles_uploadphoto(user['token'], png_url, 0, 0, 800, 800, base_url)
 
 
@@ -211,8 +214,12 @@ def test_user_profile_uploadphoto3():
 # update photo in channels
 def test_user_profile_uploadphoto3():
     clear()
+    owner = register_owner()
     user = auth_register("someemail1@gmail.com","securepassword","John","Doe")
+    channel_id = channel_create(owner['token'])
+    channel_invite(owner['token'], channel_id, user['u_id'])
+
     img_url = "https://yt3.ggpht.com/a/AGF-l7_fK0Hy4B4JO8ST-uGqSU69OTLHduk4Kri_fQ=s900-c-k-c0xffffffff-no-rj-mo"
     base_url = "localhost:5000"
-    channel_id = channel_create(user['token'])
-    assert user_profiles_uploadphoto(user['token'], img_url, 0, 0, 800, 800, base_url) == {}
+    assert user_profiles_uploadphoto(owner['token'], img_url, 0, 0, 800, 800, base_url) == {}
+    assert user_profiles_uploadphoto(user['token'], img_url, 10, 10, 800, 800, base_url) == {}
