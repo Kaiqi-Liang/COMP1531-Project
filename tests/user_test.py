@@ -1,6 +1,5 @@
 ''' pip3 packages '''
 import pytest
-import requests
 import urllib
 from PIL import Image
 
