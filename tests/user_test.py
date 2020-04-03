@@ -1,7 +1,5 @@
 ''' pip3 packages '''
 import pytest
-import urllib
-from PIL import Image
 
 ''' Local packages'''
 from backend.user import users_all, user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle, user_profiles_uploadphoto
