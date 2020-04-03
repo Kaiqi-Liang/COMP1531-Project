@@ -21,8 +21,7 @@ def standup_active(token, channel_id):
             standup['is_active'] = False
             message_send(generate_token(standup['user']), channel_id, standup['queue'])
         return {'is_active' : False, 'time_finish' : None}
-    else:
-        return {'is_active' : True, 'time_finish' : standup['finish']}
+    return {'is_active' : True, 'time_finish' : standup['finish']}
 
 
 def standup_start(token, channel_id, length):
