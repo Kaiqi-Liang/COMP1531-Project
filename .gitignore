@@ -123,12 +123,5 @@ venv.bak/
 # Pyre type checker
 .pyre/
 
-# Other
-*.py~
-.*swp
-
-# Mac
-.DS_Store
-
 # Photos
 static/
