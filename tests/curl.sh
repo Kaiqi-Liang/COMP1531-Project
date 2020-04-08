@@ -3,7 +3,7 @@
 # -s --silent: Don't show progress meter or error messages, but still output the data or even stdout
 # -S --show-error: When use with -s it makes curl show an error message if it fails
 # -X --request <command>: CRUD or default GET when not specified
-# -d --data <data>
+# -d --data <data>: json: -d '{"key1":"value1","key2":"value2"}', form: -d "key1=value1&key2=value2"
 # -H --header <header/@file>: -H "Content-Type: application/json"
 
 token=`curl -s -X post -d "name_first=eric&name_last=pull&email=123@123.com&password=123456" localhost:5001/auth/register`
